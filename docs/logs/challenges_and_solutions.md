@@ -215,3 +215,27 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`tsc --noEmit` passed on all 4 apps and api-client with 0 errors).
+
+---
+
+## [2026-11-22] - Feature / Task: Admin Web Dashboard KPI Aggregation & Zero-Division Safety
+
+### 1. Challenge Faced
+- **Context**: Calculating overall capacity utilization and government relief expenditure across dynamic district-wide datasets.
+- **Symptoms / Friction**: If camps have not yet configured capacity or in empty database states, calculating occupancy percentages could trigger divide-by-zero exceptions or NaN outputs.
+- **Impact**: Crashed admin dashboard screens or corrupt reporting exports.
+
+### 2. Solutions Evaluated
+- **Option A**: Perform math purely on client-side frontend widgets.
+  - *Pros / Cons*: Leaves frontend vulnerable to null values or undefined denominator fields.
+- **Option B (Selected)**: Encapsulate calculation in `AdminDashboardSummaryDto` with safe default clamping (`TotalCampCapacity > 0 ? Round(...) : 0`).
+
+### 3. Finalized Solution ("What")
+- Implemented `GetAdminDashboardQueryHandler` and `GetAdminCampsSummaryQueryHandler` providing aggregated KPIs and camp-level occupancy percentages.
+
+### 4. Technical Rationale ("Why")
+- Adheres to Section 5 of FSD.md and ensures reliable analytics for administrative decision-makers.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` passed 35/35 tests in 1s; web-admin typecheck 0 errors).

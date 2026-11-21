@@ -362,3 +362,34 @@ export interface RecordExpenseRequest {
   description?: string;
   expenseDate?: string;
 }
+
+// 10. Admin Analytics Models
+export interface AdminDashboardSummaryDto {
+  totalRegisteredFarmers: number;
+  totalRegisteredAnimals: number;
+  pendingAnimalVerification: number;
+  verifiedAnimals: number;
+  rejectedAnimals: number;
+  totalCharaChhavaniCentres: number;
+  totalCampCapacity: number;
+  totalActiveAdmittedAnimals: number;
+  overallCapacityUtilizationPercentage: number;
+  totalStoreStockKg: number;
+  totalInFarmStockKg: number;
+  totalAvailableStockKg: number;
+  totalFodderPurchaseAmount: number;
+  totalOperationalExpenses: number;
+  totalGovernmentExpenditure: number;
+}
+
+export interface CampUtilizationSummaryDto {
+  campId: number;
+  campCode: string;
+  name: string;
+  district: string;
+  taluka: string;
+  totalCapacity: number;
+  activeAnimalCount: number;
+  utilizationPercentage: number;
+  hasGeofence: boolean;
+}

@@ -125,4 +125,13 @@ export class CharaChhavaniApiClient {
     getSummary: (campId: number) =>
       this.http.get<M.CampExpenseSummaryDto>(`/api/v1/expenses/camp/${campId}`),
   };
+
+  // 8. Admin Officer Analytics
+  public admin = {
+    getDashboard: () =>
+      this.http.get<M.AdminDashboardSummaryDto>('/api/v1/admin/dashboard'),
+
+    getCampsSummary: () =>
+      this.http.get<M.CampUtilizationSummaryDto[]>('/api/v1/admin/camps-summary'),
+  };
 }
