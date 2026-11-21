@@ -1,0 +1,63 @@
+name: Chara Chhavani CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # 1. Backend Build & Automated Test Suite (.NET 8 Clean Architecture)
+  backend-ci:
+    name: .NET 8 Backend Build & Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8.0 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore NuGet Dependencies
+        run: dotnet restore backend/CharaChhavani.sln
+
+      - name: Build Solution (Release Mode)
+        run: dotnet build backend/CharaChhavani.sln -c Release --no-restore
+
+      - name: Execute Backend Test Suite (67 Automated Tests)
+        run: dotnet test backend/CharaChhavani.sln -c Release --no-build --verbosity normal
+
+  # 2. Shared Mobile Packages & Offline Architecture Tests (Node.js)
+  mobile-packages-ci:
+    name: Mobile UI Core & Offline Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Mobile Session & Rule 9.6 Offline Tests
+        run: node packages/ui-core/test/session-offline-test.mjs
+
+  # 3. Docker Container Image Build Verification
+  docker-ci:
+    name: Multi-Stage Dockerfile Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Backend Docker Image
+        run: docker build -t chara-chhavani-backend:ci -f backend/Dockerfile backend
