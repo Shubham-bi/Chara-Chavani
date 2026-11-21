@@ -477,5 +477,36 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 - Applied: Yes
 - Verified: Yes (`dotnet test` passed 67/67 tests, Node tests passed 100%, and YAML syntax verified).
 
+---
+
+## [2026-11-22] - Feature / Task: Interactive Web Admin Dashboard DOM Binding & In-Browser Audit Viewer
+
+### 1. Challenge Faced
+- **Context**: Enabling state administrators and auditors to monitor live camp KPIs, capacity utilization progress bars, and audit logs directly inside the browser (`apps/web-admin`) without requiring heavy framework runtimes or bundlers inside the lightweight Nginx container.
+- **Symptoms / Friction**: In lightweight static container setups, deploying complex framework build artifacts can cause container bloat. Additionally, when the backend WebAPI is starting up or temporarily unreachable, unhandled promise rejections can break DOM rendering and leave administrators with an unresponsive screen.
+- **Impact**: Poor usability and lack of immediate visibility into audit discrepancies during spot checks.
+
+### 2. Solutions Evaluated
+- **Option A**: Use an external frontend framework (React + Webpack/Vite) requiring a continuous node server runtime.
+  - *Pros / Cons*: Good component abstraction, but higher container memory footprint and complex build dependencies.
+- **Option B (Selected)**: 
+  1. Implement high-performance, modular TypeScript DOM controller in `apps/web-admin/src/index.ts` utilizing `@chara-chhavani/api-client`.
+  2. Implement tabbed report preview switcher (Admissions, Fodder Reconciliation, Expenses, Inspections) with dual-action CSV download links.
+  3. Wrap all network calls with defensive try/catch blocks that render clear localized status indicators (`माहिती लोड होत आहे...`, `API Connection Offline`) instead of uncaught exceptions.
+  - *Pros / Cons*: Instant rendering, zero runtime container bloat (pure static files in Nginx), full type safety, and seamless integration with the WebAPI.
+
+### 3. Finalized Solution ("What")
+- Updated `apps/web-admin/index.html` with responsive metric cards, camps utilization table, and tabbed audit viewer container.
+- Implemented `AdminWebDashboardApp` in `apps/web-admin/src/index.ts` with auto-initialization on `DOMContentLoaded`.
+
+### 4. Technical Rationale ("Why")
+- Complies strictly with Section 5 ("Admin Officer Web Dashboard") of `ReferanceData/FSD.md` and Rule 42 & Rule 43 of `ReferanceData/Development-Guidlines.md`.
+- Gives state relief administrators instantaneous visual feedback with zero setup friction.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`apps/web-admin` compiles with 0 TypeScript errors; tests pass 100%).
+
+
 
 
