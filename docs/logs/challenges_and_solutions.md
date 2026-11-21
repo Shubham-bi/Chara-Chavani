@@ -88,3 +88,28 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`dotnet test` passed 15/15 tests in 1s).
+
+---
+
+## [2026-11-22] - Feature / Task: Veterinary Verification GPS Stamping vs Camp Geofence Separation
+
+### 1. Challenge Faced
+- **Context**: Stamping GPS location during physical veterinary inspection visits at farmer locations.
+- **Symptoms / Friction**: Conflating vet visit GPS checks with camp geofences would incorrectly cause rejections if a farmer's farm is outside a camp boundary.
+- **Impact**: Violation of BRD recommendation: *"Keep these two location validations separate: Veterinary verification GPS should correspond to farmer's location; Animal admission GPS must be within camp geofence."*
+
+### 2. Solutions Evaluated
+- **Option A**: Attempt to validate inspection coordinates against nearby camps.
+  - *Pros / Cons*: Inapplicable because farmers reside throughout rural villages, while camps are distinct physical locations.
+- **Option B (Selected)**: Record `InspectionLocation` as an auditable `Point` (SRID 4326) capturing the physical visit location at the farm, and enforce strictly that only the later `AnimalAdmission` workflow validates device GPS against camp geofence polygons.
+
+### 3. Finalized Solution ("What")
+- `SubmitVerificationCommand` captures and stores `InspectionLocation` Point with doctor ID and audit timestamp.
+- Enforced mandatory `Remarks` when result is `Rejected`, and prevented double approval.
+
+### 4. Technical Rationale ("Why")
+- Directly complies with BRD Workflow 1 (Important recommendation) and Section 2 of FSD.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` passed 20/20 tests in 1s).
