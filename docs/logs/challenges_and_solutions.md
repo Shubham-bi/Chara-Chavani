@@ -62,3 +62,29 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`dotnet test` passed 9/9 tests in 1s).
+
+---
+
+## [2026-11-22] - Feature / Task: Farmer Mobile Auth & Idempotent Profile Management
+
+### 1. Challenge Faced
+- **Context**: Mobile OTP login and farmer registration in rural mobile settings.
+- **Symptoms / Friction**: In rural workflows, farmers re-authenticating with their mobile number might trigger registration screens again, risking duplicate account records or database primary key / unique index collisions on `MobileNumber`.
+- **Impact**: User frustration and potential data inconsistency between registered animals and farmer identity.
+
+### 2. Solutions Evaluated
+- **Option A**: Separate strict registration vs strict login endpoints that reject existing or non-existing mobile numbers.
+  - *Pros / Cons*: More steps in UI; requires farmers to remember if they are registered or not.
+- **Option B (Selected)**: Idempotent OTP authentication with provisional farmer provisioning and unified profile upsert command.
+  - *Pros / Cons*: Seamless single-flow mobile experience: verifying OTP either logs in an existing farmer or auto-provisions a new account flagged `IsProfileCompleted = false` to prompt profile completion.
+
+### 3. Finalized Solution ("What")
+- Implemented `VerifyOtpCommandHandler` that looks up existing farmer by mobile; if absent, creates provisional entity.
+- Profile completion handled by `RegisterOrUpdateFarmerCommand` updating fields without recreating identity.
+
+### 4. Technical Rationale ("Why")
+- Conforms to mobile best practices in `Development-Guidlines.md` and provides a frictionless UX for rural users.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` passed 15/15 tests in 1s).
