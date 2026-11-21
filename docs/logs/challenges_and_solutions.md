@@ -239,3 +239,60 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`dotnet test` passed 35/35 tests in 1s; web-admin typecheck 0 errors).
+
+---
+
+## [2026-11-22] - Feature / Task: Officer Field Inspection Auditing & Discrepancy Tracking
+
+### 1. Challenge Faced
+- **Context**: Government Officers conducting surprise and periodic inspections at subsidized cattle camps.
+- **Symptoms / Friction**: Manual pen-and-paper headcount audits fail to immediately compare counted livestock with active database admissions, allowing discrepancy reporting delays and lack of immutable timestamped audit trails.
+- **Impact**: Risk of fraudulent cattle subsidies and lack of spatial evidence regarding inspector presence at the camp.
+
+### 2. Solutions Evaluated
+- **Option A**: Allow officers to edit past inspection logs when recounts occur.
+  - *Pros / Cons*: Violates audit integrity; allows retroactive tampering of inspection data.
+- **Option B (Selected)**: Append-only immutable inspection logs with real-time discrepancy computation ($\Delta = C_{physical} - C_{system}$) and spatial GPS point recording.
+  - *Pros / Cons*: Guarantees tamper-evident audit logs; instantly flags variances for district oversight.
+
+### 3. Finalized Solution ("What")
+- Created `CampInspection` entity mapped to `camp_inspections` table with SRID 4326 `InspectorLocation`.
+- Implemented `RecordCampInspectionCommand` and `GetCampInspectionsQuery` in `CharaChhavani.Application.Officer`.
+- Added `OfficerController` endpoints and updated `@chara-chhavani/api-client`.
+
+### 4. Technical Rationale ("Why")
+- Adheres to Section 3 of FSD.md and Rule 29 of `Development-Guidlines.md` regarding data integrity and audit trails.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` passed; API client updated).
+
+---
+
+## [2026-11-22] - Feature / Task: Cross-Device Responsiveness, Devanagari Anti-Clipping, and UI/UX Guardrails
+
+### 1. Challenge Faced
+- **Context**: Mobile app rendering across diverse device form factors (budget 320dp phones, 375-412dp standard phones, phablets, and tablets) under bright outdoor sunlight in rural Maharashtra with Marathi (मराठी) localization.
+- **Symptoms / Friction**: Fixed pixel dimensions (`width: 380`, `height: 500`) cause content truncation and horizontal clipping on narrow budget devices. Furthermore, default line heights clip Marathi vowels and matras (ु, ू, ौ). Low-contrast colors become illegible in outdoor sunlight. Small buttons ($< 40\text{ dp}$) cause missed taps in field environments.
+- **Impact**: Critical failure on low-end farmer smartphones, broken form submissions, and unreadable text outdoors.
+
+### 2. Solutions Evaluated
+- **Option A**: Ad-hoc styling in individual screen files.
+  - *Pros / Cons*: Prone to human error, duplicated magic numbers, inconsistent contrast, and inevitable text overlap.
+- **Option B (Selected)**: Centralized design system package `@chara-chhavani/ui-core` featuring:
+  1. Responsive scaling engine with boundary clamps (`scale`, `verticalScale`, `moderateScale`, `fontScale`).
+  2. WCAG 2.1 AA certified high-contrast color palette ($> 4.5:1$ contrast against white).
+  3. Proportional typography with guaranteed line-heights ($\ge 1.35\times$ font size).
+  4. Overflow-proof layout primitives: `ScreenContainer` (safe area + keyboard avoiding + scrollable `flexGrow: 1`), `ResponsiveGrid` with small-screen auto-stacking, 48dp min touch target buttons, and non-jumping inline input error slots.
+
+### 3. Finalized Solution ("What")
+- Created `@chara-chhavani/ui-core` package with full TypeScript declarations (`dist/`).
+- Documented governance rules in `docs/understanding/ui_ux_guardrails.md`.
+- Implemented responsive views across all 4 mobile apps (`mobile-farmer`, `mobile-vet`, `mobile-officer`, `mobile-chhavani`).
+
+### 4. Technical Rationale ("Why")
+- Guaranteed cross-device compatibility from 320dp budget devices to 10" tablets; eliminates text overlap, font clipping, and button unresponsiveness.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`tsc --noEmit` passed cleanly across all mobile apps and ui-core).

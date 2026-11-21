@@ -134,4 +134,31 @@ export class CharaChhavaniApiClient {
     getCampsSummary: () =>
       this.http.get<M.CampUtilizationSummaryDto[]>('/api/v1/admin/camps-summary'),
   };
+
+  // 9. Officer Field Inspection & Audit
+  public officer = {
+    getDashboard: (params?: { district?: string; taluka?: string }) => {
+      const q = new URLSearchParams(params as any).toString();
+      const path = q ? `/api/v1/officer/dashboard?${q}` : '/api/v1/officer/dashboard';
+      return this.http.get<M.OfficerDashboardSummaryDto>(path);
+    },
+
+    recordInspection: (data: M.RecordCampInspectionRequest) =>
+      this.http.post<number>('/api/v1/officer/inspections', data),
+
+    getCampInspections: (campId: number) =>
+      this.http.get<M.CampInspectionSummaryDto[]>(`/api/v1/officer/camps/${campId}/inspections`),
+  };
+
+  // 10. Unified Authentication (Mobile OTP & Admin Password)
+  public auth = {
+    sendMobileOtp: (mobileNumber: string, role: string = 'Farmer') =>
+      this.http.post<string>('/api/v1/auth/mobile/send-otp', { mobileNumber, role }),
+
+    verifyMobileOtp: (mobileNumber: string, otp: string, role: string = 'Farmer') =>
+      this.http.post<M.MobileAuthResponse>('/api/v1/auth/mobile/verify-otp', { mobileNumber, otp, role }),
+
+    adminLogin: (credentials: M.AdminLoginRequest) =>
+      this.http.post<M.AdminAuthResponse>('/api/v1/auth/admin/login', credentials),
+  };
 }

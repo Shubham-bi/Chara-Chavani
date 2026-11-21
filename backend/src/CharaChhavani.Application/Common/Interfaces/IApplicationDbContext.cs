@@ -16,6 +16,7 @@ public interface IApplicationDbContext
     DbSet<FeedingEntry> FeedingEntries { get; }
     DbSet<StockAdjustment> StockAdjustments { get; }
     DbSet<Expense> Expenses { get; }
+    DbSet<CampInspection> CampInspections { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -23,6 +23,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<FeedingEntry> FeedingEntries => Set<FeedingEntry>();
     public DbSet<StockAdjustment> StockAdjustments => Set<StockAdjustment>();
     public DbSet<Expense> Expenses => Set<Expense>();
+    public DbSet<CampInspection> CampInspections => Set<CampInspection>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -213,6 +214,33 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.Property(e => e.Category).HasMaxLength(100).IsRequired();
             entity.Property(e => e.Amount).HasPrecision(18, 2);
             entity.Property(e => e.Description).HasMaxLength(500);
+
+            entity.HasOne(e => e.Chhavani)
+                .WithMany()
+                .HasForeignKey(e => e.ChhavaniId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Camp Inspection Mapping
+        modelBuilder.Entity<CampInspection>(entity =>
+        {
+            entity.ToTable("camp_inspections");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.ChhavaniId, e.InspectionDateUtc });
+
+            entity.Property(e => e.OfficerId).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.OfficerName).HasMaxLength(150).IsRequired();
+            entity.Property(e => e.OfficerDesignation).HasMaxLength(100);
+            entity.Property(e => e.WaterAvailability).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.FodderStockCondition).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Remarks).HasMaxLength(1000);
+            entity.Property(e => e.Recommendations).HasMaxLength(1000);
+            entity.Property(e => e.InspectionPhotoUrl).HasMaxLength(500);
+
+            // Spatial Inspector Location Point (SRID 4326)
+            entity.Property(e => e.InspectorLocation)
+                .HasColumnType("point")
+                .HasAnnotation("MySql:SpatialReferenceSystemIdentifier", 4326);
 
             entity.HasOne(e => e.Chhavani)
                 .WithMany()

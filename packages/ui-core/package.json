@@ -1,0 +1,14 @@
+{
+  "name": "@chara-chhavani/ui-core",
+  "version": "1.0.0",
+  "description": "Cross-device responsive design system and UI/UX guardrails for Chara Chhavani mobile apps",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

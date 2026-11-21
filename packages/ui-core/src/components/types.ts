@@ -1,0 +1,44 @@
+export type FlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse';
+export type JustifyContent = 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
+export type AlignItems = 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
+export type AlignSelf = 'auto' | 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
+export type FlexWrap = 'wrap' | 'nowrap' | 'wrap-reverse';
+
+export interface BaseLayoutProps {
+  flex?: number;
+  flexGrow?: number;
+  flexShrink?: number;
+  flexDirection?: FlexDirection;
+  justifyContent?: JustifyContent;
+  alignItems?: AlignItems;
+  alignSelf?: AlignSelf;
+  flexWrap?: FlexWrap;
+  padding?: number;
+  paddingHorizontal?: number;
+  paddingVertical?: number;
+  paddingTop?: number;
+  paddingBottom?: number;
+  paddingLeft?: number;
+  paddingRight?: number;
+  margin?: number;
+  marginHorizontal?: number;
+  marginVertical?: number;
+  marginTop?: number;
+  marginBottom?: number;
+  marginLeft?: number;
+  marginRight?: number;
+  backgroundColor?: string;
+  borderRadius?: number;
+  borderWidth?: number;
+  borderTopWidth?: number;
+  borderBottomWidth?: number;
+  borderLeftWidth?: number;
+  borderRightWidth?: number;
+  borderColor?: string;
+  width?: number | string;
+  minWidth?: number | string;
+  maxWidth?: number | string;
+  height?: number | string;
+  minHeight?: number | string;
+  maxHeight?: number | string;
+}

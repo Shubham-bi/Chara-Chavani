@@ -4,6 +4,7 @@
   "private": true,
   "main": "src/index.ts",
   "dependencies": {
-    "@chara-chhavani/api-client": "^1.0.0"
+    "@chara-chhavani/api-client": "^1.0.0",
+    "@chara-chhavani/ui-core": "^1.0.0"
   }
 }

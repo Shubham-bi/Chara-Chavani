@@ -300,6 +300,8 @@ export interface FodderStockItemDto {
   unit: string;
 }
 
+export type FodderStockDto = FodderStockItemDto;
+
 export interface CampStockOverviewDto {
   chhavaniId: number;
   campName: string;
@@ -393,3 +395,121 @@ export interface CampUtilizationSummaryDto {
   utilizationPercentage: number;
   hasGeofence: boolean;
 }
+
+// 11. Officer Models
+export interface OfficerDashboardSummaryDto {
+  totalRegisteredCamps: number;
+  activeCamps: number;
+  totalCampOperators: number;
+  totalAdmittedLivestock: number;
+  totalCapacity: number;
+  capacityUtilizationPercentage: number;
+  inspectionsConductedThisMonth: number;
+  discrepanciesFlaggedThisMonth: number;
+}
+
+export interface CampInspectionSummaryDto {
+  id: number;
+  chhavaniId: number;
+  campName: string;
+  campCode: string;
+  officerId: string;
+  officerName: string;
+  officerDesignation?: string;
+  inspectionDateUtc: string;
+  latitude?: number;
+  longitude?: number;
+  physicalAnimalCount: number;
+  systemAnimalCount: number;
+  discrepancyCount: number;
+  discrepancyDetected: boolean;
+  waterAvailability: string;
+  fodderStockCondition: string;
+  cleanlinessScore: number;
+  remarks?: string;
+  recommendations?: string;
+  inspectionPhotoUrl?: string;
+}
+
+// 12. Authentication Models
+export interface SendOtpRequest {
+  mobileNumber: string;
+  role: 'Farmer' | 'VetDoctor' | 'Officer' | 'CampOperator';
+}
+
+export interface VerifyOtpRequest {
+  mobileNumber: string;
+  otp: string;
+  role: 'Farmer' | 'VetDoctor' | 'Officer' | 'CampOperator';
+}
+
+export interface MobileAuthResponse {
+  token: string;
+  userId: number;
+  role: string;
+  mobileNumber: string;
+  displayName: string;
+  isProfileCompleted: boolean;
+}
+
+export interface AdminLoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface AdminAuthResponse {
+  token: string;
+  username: string;
+  role: string;
+  displayName: string;
+}
+
+export interface RecordCampInspectionRequest {
+  chhavaniId: number;
+  officerId: string;
+  officerName: string;
+  officerDesignation?: string;
+  latitude: number;
+  longitude: number;
+  physicalAnimalCount: number;
+  waterAvailability?: string;
+  fodderStockCondition?: string;
+  cleanlinessScore?: number;
+  remarks?: string;
+  recommendations?: string;
+  inspectionPhotoUrl?: string;
+}
+
+// 12. Authentication Models
+export interface SendOtpRequest {
+  mobileNumber: string;
+  role: 'Farmer' | 'VetDoctor' | 'Officer' | 'CampOperator';
+}
+
+export interface VerifyOtpRequest {
+  mobileNumber: string;
+  otp: string;
+  role: 'Farmer' | 'VetDoctor' | 'Officer' | 'CampOperator';
+}
+
+export interface MobileAuthResponse {
+  token: string;
+  userId: number;
+  role: string;
+  mobileNumber: string;
+  displayName: string;
+  isProfileCompleted: boolean;
+}
+
+export interface AdminLoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface AdminAuthResponse {
+  token: string;
+  username: string;
+  role: string;
+  displayName: string;
+}
+

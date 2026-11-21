@@ -170,6 +170,98 @@ namespace CharaChhavani.Infrastructure.Migrations
                     b.ToTable("animal_admissions", (string)null);
                 });
 
+            modelBuilder.Entity("CharaChhavani.Domain.Entities.CampInspection", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ChhavaniId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("CleanlinessScore")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("DiscrepancyCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("DiscrepancyDetected")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("FodderStockCondition")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("InspectionDateUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("InspectionPhotoUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<Point>("InspectorLocation")
+                        .HasColumnType("point")
+                        .HasAnnotation("MySql:SpatialReferenceSystemIdentifier", 4326);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("OfficerDesignation")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("OfficerId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("OfficerName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<int>("PhysicalAnimalCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Recommendations")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<int>("SystemAnimalCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("WaterAvailability")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChhavaniId", "InspectionDateUtc");
+
+                    b.ToTable("camp_inspections", (string)null);
+                });
+
             modelBuilder.Entity("CharaChhavani.Domain.Entities.Chhavani", b =>
                 {
                     b.Property<long>("Id")
@@ -739,6 +831,17 @@ namespace CharaChhavani.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Animal");
+
+                    b.Navigation("Chhavani");
+                });
+
+            modelBuilder.Entity("CharaChhavani.Domain.Entities.CampInspection", b =>
+                {
+                    b.HasOne("CharaChhavani.Domain.Entities.Chhavani", "Chhavani")
+                        .WithMany()
+                        .HasForeignKey("ChhavaniId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Chhavani");
                 });

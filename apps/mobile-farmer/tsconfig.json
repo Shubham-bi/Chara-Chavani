@@ -7,7 +7,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "paths": {
-      "@chara-chhavani/api-client": ["../../packages/api-client/src/index.ts"]
+      "@chara-chhavani/api-client": ["../../packages/api-client/src/index.ts"],
+      "@chara-chhavani/ui-core": ["../../packages/ui-core/src/index.ts"]
     }
   },
   "include": ["src/**/*"]
