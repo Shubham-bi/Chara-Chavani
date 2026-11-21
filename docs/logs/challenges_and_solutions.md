@@ -163,3 +163,29 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`dotnet test` passed 31/31 tests in 1s).
+
+---
+
+## [2026-11-22] - Feature / Task: MySQL 8.0 EF Core Migration & Offline SQL Script Generation
+
+### 1. Challenge Faced
+- **Context**: Generating reproducible EF Core database migrations and standalone SQL scripts without hard dependencies on an active live database during CI/CD.
+- **Symptoms / Friction**: Using `ServerVersion.AutoDetect` requires an active socket connection to MySQL during migration generation. If the database does not exist yet or in CI pipelines, `dotnet-ef` commands fail.
+- **Impact**: Inability to generate clean database deployment scripts in offline or automated environments.
+
+### 2. Solutions Evaluated
+- **Option A**: Require developers/CI to always stand up and seed a MySQL container before generating migrations.
+  - *Pros / Cons*: Adds unnecessary pipeline overhead and fragility.
+- **Option B (Selected)**: Explicitly pin `new MySqlServerVersion(new Version(8, 0, 42))` in `DependencyInjection.cs`, install `dotnet-ef 8.0.11` via local tool manifest, and generate an idempotent SQL script `backend/scripts/init_schema.sql`.
+  - *Pros / Cons*: 100% deterministic, enables offline schema generation, and produces clean DDL for DBAs.
+
+### 3. Finalized Solution ("What")
+- Pinned MySQL 8.0.42 server version in EF Core options.
+- Generated `InitialCreate` migration and idempotent `backend/scripts/init_schema.sql` covering spatial polygon/point columns, decimal precisions, and indexes.
+
+### 4. Technical Rationale ("Why")
+- Complies with Part 1, Section 3 ("Database changes must be managed through version-controlled migrations") and Part 4 of `Development-Guidlines.md`.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`init_schema.sql` generated with 606 lines of idempotent DDL; full test suite passed).

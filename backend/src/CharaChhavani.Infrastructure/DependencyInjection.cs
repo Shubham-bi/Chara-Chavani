@@ -15,12 +15,14 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection") 
             ?? "Server=localhost;Database=chara_chhavani_db;User=root;Password=password;";
 
+        var serverVersion = new MySqlServerVersion(new Version(8, 0, 42));
+
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             // Pomelo MySQL with NetTopologySuite plugin for GIS
             options.UseMySql(
                 connectionString,
-                ServerVersion.AutoDetect(connectionString),
+                serverVersion,
                 mySqlOptions =>
                 {
                     mySqlOptions.UseNetTopologySuite();
