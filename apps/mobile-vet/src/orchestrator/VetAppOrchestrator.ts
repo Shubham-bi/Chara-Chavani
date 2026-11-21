@@ -1,13 +1,22 @@
 import { apiClient } from '../config';
 import { sessionManager } from '@chara-chhavani/ui-core';
 import { VetVerificationView } from '../views/VetVerificationView';
-import { PendingVerificationAnimalDto, SubmitVerificationRequest } from '@chara-chhavani/api-client';
+import { VetDashboardView } from '../views/VetDashboardView';
+import { VetHistoryView } from '../views/VetHistoryView';
+import {
+  PendingVerificationAnimalDto,
+  SubmitVerificationRequest,
+  VetDashboardDto,
+  VetVerificationResult,
+} from '@chara-chhavani/api-client';
 
-export type VetScreenName = 'Login' | 'PendingQueue' | 'InspectModal';
+export type VetScreenName = 'Login' | 'Dashboard' | 'PendingQueue' | 'InspectModal' | 'History';
 
 export class VetAppOrchestrator {
   private currentScreen: VetScreenName = 'Login';
+  private dashboardData: VetDashboardDto | null = null;
   private pendingAnimals: PendingVerificationAnimalDto[] = [];
+  private historyList: VetVerificationResult[] = [];
   private selectedAnimal: PendingVerificationAnimalDto | null = null;
   private isLoading = false;
   private errorMessage: string | null = null;
@@ -77,6 +86,40 @@ export class VetAppOrchestrator {
       this.isLoading = false;
     }
     return false;
+  }
+
+  public async refreshDashboard(): Promise<VetDashboardDto | null> {
+    const user = sessionManager.getCurrentUser();
+    if (!user) return null;
+
+    this.isLoading = true;
+    try {
+      const res = await apiClient.vet.getDashboard(String(user.userId));
+      if (res.success && res.data) {
+        this.dashboardData = res.data;
+        return res.data;
+      }
+      return null;
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  public async loadHistory(): Promise<VetVerificationResult[]> {
+    const user = sessionManager.getCurrentUser();
+    if (!user) return [];
+
+    this.isLoading = true;
+    try {
+      const res = await apiClient.vet.getHistory(String(user.userId));
+      if (res.success && res.data) {
+        this.historyList = res.data;
+        return res.data;
+      }
+      return [];
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   public navigateTo(screen: VetScreenName): void {

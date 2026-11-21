@@ -2,6 +2,7 @@ import { apiClient } from '../config';
 import { sessionManager } from '@chara-chhavani/ui-core';
 import { OfficerDashboardView } from '../views/OfficerDashboardView';
 import { CampInspectionView } from '../views/CampInspectionView';
+import { CampInspectionFormView } from '../views/CampInspectionFormView';
 import {
   OfficerDashboardSummaryDto,
   ChhavaniDto,

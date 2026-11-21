@@ -2,13 +2,16 @@ import { apiClient } from '../config';
 import { sessionManager, offlineActionQueue } from '@chara-chhavani/ui-core';
 import { FarmerDashboardView } from '../views/FarmerDashboardView';
 import { AnimalRegistrationView } from '../views/AnimalRegistrationView';
+import { FarmerProfileView } from '../views/FarmerProfileView';
+import { MyAnimalsView } from '../views/MyAnimalsView';
 import {
   FarmerDashboardDto,
   AnimalDto,
   RegisterAnimalRequest,
+  FarmerDto,
 } from '@chara-chhavani/api-client';
 
-export type FarmerScreenName = 'Login' | 'Dashboard' | 'RegisterAnimal';
+export type FarmerScreenName = 'Login' | 'Dashboard' | 'RegisterAnimal' | 'Profile' | 'MyAnimals';
 
 export class FarmerAppOrchestrator {
   private currentScreen: FarmerScreenName = 'Login';
@@ -85,6 +88,46 @@ export class FarmerAppOrchestrator {
       this.isLoading = false;
     }
     return null;
+  }
+
+  public async loadMyAnimals(statusFilter?: string): Promise<AnimalDto[]> {
+    const user = sessionManager.getCurrentUser();
+    if (!user) return [];
+
+    this.isLoading = true;
+    try {
+      const res = await apiClient.farmers.getAnimals(user.userId, statusFilter);
+      if (res.success && res.data) {
+        this.animals = res.data;
+        return res.data;
+      }
+      return [];
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  public async saveProfile(profile: Partial<FarmerDto>): Promise<boolean> {
+    const user = sessionManager.getCurrentUser();
+    if (!user) return false;
+
+    this.isLoading = true;
+    try {
+      const res = await apiClient.farmers.updateProfile({
+        farmerId: user.userId,
+        ...profile,
+      });
+      if (res.success && res.data) {
+        await sessionManager.updateProfileCompletion(true);
+        await this.refreshDashboard();
+        this.currentScreen = 'Dashboard';
+        return true;
+      }
+      this.errorMessage = res.message || 'Profile update failed.';
+      return false;
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   public navigateTo(screen: FarmerScreenName): void {
