@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CharaChhavani.Application/CharaChhavani.Application.csproj" />
+    <Project Path="src/CharaChhavani.Domain/CharaChhavani.Domain.csproj" />
+    <Project Path="src/CharaChhavani.Infrastructure/CharaChhavani.Infrastructure.csproj" />
+    <Project Path="src/CharaChhavani.WebApi/CharaChhavani.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CharaChhavani.UnitTests/CharaChhavani.UnitTests.csproj" />
+  </Folder>
+</Solution>

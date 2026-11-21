@@ -1,0 +1,6 @@
+@CharaChhavani.WebApi_HostAddress = http://localhost:5229
+
+GET {{CharaChhavani.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
