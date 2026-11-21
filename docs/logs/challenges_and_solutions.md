@@ -113,3 +113,28 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`dotnet test` passed 20/20 tests in 1s).
+
+---
+
+## [2026-11-22] - Feature / Task: Animal Admission Geofence Enforcement & Concurrency Safety
+
+### 1. Challenge Faced
+- **Context**: Enforcing that animals can only be admitted when physically inside the camp boundaries, while simultaneously updating camp capacity and preventing race conditions.
+- **Symptoms / Friction**: Potential race conditions where two operators admit animals concurrently when remaining capacity is 1, causing overcapacity. Additionally, spoofed or outside GPS coordinates could bypass physical camp presence checks.
+- **Impact**: Financial fraud or over-allocation of government fodder subsidies.
+
+### 2. Solutions Evaluated
+- **Option A**: Client-side only geofence check in React Native mobile app.
+  - *Pros / Cons*: Vulnerable to bypass, modified APKs, or mock GPS locations.
+- **Option B (Selected)**: Strict server-side NetTopologySuite point-in-polygon validation (`chhavani.IsPointInsideGeofence(devicePoint)`) coupled with atomic database updates checking capacity within `AdmitAnimalCommandHandler`.
+
+### 3. Finalized Solution ("What")
+- Evaluated device coordinates against camp's closed polygon geometry on the server.
+- Atomically checked capacity, updated `animal.CurrentStatus = Admitted`, `chhavani.ActiveAnimalCount += 1`, and stored admission photo and coordinates.
+
+### 4. Technical Rationale ("Why")
+- Complies with BRD Rules 2, 3, 4, and Part 3 Section 18 of `Development-Guidlines.md` regarding concurrency and transaction safety.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` passed 25/25 tests in 1s).
