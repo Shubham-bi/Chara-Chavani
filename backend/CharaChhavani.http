@@ -1,0 +1,355 @@
+@baseUrl = http://localhost:5000
+@contentType = application/json
+
+### ============================================================================
+### 1. HEALTH & GEOFENCE DIAGNOSTICS
+### ============================================================================
+
+### 1.1 Service Health Check
+GET {{baseUrl}}/api/v1/health
+Accept: {{contentType}}
+
+### 1.2 Geofence Math Validation (Ray-Casting Algorithm Diagnostic)
+POST {{baseUrl}}/api/v1/health/verify-geofence
+Content-Type: {{contentType}}
+
+{
+  "polygonCoordinates": [
+    { "latitude": 19.4780, "longitude": 75.3880 },
+    { "latitude": 19.4810, "longitude": 75.3880 },
+    { "latitude": 19.4810, "longitude": 75.3910 },
+    { "latitude": 19.4780, "longitude": 75.3910 }
+  ],
+  "pointLatitude": 19.4795,
+  "pointLongitude": 75.3895
+}
+
+### ============================================================================
+### 2. AUTHENTICATION & ROLE ACCESS
+### ============================================================================
+
+### 2.1 Send Mobile OTP (Primary for Farmers, Vet Doctors, Officers, Operators)
+POST {{baseUrl}}/api/v1/auth/mobile/send-otp
+Content-Type: {{contentType}}
+
+{
+  "mobileNumber": "9822012345",
+  "role": "Farmer"
+}
+
+### 2.2 Verify Mobile OTP
+POST {{baseUrl}}/api/v1/auth/mobile/verify-otp
+Content-Type: {{contentType}}
+
+{
+  "mobileNumber": "9822012345",
+  "otp": "123456",
+  "role": "Farmer"
+}
+
+### 2.3 System Administrator Login (Dashboard Username/Password)
+POST {{baseUrl}}/api/v1/auth/admin/login
+Content-Type: {{contentType}}
+
+{
+  "username": "admin",
+  "password": "AdminPassword@123"
+}
+
+### ============================================================================
+### 3. MASTER REFERENCE DATA & SEEDER
+### ============================================================================
+
+### 3.1 Get Maharashtra Drought-Prone Districts
+GET {{baseUrl}}/api/v1/master/districts
+Accept: {{contentType}}
+
+### 3.2 Get Talukas by District
+GET {{baseUrl}}/api/v1/master/talukas?district=Chhatrapati Sambhajinagar
+Accept: {{contentType}}
+
+### 3.3 Get Breeds by Animal Category (Small / Large)
+GET {{baseUrl}}/api/v1/master/breeds?category=Small
+Accept: {{contentType}}
+
+### 3.4 Get Standardized Fodder Types
+GET {{baseUrl}}/api/v1/master/fodder-types
+Accept: {{contentType}}
+
+### 3.5 Get Expense Categories
+GET {{baseUrl}}/api/v1/master/expense-categories
+Accept: {{contentType}}
+
+### 3.6 Seed Database with Sample Camps, Operators, Inventory & Farmers
+POST {{baseUrl}}/api/v1/master/seed
+Content-Type: {{contentType}}
+
+{}
+
+### ============================================================================
+### 4. CHARA CHHAVANI (CAMP) MANAGEMENT
+### ============================================================================
+
+### 4.1 Register New Chara Chhavani
+POST {{baseUrl}}/api/v1/camps
+Content-Type: {{contentType}}
+
+{
+  "campCode": "CHV-MH-AMB-002",
+  "name": "Ambad Taluka Fodder Camp 2",
+  "district": "Jalna",
+  "taluka": "Ambad",
+  "village": "Wadigodri",
+  "latitude": 19.5540,
+  "longitude": 75.8450,
+  "capacity": 750,
+  "operatorName": "Suresh Kale",
+  "operatorMobileNumber": "9822099887",
+  "operatorOrganization": "Kisan Seva Trust",
+  "geofenceCoordinates": [
+    { "latitude": 19.5530, "longitude": 75.8440 },
+    { "latitude": 19.5560, "longitude": 75.8440 },
+    { "latitude": 19.5560, "longitude": 75.8470 },
+    { "latitude": 19.5530, "longitude": 75.8470 }
+  ]
+}
+
+### 4.2 List All Camps with Filters
+GET {{baseUrl}}/api/v1/camps?district=Chhatrapati Sambhajinagar&pageNumber=1&pageSize=10
+Accept: {{contentType}}
+
+### 4.3 Get Camp Details by ID
+GET {{baseUrl}}/api/v1/camps/1
+Accept: {{contentType}}
+
+### 4.4 Validate Point Inside Camp Geofence (Point-in-Polygon Check)
+GET {{baseUrl}}/api/v1/camps/1/validate-point?latitude=19.4795&longitude=75.3892
+Accept: {{contentType}}
+
+### ============================================================================
+### 5. FARMER & ANIMAL REGISTRATION
+### ============================================================================
+
+### 5.1 Register or Update Farmer Profile
+POST {{baseUrl}}/api/v1/farmers/profile
+Content-Type: {{contentType}}
+
+{
+  "fullName": "Balasaheb Tukaram Shinde",
+  "mobileNumber": "9822012345",
+  "aadhaarNumber": "123456789012",
+  "village": "Georai",
+  "taluka": "Paithan",
+  "district": "Chhatrapati Sambhajinagar",
+  "bankAccountNumber": "98765432101",
+  "bankIfscCode": "SBIN0001234"
+}
+
+### 5.2 Get Farmer Dashboard Metrics
+GET {{baseUrl}}/api/v1/farmers/1/dashboard
+Accept: {{contentType}}
+
+### 5.3 Register Animal under Farmer
+POST {{baseUrl}}/api/v1/animals
+Content-Type: {{contentType}}
+
+{
+  "farmerId": 1,
+  "category": "Large",
+  "breed": "Khillari Cow",
+  "tagNumber": "TAG-IND-MH-099",
+  "ageInMonths": 36,
+  "isPregnant": false,
+  "isMilking": true,
+  "dailyMilkYieldLiters": 8.5,
+  "hasCalf": true,
+  "identificationMark": "White star patch on forehead",
+  "frontPhotoUrl": "https://storage.charachhavani.gov.in/animals/photo_front_099.jpg",
+  "sidePhotoUrl": "https://storage.charachhavani.gov.in/animals/photo_side_099.jpg",
+  "tagPhotoUrl": "https://storage.charachhavani.gov.in/animals/photo_tag_099.jpg"
+}
+
+### 5.4 Get Animals Registered by Farmer
+GET {{baseUrl}}/api/v1/farmers/1/animals
+Accept: {{contentType}}
+
+### ============================================================================
+### 6. VETERINARY DOCTOR VERIFICATION
+### ============================================================================
+
+### 6.1 Veterinary Doctor Dashboard
+GET {{baseUrl}}/api/v1/vet/dashboard?doctorId=VET-DOC-001
+Accept: {{contentType}}
+
+### 6.2 Get Pending Animals for Field Verification
+GET {{baseUrl}}/api/v1/vet/pending-animals?district=Chhatrapati Sambhajinagar
+Accept: {{contentType}}
+
+### 6.3 Submit Verification Decision (Approve / Reject)
+POST {{baseUrl}}/api/v1/vet/verify
+Content-Type: {{contentType}}
+
+{
+  "animalId": 1,
+  "doctorId": "VET-DOC-001",
+  "doctorName": "Dr. Sunil Patil",
+  "status": "Approved",
+  "remarks": "Healthy animal verified with valid ear tag at farmer homestead.",
+  "inspectionLatitude": 19.4792,
+  "inspectionLongitude": 75.3888,
+  "inspectionPhotoUrl": "https://storage.charachhavani.gov.in/vet/insp_001.jpg"
+}
+
+### 6.4 Veterinary Verification History
+GET {{baseUrl}}/api/v1/vet/history?doctorId=VET-DOC-001
+Accept: {{contentType}}
+
+### ============================================================================
+### 7. ANIMAL ADMISSION & RELEASE (CAMP OPERATOR)
+### ============================================================================
+
+### 7.1 Search Animals Eligible for Camp Admission
+GET {{baseUrl}}/api/v1/admissions/search?searchTerm=TAG-IND-MH-001
+Accept: {{contentType}}
+
+### 7.2 Admit Animal into Camp (Requires Live Geofence Validation)
+POST {{baseUrl}}/api/v1/admissions
+Content-Type: {{contentType}}
+
+{
+  "chhavaniId": 1,
+  "animalId": 1,
+  "operatorId": "OP-MH-PAITHAN-001",
+  "admissionLatitude": 19.4795,
+  "admissionLongitude": 75.3892,
+  "entryPhotographUrl": "https://storage.charachhavani.gov.in/admissions/entry_001.jpg",
+  "remarks": "Admitted in good physical condition."
+}
+
+### 7.3 Get Camp Current Admissions
+GET {{baseUrl}}/api/v1/admissions/camp/1?status=Active
+Accept: {{contentType}}
+
+### 7.4 Release Animal from Camp
+POST {{baseUrl}}/api/v1/admissions/1/release
+Content-Type: {{contentType}}
+
+{
+  "operatorId": "OP-MH-PAITHAN-001",
+  "remarks": "Released back to farmer upon drought mitigation subsidy clearance."
+}
+
+### ============================================================================
+### 8. FODDER INVENTORY & DAILY FEEDING
+### ============================================================================
+
+### 8.1 Record Fodder Purchase Entry (Increment Store Inventory)
+POST {{baseUrl}}/api/v1/fodder/purchases
+Content-Type: {{contentType}}
+
+{
+  "chhavaniId": 1,
+  "supplierName": "Marathwada Agro Feed Suppliers",
+  "fodderType": "Dry Fodder (Kadba)",
+  "quantityQuintals": 50.0,
+  "ratePerQuintal": 1200.0,
+  "invoiceNumber": "INV-2026-FOD-045",
+  "operatorId": "OP-MH-PAITHAN-001"
+}
+
+### 8.2 Get Camp Stock Overview (Store vs InFarm)
+GET {{baseUrl}}/api/v1/fodder/stock/1
+Accept: {{contentType}}
+
+### 8.3 Record Daily Group Feeding (Deduct with Non-Negative Guard)
+POST {{baseUrl}}/api/v1/fodder/feeding
+Content-Type: {{contentType}}
+
+{
+  "chhavaniId": 1,
+  "animalType": "Large",
+  "fodderType": "Dry Fodder (Kadba)",
+  "animalCount": 12,
+  "quantityFedKg": 168.0,
+  "feedingDate": "2026-11-22T08:00:00Z",
+  "operatorId": "OP-MH-PAITHAN-001"
+}
+
+### 8.4 Record Stock Adjustment (Wastage / Audit Correction)
+POST {{baseUrl}}/api/v1/fodder/adjustments
+Content-Type: {{contentType}}
+
+{
+  "chhavaniId": 1,
+  "fodderType": "Dry Fodder (Kadba)",
+  "location": "Store",
+  "adjustmentKg": -25.0,
+  "reason": "Rain water leakage wastage in corner shed",
+  "operatorId": "OP-MH-PAITHAN-001"
+}
+
+### ============================================================================
+### 9. CAMP OPERATIONAL EXPENSES
+### ============================================================================
+
+### 9.1 Record Operational Expense
+POST {{baseUrl}}/api/v1/expenses
+Content-Type: {{contentType}}
+
+{
+  "chhavaniId": 1,
+  "category": "Water Supply (Tanker)",
+  "amount": 4500.0,
+  "voucherNumber": "VCH-2026-WTR-012",
+  "expenseDate": "2026-11-22T10:00:00Z",
+  "paidTo": "Gram Panchayat Paithan Water Tanker",
+  "description": "2 Tankers delivered (10,000 Liters each)",
+  "operatorId": "OP-MH-PAITHAN-001"
+}
+
+### 9.2 Get Camp Operational Expenses Summary
+GET {{baseUrl}}/api/v1/expenses/camp/1
+Accept: {{contentType}}
+
+### ============================================================================
+### 10. GOVERNMENT OFFICER INSPECTION & AUDIT
+### ============================================================================
+
+### 10.1 Officer State Dashboard Summary
+GET {{baseUrl}}/api/v1/officer/dashboard?district=Chhatrapati Sambhajinagar
+Accept: {{contentType}}
+
+### 10.2 Record Field Inspection with GPS Stamping & Headcount Check
+POST {{baseUrl}}/api/v1/officer/inspections
+Content-Type: {{contentType}}
+
+{
+  "chhavaniId": 1,
+  "officerId": "OFF-MH-DIST-001",
+  "officerName": "Vikas Deshmukh",
+  "officerDesignation": "District Animal Husbandry Officer",
+  "inspectionLatitude": 19.4795,
+  "inspectionLongitude": 75.3892,
+  "actualCattleHeadcount": 12,
+  "fodderStockAdequate": true,
+  "waterSupplyAdequate": true,
+  "hygieneCondition": "Good",
+  "generalRemarks": "Spot physical audit completed. Register and physical headcount match.",
+  "inspectionPhotoUrl": "https://storage.charachhavani.gov.in/inspections/audit_001.jpg"
+}
+
+### 10.3 Retrieve Immutable Audit Trail for Camp
+GET {{baseUrl}}/api/v1/officer/camps/1/inspections
+Accept: {{contentType}}
+
+### ============================================================================
+### 11. STATE ADMIN DASHBOARD & ANALYTICS
+### ============================================================================
+
+### 11.1 Master State KPI Dashboard
+GET {{baseUrl}}/api/v1/admin/dashboard
+Accept: {{contentType}}
+
+### 11.2 Camps Utilization & Capacity Summary
+GET {{baseUrl}}/api/v1/admin/camps-summary
+Accept: {{contentType}}

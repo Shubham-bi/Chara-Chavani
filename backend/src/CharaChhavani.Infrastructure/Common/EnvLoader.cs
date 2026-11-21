@@ -81,9 +81,14 @@ public static class EnvLoader
         if (_envVars.TryGetValue(key, out var val))
             return val;
 
-        // Never fallback to Windows OS USERNAME if looking for database USERNAME
+        // Never fallback to Windows OS USERNAME if looking for database USERNAME.
+        // Fallback only to container/server-specific DB_USERNAME or MYSQL_USER variables.
         if (key.Equals("USERNAME", StringComparison.OrdinalIgnoreCase))
-            return null;
+        {
+            return Environment.GetEnvironmentVariable("DB_USERNAME")
+                ?? Environment.GetEnvironmentVariable("DB_USER")
+                ?? Environment.GetEnvironmentVariable("MYSQL_USER");
+        }
 
         return Environment.GetEnvironmentVariable(key);
     }

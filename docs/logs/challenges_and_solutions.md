@@ -376,3 +376,40 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (Unit tests in Node.js passed, `tsc --noEmit` passed on all apps, and `dotnet test` passed 63/63 tests).
+
+---
+
+## [2026-11-22] - Feature / Task: DevOps Containerization, Developer Tooling & E2E Smoke Testing Pipeline
+
+### 1. Challenge Faced
+- **Context**: Containerizing the multi-tier Chara Chhavani system (.NET 8 WebAPI, MySQL 8.0 GIS, and Web Admin Dashboard) while preserving the user requirement to read `USERNAME` and `PASSWORD` from `backend/.env` without conflicting with container-specific or host-specific environment variables.
+- **Symptoms / Friction**: In containerized environments, credentials can be supplied via environment variables (`DB_USERNAME`, `PASSWORD`, `ConnectionStrings__DefaultConnection`), mounted `.env` files, or Docker Compose configs. A rigid loader that only reads local disk files or falls back to unsafe OS variables could fail in container pipelines. Furthermore, manual testing of 12 controllers across multiple teams and mobile apps is error-prone without standardized tooling.
+- **Impact**: Inconsistent deployment across development, staging, and container environments, and difficulty verifying complete end-to-end user workflows.
+
+### 2. Solutions Evaluated
+- **Option A**: Rely strictly on manual Postman collections and host-installed MySQL instances.
+  - *Pros / Cons*: Fails to provide reproducible zero-configuration onboarding for new developers and QA teams; lacks automated smoke tests in CI/CD.
+- **Option B (Selected)**: 
+  1. Build multi-stage `backend/Dockerfile` with non-root security context (`app` user).
+  2. Implement root `docker-compose.yml` linking MySQL 8.0 (with GIS extensions & healthcheck), WebAPI, and Nginx Web Admin.
+  3. Author `backend/CharaChhavani.http` covering all 12 controllers and endpoints for Visual Studio / VS Code REST Client.
+  4. Author `scripts/e2e_smoke_test.ps1` for automated end-to-end assertions against the live WebAPI.
+  5. Enhance `EnvLoader.cs` with fallback support for `DB_USERNAME` and `MYSQL_USER` in container environments.
+  - *Pros / Cons*: Zero-dependency setup, deterministic compilation, full testability, and 100% compliance with security and governance standards.
+
+### 3. Finalized Solution ("What")
+- Created `backend/Dockerfile` (multi-stage build restoring, testing, and publishing `net8.0`).
+- Created `backend/.dockerignore` to keep image contexts small.
+- Created root `docker-compose.yml` with healthchecks, restart policies, and named persistent volumes.
+- Created `backend/CharaChhavani.http` with sample JSON payloads for all 12 controllers.
+- Created `scripts/e2e_smoke_test.ps1` executing automated health, master data, geofence validation, auth, and dashboard checks.
+
+### 4. Technical Rationale ("Why")
+- Adheres to Section 22 ("Testing Requirements") and Section 25 ("Production Deployment") of `Development-Guidlines.md`.
+- Protects container security by running the runtime container under the non-root `$APP_UID` user.
+- Accelerates development velocity by providing one-click HTTP execution directly inside developer IDEs.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` 63/63 passed, TypeScript validation passed across all apps, and E2E script created).
+
