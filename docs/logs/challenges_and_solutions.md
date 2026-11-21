@@ -138,3 +138,28 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`dotnet test` passed 25/25 tests in 1s).
+
+---
+
+## [2026-11-22] - Feature / Task: Dual-Source Stock Isolation & Non-Negative Inventory Invariants
+
+### 1. Challenge Faced
+- **Context**: Tracking two distinct sources of fodder inventory (`Store` vs `In Farm`) while guaranteeing non-negative balances across daily group feedings.
+- **Symptoms / Friction**: Concurrent feedings or stock adjustments could deduct inventory below zero or incorrectly blend farm-contributed fodder with commercially purchased store fodder.
+- **Impact**: Inaccurate government audit records and financial subsidy discrepancies.
+
+### 2. Solutions Evaluated
+- **Option A**: Combine all stock into a single camp total and record source only in purchase logs.
+  - *Pros / Cons*: Violates BRD Rule: *"Both contribute to stock, but the source/location must remain identifiable."*
+- **Option B (Selected)**: Composite unique key `(ChhavaniId, Source, FodderType)` with server-side non-negative invariant validation in `RecordFeedingCommandHandler` and `RecordStockAdjustmentCommandHandler`.
+
+### 3. Finalized Solution ("What")
+- Keyed inventory by camp, source, and fodder type using exact `decimal(18, 2)` precision.
+- Enforced $\text{AvailableQuantity} \ge \text{IssuedQuantity}$ before deducting stock, and mandated a text explanation for all adjustments.
+
+### 4. Technical Rationale ("Why")
+- Complies with BRD Rules 6, 7, 8, 9, and Workflows 3, 4, and 5.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` passed 31/31 tests in 1s).
