@@ -29,3 +29,36 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`dotnet test` passed 5/5 tests in 1s).
+
+---
+
+## [2026-11-22] - Feature / Task: Chhavani Camp Management & Polygon Geofence Invariants
+
+### 1. Challenge Faced
+- **Context**: Converting client-supplied polygon coordinates into GIS `Polygon` geometries.
+- **Symptoms / Friction**: Mobile apps or web map drawing tools often send an array of vertices without closing the ring (i.e. Without repeating the first vertex at the end). NetTopologySuite throws `TopologyException` or fails to construct a `LinearRing` if the first point does not match the last point.
+- **Impact**: API requests from mobile or web apps could randomly fail or crash when saving camp geofence boundaries.
+
+### 2. Solutions Evaluated
+- **Option A**: Require client applications to strictly submit $N+1$ points where point 1 equals point $N+1$.
+  - *Pros / Cons*: Shifts burden to frontends; prone to client-side bugs or mismatch between map libraries.
+- **Option B (Selected)**: Enforce a minimum of 3 unique vertices in `FluentValidation`, and automatically close the linear ring in the backend command handler if the first point does not equal the last point.
+  - *Pros / Cons*: Robust backend safeguard that tolerates both open vertex lists and pre-closed rings without crashing.
+
+### 3. Finalized Solution ("What")
+- Implemented automatic ring closure:
+  ```csharp
+  if (coords.First() != coords.Last()) {
+      coords.Add(coords.First());
+  }
+  var polygon = _geometryFactory.CreatePolygon(coords.ToArray());
+  ```
+- Added coordinate order normalization and spatial SRID 4326 mapping.
+
+### 4. Technical Rationale ("Why")
+- Adheres to Part 1, Section 1, Rule 4 of `Development-Guidlines.md`: *"Never assume that data received from a mobile application is valid."*
+- Ensures reliable spatial point-in-polygon containment checks.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` passed 9/9 tests in 1s).
