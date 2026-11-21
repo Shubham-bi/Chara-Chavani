@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chara Chhavani - State Relief Administration Dashboard</title>
+  <style>
+    :root {
+      --primary: #1B5E20;
+      --secondary: #E65100;
+      --bg: #F8F9FA;
+      --surface: #FFFFFF;
+      --text: #1A202C;
+      --border: #E2E8F0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      background-color: var(--primary);
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 8px;
+    }
+    .table-container {
+      background: var(--surface);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th, td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background-color: #F1F3F5;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>महाराष्ट्र शासन - चारा छावणी राज्यस्तरीय डॅशबोर्ड (State Relief Dashboard)</h2>
+    <div>Admin: <strong>State Relief Commissioner</strong></div>
+  </div>
+  <div class="container" id="root">
+    <div class="grid" id="metrics-grid">
+      <div class="card">
+        <div>एकूण नोंदणीकृत शेतकरी / Total Farmers</div>
+        <div class="metric-value" id="total-farmers">--</div>
+      </div>
+      <div class="card">
+        <div>एकूण मंजूर जनावरे / Total Admitted Cattle</div>
+        <div class="metric-value" id="total-cattle">--</div>
+      </div>
+      <div class="card">
+        <div>सक्रिय चारा छावण्या / Active Camps</div>
+        <div class="metric-value" id="active-camps">--</div>
+      </div>
+      <div class="card">
+        <div>क्षमता वापर / Capacity Utilization</div>
+        <div class="metric-value" id="utilization">--</div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/index.ts"></script>
+</body>
+</html>

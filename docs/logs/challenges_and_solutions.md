@@ -348,3 +348,31 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`dotnet test` passed 63/63 tests; live database seeder executed in MySQL).
+
+---
+
+## [2026-11-22] - Feature / Task: Mobile Screen Orchestrators, Session Persistence & Rule 9.6 Offline Guard
+
+### 1. Challenge Faced
+- **Context**: Ensuring reliable state orchestration, secure authentication token lifecycle, and offline resilience across all 4 React Native mobile applications in intermittent rural connectivity.
+- **Symptoms / Friction**: If animal admission were permitted offline, operators could falsely register cattle without server-side geofence point-in-polygon validation and live camp capacity checks, causing capacity overflow and potential fraud (violating Rule 9.6 of `Development-Guidlines.md`).
+- **Impact**: Risk of fiscal fraud and inconsistent local vs backend camp occupancy state.
+
+### 2. Solutions Evaluated
+- **Option A**: Allow optimistic offline animal admissions with conflict resolution upon sync.
+  - *Pros / Cons*: Violates Rule 9.6 ("Do not perform offline animal admission without explicit backend validation"); allows animals outside geofence to be accepted into camps.
+- **Option B (Selected)**: Implement `OfflineActionQueue` that permits offline drafting of non-state-mutating records (draft animal registration, field notes) while explicitly rejecting offline animal admissions with `ERR_ONLINE_GEOFENCE_REQUIRED`.
+  - *Pros / Cons*: Guarantees 100% compliance with business rules and anti-fraud mandates while preserving user form drafts during connectivity drops.
+
+### 3. Finalized Solution ("What")
+- Created `SessionManager` in `@chara-chhavani/ui-core` for secure token storage, state subscriptions, and clean logout.
+- Created `OfflineActionQueue` with Rule 9.6 enforcement.
+- Built screen orchestrators in `apps/mobile-farmer`, `apps/mobile-vet`, `apps/mobile-officer`, and `apps/mobile-chhavani`.
+- Created interactive `apps/web-admin` application and HTML dashboard container.
+
+### 4. Technical Rationale ("Why")
+- Complies strictly with Rules 9 and 10 of `Development-Guidlines.md` and provides clean, structured application architecture for all field actors.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (Unit tests in Node.js passed, `tsc --noEmit` passed on all apps, and `dotnet test` passed 63/63 tests).

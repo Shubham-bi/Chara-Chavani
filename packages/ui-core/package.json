@@ -4,9 +4,11 @@
   "description": "Cross-device responsive design system and UI/UX guardrails for Chara Chhavani mobile apps",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node test/session-offline-test.mjs"
   },
   "devDependencies": {
     "typescript": "^5.4.5"
