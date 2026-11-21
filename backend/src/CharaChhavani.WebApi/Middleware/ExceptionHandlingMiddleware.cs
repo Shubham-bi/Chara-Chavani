@@ -43,6 +43,12 @@ public class ExceptionHandlingMiddleware
                 errors = valEx.Errors;
                 break;
 
+            case FluentValidation.ValidationException fvEx:
+                statusCode = HttpStatusCode.BadRequest;
+                message = "Validation failed.";
+                errors = fvEx.Errors.Select(e => new ApiError(e.PropertyName, "VALIDATION_ERROR", e.ErrorMessage)).ToList();
+                break;
+
             case NotFoundException notFoundEx:
                 statusCode = HttpStatusCode.NotFound;
                 message = notFoundEx.Message;

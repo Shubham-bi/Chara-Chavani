@@ -46,6 +46,7 @@ public class GeofenceValidationResultDto
     public long ChhavaniId { get; set; }
     public string CampCode { get; set; } = string.Empty;
     public bool IsInsideGeofence { get; set; }
+    public bool IsInside => IsInsideGeofence;
     public double LatitudeEvaluated { get; set; }
     public double LongitudeEvaluated { get; set; }
     public string Message { get; set; } = string.Empty;

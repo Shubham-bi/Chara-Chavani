@@ -49,6 +49,7 @@ public class HealthController : BaseApiController
         var result = new
         {
             IsInsideGeofence = isInside,
+            IsInside = isInside,
             DistanceToBoundaryMeters = polygon.Distance(testPoint) * 111320, // Approximate conversion from degrees to meters
             EvaluatedPoint = new { request.PointLatitude, request.PointLongitude }
         };

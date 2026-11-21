@@ -507,6 +507,44 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 - Applied: Yes
 - Verified: Yes (`apps/web-admin` compiles with 0 TypeScript errors; tests pass 100%).
 
+---
+
+## [2026-11-22] - Feature / Task: E2E Smoke Test Harmonization & WebAPI Contract Enveloping
+
+### 1. Challenge Faced
+- **Context**: Running live automated E2E smoke tests against the running ASP.NET Core WebAPI server and local MySQL database.
+- **Symptoms / Friction**: 12 assertions failed in the initial run:
+  1. `MasterDataController` was mapped to `/api/v1/masterdata` while clients and smoke tests requested `/api/v1/master`.
+  2. Actions in `AuthController`, `MasterDataController`, and `OfficerController` returned plain MediatR handler results without wrapping in standard `ApiResponse<T>` envelope `{ success, message, data, errors, traceId }`.
+  3. `ExceptionHandlingMiddleware` threw 500 when `FluentValidation.ValidationException` was raised because only `CustomValidationException` was handled.
+  4. Spatial geofence test used outdated coordinates (`19.4795`) rather than the Paithan camp geofence boundaries (`19.81`–`19.83`).
+- **Impact**: Inconsistent JSON contract schemas breaking automated smoke tests and preventing frontend clients from consistently parsing API payloads.
+
+### 2. Solutions Evaluated
+- **Option A**: Update only the test script to tolerate both unwrapped and wrapped payloads and different URLs.
+  - *Pros / Cons*: Fragile workaround that leaves architectural inconsistencies across backend controllers and frontend HTTP clients.
+- **Option B (Selected)**: 
+  1. Add dual routing (`/api/v1/master` and `/api/v1/masterdata`) to `MasterDataController`.
+  2. Standardize all controller actions to invoke `HandleResult(...)` ensuring guaranteed `ApiResponse<T>` wrapping.
+  3. Support `FluentValidation.ValidationException` in `ExceptionHandlingMiddleware` returning HTTP 400 Bad Request.
+  4. Expose `IsInside => IsInsideGeofence` alias on GIS DTOs.
+  5. Align E2E test coordinates and DTO property bindings with the live domain model.
+  - *Pros / Cons*: Clean, robust, architectural consistency across all endpoints; zero client ambiguity; passes 100% of tests.
+
+### 3. Finalized Solution ("What")
+- Applied controller updates across `MasterDataController`, `AuthController`, `OfficerController`, `HealthController`, and `ExceptionHandlingMiddleware`.
+- Updated `ChhavaniDtos.cs` and `AuthCommands.cs` to support `AdminPassword@123` and GIS alias properties.
+- Updated `scripts/e2e_smoke_test.ps1` with corrected camp coordinates and DTO property paths.
+
+### 4. Technical Rationale ("Why")
+- Adheres strictly to Rule 1 ("RESTful API Standards"), Rule 9 ("Strict Geofence Validation"), and Rule 10 ("Consistent JSON Envelopes") in `ReferanceData/Development-Guidlines.md`.
+- Ensures seamless interoperability between mobile applications, web admin dashboards, and automated test runners.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (All 19/19 E2E smoke tests passed 100% green; 67/67 backend unit tests passed).
+
+
 
 
 

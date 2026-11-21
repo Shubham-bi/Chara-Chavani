@@ -24,7 +24,7 @@ public class AuthController : BaseApiController
     public async Task<ActionResult<ApiResponse<string>>> SendMobileOtp([FromBody] SendOtpRequest request)
     {
         var result = await _mediator.Send(new SendMobileOtpCommand(request.MobileNumber, request.Role));
-        return Ok(result);
+        return HandleResult(result, "OTP dispatched successfully.");
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public class AuthController : BaseApiController
     public async Task<ActionResult<ApiResponse<MobileAuthResponse>>> VerifyMobileOtp([FromBody] VerifyOtpRequest request)
     {
         var result = await _mediator.Send(new VerifyMobileOtpCommand(request.MobileNumber, request.Otp, request.Role));
-        return Ok(result);
+        return HandleResult(result, "Mobile authentication successful.");
     }
 
     /// <summary>
@@ -44,6 +44,6 @@ public class AuthController : BaseApiController
     public async Task<ActionResult<ApiResponse<AdminAuthResponse>>> AdminLogin([FromBody] AdminLoginRequest request)
     {
         var result = await _mediator.Send(new AdminLoginCommand(request.Username, request.Password));
-        return Ok(result);
+        return HandleResult(result, "Admin authentication successful.");
     }
 }

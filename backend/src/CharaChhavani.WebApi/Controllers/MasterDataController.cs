@@ -8,6 +8,7 @@ using CharaChhavani.Application.MasterData.Queries;
 namespace CharaChhavani.WebApi.Controllers;
 
 [ApiController]
+[Route("api/v1/master")]
 [Route("api/v1/[controller]")]
 public class MasterDataController : BaseApiController
 {
@@ -25,27 +26,40 @@ public class MasterDataController : BaseApiController
     public async Task<ActionResult<ApiResponse<List<DistrictDto>>>> GetDistricts()
     {
         var result = await _mediator.Send(new GetDistrictsQuery());
-        return Ok(result);
+        return HandleResult(result, "Retrieved drought-affected districts successfully.");
     }
 
     /// <summary>
-    /// Retrieve list of talukas for a specific district.
+    /// Retrieve list of talukas for a specific district via route path.
     /// </summary>
     [HttpGet("districts/{district}/talukas")]
-    public async Task<ActionResult<ApiResponse<List<string>>>> GetTalukas([FromRoute] string district)
+    public async Task<ActionResult<ApiResponse<List<string>>>> GetTalukasByPath([FromRoute] string district)
     {
         var result = await _mediator.Send(new GetTalukasQuery(district));
-        return Ok(result);
+        return HandleResult(result, $"Retrieved talukas for {district} successfully.");
     }
 
     /// <summary>
-    /// Retrieve standardized animal breeds recognized in Maharashtra, optionally filtered by animal type.
+    /// Retrieve list of talukas for a specific district via query parameter.
+    /// </summary>
+    [HttpGet("talukas")]
+    public async Task<ActionResult<ApiResponse<List<string>>>> GetTalukasByQuery([FromQuery] string district)
+    {
+        var result = await _mediator.Send(new GetTalukasQuery(district ?? string.Empty));
+        return HandleResult(result, $"Retrieved talukas for {district} successfully.");
+    }
+
+    /// <summary>
+    /// Retrieve standardized animal breeds recognized in Maharashtra, optionally filtered by animal type or category.
     /// </summary>
     [HttpGet("breeds")]
-    public async Task<ActionResult<ApiResponse<List<BreedDto>>>> GetBreeds([FromQuery] string? animalType = null)
+    public async Task<ActionResult<ApiResponse<List<BreedDto>>>> GetBreeds(
+        [FromQuery] string? animalType = null,
+        [FromQuery] string? category = null)
     {
-        var result = await _mediator.Send(new GetBreedsQuery(animalType));
-        return Ok(result);
+        var filter = !string.IsNullOrWhiteSpace(animalType) ? animalType : category;
+        var result = await _mediator.Send(new GetBreedsQuery(filter));
+        return HandleResult(result, "Retrieved animal breeds successfully.");
     }
 
     /// <summary>
@@ -55,7 +69,7 @@ public class MasterDataController : BaseApiController
     public async Task<ActionResult<ApiResponse<List<FodderTypeDto>>>> GetFodderTypes()
     {
         var result = await _mediator.Send(new GetFodderTypesQuery());
-        return Ok(result);
+        return HandleResult(result, "Retrieved standardized fodder types successfully.");
     }
 
     /// <summary>
@@ -65,7 +79,7 @@ public class MasterDataController : BaseApiController
     public async Task<ActionResult<ApiResponse<List<ExpenseCategoryDto>>>> GetExpenseCategories()
     {
         var result = await _mediator.Send(new GetExpenseCategoriesQuery());
-        return Ok(result);
+        return HandleResult(result, "Retrieved operational expense categories successfully.");
     }
 
     /// <summary>
@@ -75,6 +89,6 @@ public class MasterDataController : BaseApiController
     public async Task<ActionResult<ApiResponse<SeedResultDto>>> SeedDatabase()
     {
         var result = await _mediator.Send(new SeedDatabaseCommand());
-        return Ok(result);
+        return HandleResult(result, "Database baseline seed completed successfully.");
     }
 }

@@ -142,8 +142,8 @@ Assert-Result "Camps Listing Retrieval" ($null -ne $camps -and $camps.success -e
 
 if ($camps -ne $null -and $camps.data.Count -gt 0) {
     $campId = $camps.data[0].id
-    # Inside coordinate (Paithan camp center: 19.4795, 75.3892)
-    $pointInside = Invoke-Api -Method "GET" -Path "/api/v1/camps/$campId/validate-point?latitude=19.4795&longitude=75.3892"
+    # Inside coordinate (Paithan camp center: 19.82, 75.33)
+    $pointInside = Invoke-Api -Method "GET" -Path "/api/v1/camps/$campId/validate-point?latitude=19.82&longitude=75.33"
     Assert-Result "Camp Geofence Validation (Point Inside)" ($null -ne $pointInside -and $pointInside.success -eq $true -and $pointInside.data.isInside -eq $true) "Status: $($pointInside.data.message)"
 
     # Outside coordinate (Far away: 18.0000, 74.0000)
@@ -154,12 +154,12 @@ if ($camps -ne $null -and $camps.data.Count -gt 0) {
 # 6. Admin KPI Dashboard Summary
 Write-TestHeader "6. State Executive KPI Dashboard"
 $dashboard = Invoke-Api -Method "GET" -Path "/api/v1/admin/dashboard"
-Assert-Result "Admin Dashboard KPI Metrics" ($null -ne $dashboard -and $dashboard.success -eq $true) "Total Camps: $($dashboard.data.totalCamps), Cattle: $($dashboard.data.totalCattleAdmitted), Fodder: $($dashboard.data.totalFodderAvailableKg) kg"
+Assert-Result "Admin Dashboard KPI Metrics" ($null -ne $dashboard -and $dashboard.success -eq $true) "Total Camps: $($dashboard.data.totalCharaChhavaniCentres), Cattle: $($dashboard.data.totalActiveAdmittedAnimals), Fodder: $($dashboard.data.totalAvailableStockKg) kg"
 
 # 7. Officer Audit Trail
 Write-TestHeader "7. Government Officer Dashboard"
 $officerDash = Invoke-Api -Method "GET" -Path "/api/v1/officer/dashboard"
-Assert-Result "Officer Audit Overview" ($null -ne $officerDash -and $officerDash.success -eq $true) "Camps Monitored: $($officerDash.data.totalCampsCount), Cattle Headcount: $($officerDash.data.totalActiveCattleCount)"
+Assert-Result "Officer Audit Overview" ($null -ne $officerDash -and $officerDash.success -eq $true) "Camps Monitored: $($officerDash.data.totalRegisteredCamps), Cattle Headcount: $($officerDash.data.totalAdmittedLivestock)"
 
 # 8. State Government Audit & Compliance Reporting
 Write-TestHeader "8. State Government Audit & Compliance Reporting"

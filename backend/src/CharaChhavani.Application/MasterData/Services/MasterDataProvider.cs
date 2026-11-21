@@ -41,6 +41,30 @@ public static class MasterDataProvider
             Name = "Ahmednagar",
             MarathiName = "अहिल्यानगर / अहमदनगर",
             Talukas = new() { "Nagar", "Rahuri", "Parner", "Pathardi", "Shevgaon", "Karjat", "Jamkhed", "Sangamner", "Kopargaon", "Shrirampur", "Nevasa", "Akole", "Rahata", "Shrigonda" }
+        },
+        new DistrictDto
+        {
+            Name = "Latur",
+            MarathiName = "लातूर",
+            Talukas = new() { "Latur", "Ausa", "Nilanga", "Udgir", "Renapur", "Chakur", "Shirur Anantpal", "Deoni", "Jalkot", "Ahmedpur" }
+        },
+        new DistrictDto
+        {
+            Name = "Nanded",
+            MarathiName = "नांदेड",
+            Talukas = new() { "Nanded", "Ardhapur", "Mudkhed", "Bhokar", "Loha", "Kandhar", "Mukhed", "Degloor", "Biloli", "Dharmabad", "Umri", "Himayatnagar", "Hadgaon", "Kinwat", "Mahur", "Naigaon" }
+        },
+        new DistrictDto
+        {
+            Name = "Parbhani",
+            MarathiName = "परभणी",
+            Talukas = new() { "Parbhani", "Gangakhed", "Sonpeth", "Pathri", "Manwath", "Palam", "Selu", "Jintur", "Purna" }
+        },
+        new DistrictDto
+        {
+            Name = "Hingoli",
+            MarathiName = "हिंगोली",
+            Talukas = new() { "Hingoli", "Kalamnuri", "Basmath", "Aundha Nagnath", "Sengaon" }
         }
     };
 
@@ -141,6 +165,24 @@ public static class MasterDataProvider
     {
         if (string.IsNullOrWhiteSpace(animalType))
             return _breeds;
+
+        var normalized = animalType.Trim().ToLowerInvariant();
+
+        if (normalized == "small")
+        {
+            return _breeds.Where(b => 
+                b.AnimalType.Equals("Goat", StringComparison.OrdinalIgnoreCase) ||
+                b.AnimalType.Equals("Sheep", StringComparison.OrdinalIgnoreCase) ||
+                b.AnimalType.Equals("Calf", StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        if (normalized == "large")
+        {
+            return _breeds.Where(b => 
+                b.AnimalType.Equals("Cow", StringComparison.OrdinalIgnoreCase) ||
+                b.AnimalType.Equals("Buffalo", StringComparison.OrdinalIgnoreCase) ||
+                b.AnimalType.Equals("Bullock", StringComparison.OrdinalIgnoreCase)).ToList();
+        }
 
         return _breeds.Where(b => b.AnimalType.Equals(animalType, StringComparison.OrdinalIgnoreCase)).ToList();
     }

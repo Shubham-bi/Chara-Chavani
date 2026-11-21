@@ -31,7 +31,7 @@ public class OfficerController : BaseApiController
             District = district,
             Taluka = taluka
         });
-        return Ok(response);
+        return HandleResult(response, "Officer dashboard metrics retrieved successfully.");
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class OfficerController : BaseApiController
     public async Task<ActionResult<ApiResponse<long>>> RecordInspection([FromBody] RecordCampInspectionCommand command)
     {
         var inspectionId = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetCampInspections), new { campId = command.ChhavaniId }, inspectionId);
+        return CreatedAtAction(nameof(GetCampInspections), new { campId = command.ChhavaniId }, ApiResponse<long>.Ok(inspectionId, "Camp inspection recorded successfully."));
     }
 
     /// <summary>
@@ -51,6 +51,6 @@ public class OfficerController : BaseApiController
     public async Task<ActionResult<ApiResponse<List<CampInspectionSummaryDto>>>> GetCampInspections([FromRoute] long campId)
     {
         var response = await _mediator.Send(new GetCampInspectionsQuery(campId));
-        return Ok(response);
+        return HandleResult(response, "Camp inspections retrieved successfully.");
     }
 }
