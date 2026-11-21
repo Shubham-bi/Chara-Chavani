@@ -296,3 +296,55 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`tsc --noEmit` passed cleanly across all mobile apps and ui-core).
+
+---
+
+## [2026-11-22] - Feature / Task: Windows OS Username Clash & Isolated .env Loading
+
+### 1. Challenge Faced
+- **Context**: Loading MySQL database credentials from `backend/.env` where the variable name is `USERNAME`.
+- **Symptoms / Friction**: In Windows environments, `Environment.GetEnvironmentVariable("USERNAME")` returns the local OS user (e.g. `Shubham`), which caused `Access denied for user 'Shubham'@'localhost'` when EF Core connected to MySQL.
+- **Impact**: Database connection failure and inability to run migrations or queries.
+
+### 2. Solutions Evaluated
+- **Option A**: Rename the environment variable in `.env` to `MYSQL_USER`.
+  - *Pros / Cons*: Violates user specification ("USERNAME & PASSWORD store in .env with same name").
+- **Option B (Selected)**: Create an isolated, directory-walking `EnvLoader` that parses `backend/.env`, stores parsed key-value pairs in an internal case-insensitive dictionary, and explicitly prevents falling back to the Windows OS `USERNAME` environment variable when resolving database credentials.
+  - *Pros / Cons*: Fully satisfies the user's naming requirement while guaranteeing deterministic resolution of the MySQL user (`root`).
+
+### 3. Finalized Solution ("What")
+- Implemented `EnvLoader.cs` in `CharaChhavani.Infrastructure.Common` with upwards directory traversal and internal dictionary storage.
+- Updated `DependencyInjection.cs` to resolve `envUser` and `envPass` directly from `EnvLoader`.
+
+### 4. Technical Rationale ("Why")
+- Adheres to 12-factor application guidelines while respecting the exact variable naming requested by the user.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet ef database update` succeeded, and live MySQL integration test passed).
+
+---
+
+## [2026-11-22] - Feature / Task: Master Reference Data Catalogs & Idempotent Database Seeding
+
+### 1. Challenge Faced
+- **Context**: Mobile form dropdowns (districts, talukas, cattle breeds, fodder classifications, expense categories) require standardized reference data to prevent ad-hoc user spelling errors and ensure $1\text{ quintal} = 100\text{ kg}$ normalization.
+- **Symptoms / Friction**: Without master data APIs and an initial seed dataset, newly provisioned local MySQL databases are empty, preventing immediate demonstration and end-to-end testing of mobile admission and feeding workflows.
+- **Impact**: Increased developer friction and potential data inconsistency between mobile apps.
+
+### 2. Solutions Evaluated
+- **Option A**: Hardcode dropdown options separately inside each React Native mobile application.
+  - *Pros / Cons*: High code duplication and violation of Section 24 of `Development-Guidlines.md`.
+- **Option B (Selected)**: Centralized `MasterDataProvider` exposing REST endpoints (`/api/v1/master/...`) and an idempotent `DatabaseSeeder` that seeds a sample active camp (`CHV-MH-PAITHAN-001`), operator, initial fodder stocks, and sample verified livestock into MySQL.
+  - *Pros / Cons*: Single source of truth, compliant with BRD/FSD, and enables zero-setup live testing.
+
+### 3. Finalized Solution ("What")
+- Implemented `MasterDataProvider`, CQRS queries, `DatabaseSeeder`, and `MasterDataController`.
+- Updated `@chara-chhavani/api-client` with typed `master` service methods.
+
+### 4. Technical Rationale ("Why")
+- Adheres to Section 24 ("Master and Transaction Tables") of `Development-Guidlines.md` and provides consistent reference data across all 4 mobile apps and the Web Admin.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` passed 63/63 tests; live database seeder executed in MySQL).

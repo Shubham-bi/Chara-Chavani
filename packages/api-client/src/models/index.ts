@@ -464,6 +464,41 @@ export interface AdminAuthResponse {
   displayName: string;
 }
 
+// 13. Master Reference Data Models
+export interface DistrictDto {
+  name: string;
+  marathiName: string;
+  talukas: string[];
+}
+
+export interface BreedDto {
+  englishName: string;
+  marathiName: string;
+  animalType: string;
+}
+
+export interface FodderTypeDto {
+  code: string;
+  englishName: string;
+  marathiName: string;
+  baseUnit: string;
+  quintalConversionFactor: number;
+}
+
+export interface ExpenseCategoryDto {
+  code: string;
+  englishName: string;
+  marathiName: string;
+}
+
+export interface SeedResultDto {
+  campsCreated: number;
+  farmersCreated: number;
+  animalsCreated: number;
+  operatorsCreated: number;
+  message: string;
+}
+
 export interface RecordCampInspectionRequest {
   chhavaniId: number;
   officerId: string;
@@ -511,5 +546,40 @@ export interface AdminAuthResponse {
   username: string;
   role: string;
   displayName: string;
+}
+
+// 13. Master Reference Data Models
+export interface DistrictDto {
+  name: string;
+  marathiName: string;
+  talukas: string[];
+}
+
+export interface BreedDto {
+  englishName: string;
+  marathiName: string;
+  animalType: string;
+}
+
+export interface FodderTypeDto {
+  code: string;
+  englishName: string;
+  marathiName: string;
+  baseUnit: string;
+  quintalConversionFactor: number;
+}
+
+export interface ExpenseCategoryDto {
+  code: string;
+  englishName: string;
+  marathiName: string;
+}
+
+export interface SeedResultDto {
+  campsCreated: number;
+  farmersCreated: number;
+  animalsCreated: number;
+  operatorsCreated: number;
+  message: string;
 }
 

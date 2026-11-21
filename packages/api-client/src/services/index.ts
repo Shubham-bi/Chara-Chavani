@@ -161,4 +161,27 @@ export class CharaChhavaniApiClient {
     adminLogin: (credentials: M.AdminLoginRequest) =>
       this.http.post<M.AdminAuthResponse>('/api/v1/auth/admin/login', credentials),
   };
+
+  // 11. Master Reference Data & Seeder
+  public master = {
+    getDistricts: () =>
+      this.http.get<M.DistrictDto[]>('/api/v1/master/districts'),
+
+    getTalukas: (district: string) =>
+      this.http.get<string[]>(`/api/v1/master/districts/${encodeURIComponent(district)}/talukas`),
+
+    getBreeds: (animalType?: string) => {
+      const q = animalType ? `?animalType=${encodeURIComponent(animalType)}` : '';
+      return this.http.get<M.BreedDto[]>(`/api/v1/master/breeds${q}`);
+    },
+
+    getFodderTypes: () =>
+      this.http.get<M.FodderTypeDto[]>('/api/v1/master/fodder-types'),
+
+    getExpenseCategories: () =>
+      this.http.get<M.ExpenseCategoryDto[]>('/api/v1/master/expense-categories'),
+
+    seedDatabase: () =>
+      this.http.post<M.SeedResultDto>('/api/v1/master/seed', {}),
+  };
 }
