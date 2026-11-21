@@ -189,3 +189,29 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`init_schema.sql` generated with 606 lines of idempotent DDL; full test suite passed).
+
+---
+
+## [2026-11-22] - Feature / Task: React Native TypeScript Monorepo & Shared API Client
+
+### 1. Challenge Faced
+- **Context**: Integrating 4 React Native mobile applications with a shared TypeScript API client without duplicating model contracts or business endpoints.
+- **Symptoms / Friction**: Modern TypeScript compilers (5.4+) deprecated options like `baseUrl` and legacy `node10` module resolution, which could cause type resolution failures when importing across sibling monorepo packages.
+- **Impact**: Inconsistent types and potential frontend-backend contract drift.
+
+### 2. Solutions Evaluated
+- **Option A**: Duplicate TypeScript DTO files inside each mobile app's `src/models/` folder.
+  - *Pros / Cons*: High maintenance burden and violation of Rule 2 of `Development-Guidlines.md`.
+- **Option B (Selected)**: Centralized `@chara-chhavani/api-client` package configured with `moduleResolution: Bundler`, exported type declarations (`dist/index.d.ts`), and path alias mapping in each app's `tsconfig.json`.
+  - *Pros / Cons*: Guaranteed zero contract drift, seamless compilation, and unified HTTP client.
+
+### 3. Finalized Solution ("What")
+- Built `@chara-chhavani/api-client` with typed services for all 7 domain areas.
+- Scaffolded `apps/mobile-farmer`, `apps/mobile-vet`, `apps/mobile-officer`, and `apps/mobile-chhavani` adhering to Section 4 of `Development-Guidlines.md`.
+
+### 4. Technical Rationale ("Why")
+- Complies with Part 2 of `Development-Guidlines.md` and provides single-source-of-truth type contracts for mobile development.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`tsc --noEmit` passed on all 4 apps and api-client with 0 errors).

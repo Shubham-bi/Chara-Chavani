@@ -1,0 +1,9 @@
+{
+  "name": "@chara-chhavani/mobile-farmer",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "@chara-chhavani/api-client": "^1.0.0"
+  }
+}
