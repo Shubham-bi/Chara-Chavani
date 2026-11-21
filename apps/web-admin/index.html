@@ -97,6 +97,18 @@
         <div class="metric-value" id="utilization">--</div>
       </div>
     </div>
+
+    <!-- Government Audit & Compliance Reports -->
+    <div class="card" style="margin-bottom: 24px;">
+      <h3>शासकीय तपासणी व अहवाल / Government Audit & Compliance Reports</h3>
+      <p style="color: #64748B;">Download verified CSV audit logs for state treasury subsidy disbursement & vigilance checks:</p>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
+        <a href="/api/v1/admin/reports/export?reportType=admissions" class="btn" style="padding: 10px 16px; background: var(--primary); color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">📥 प्रवेश व सोडवणूक अहवाल (Admissions CSV)</a>
+        <a href="/api/v1/admin/reports/export?reportType=fodder" class="btn" style="padding: 10px 16px; background: #2E7D32; color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">📥 चारा साठा व वापर अहवाल (Fodder Reconciliation CSV)</a>
+        <a href="/api/v1/admin/reports/export?reportType=expenses" class="btn" style="padding: 10px 16px; background: #0277BD; color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">📥 छावणी खर्च अहवाल (Expenses Audit CSV)</a>
+        <a href="/api/v1/admin/reports/export?reportType=inspections" class="btn" style="padding: 10px 16px; background: var(--secondary); color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">📥 क्षेत्रीय तपासणी अहवाल (Inspection Trail CSV)</a>
+      </div>
+    </div>
   </div>
   <script type="module" src="/src/index.ts"></script>
 </body>

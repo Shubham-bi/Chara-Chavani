@@ -353,3 +353,33 @@ Accept: {{contentType}}
 ### 11.2 Camps Utilization & Capacity Summary
 GET {{baseUrl}}/api/v1/admin/camps-summary
 Accept: {{contentType}}
+
+### ============================================================================
+### 12. STATE GOVERNMENT AUDIT & COMPLIANCE REPORTS
+### ============================================================================
+
+### 12.1 Camp Animal Admission & Release Audit Report
+GET {{baseUrl}}/api/v1/admin/reports/admissions?district=Chhatrapati Sambhajinagar&pageNumber=1&pageSize=20
+Accept: {{contentType}}
+
+### 12.2 Fodder Inventory Reconciliation Report (Purchased vs Fed vs Wastage vs Stock)
+GET {{baseUrl}}/api/v1/admin/reports/fodder-reconciliation?district=Chhatrapati Sambhajinagar
+Accept: {{contentType}}
+
+### 12.3 Itemized Operational Expenses Audit Report
+GET {{baseUrl}}/api/v1/admin/reports/expenses?category=Water Supply (Tanker)&pageNumber=1&pageSize=20
+Accept: {{contentType}}
+
+### 12.4 Officer Spot Inspection Audit & Headcount Discrepancy Trail
+GET {{baseUrl}}/api/v1/admin/reports/inspections?pageNumber=1&pageSize=20
+Accept: {{contentType}}
+
+### 12.5 Stream RFC 4180 CSV Export (Admissions Audit)
+GET {{baseUrl}}/api/v1/admin/reports/export?reportType=admissions&district=Chhatrapati Sambhajinagar
+
+### 12.6 Stream RFC 4180 CSV Export (Fodder Reconciliation)
+GET {{baseUrl}}/api/v1/admin/reports/export?reportType=fodder
+
+### 12.7 Stream RFC 4180 CSV Export (Expense Audit)
+GET {{baseUrl}}/api/v1/admin/reports/export?reportType=expenses
+

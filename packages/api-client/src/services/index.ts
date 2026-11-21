@@ -184,4 +184,32 @@ export class CharaChhavaniApiClient {
     seedDatabase: () =>
       this.http.post<M.SeedResultDto>('/api/v1/master/seed', {}),
   };
+
+  // 12. State Government Audit & Reporting
+  public reports = {
+    getAdmissions: (params?: { campId?: number; district?: string; taluka?: string; startDate?: string; endDate?: string; status?: string; pageNumber?: number; pageSize?: number }) => {
+      const q = new URLSearchParams(params as any).toString();
+      return this.http.get<M.AdmissionAuditReportItemDto[]>(`/api/v1/admin/reports/admissions?${q}`);
+    },
+
+    getFodderReconciliation: (params?: { campId?: number; district?: string; taluka?: string }) => {
+      const q = new URLSearchParams(params as any).toString();
+      return this.http.get<M.FodderReconciliationReportItemDto[]>(`/api/v1/admin/reports/fodder-reconciliation?${q}`);
+    },
+
+    getExpenses: (params?: { campId?: number; district?: string; taluka?: string; category?: string; startDate?: string; endDate?: string; pageNumber?: number; pageSize?: number }) => {
+      const q = new URLSearchParams(params as any).toString();
+      return this.http.get<M.ExpenseAuditReportItemDto[]>(`/api/v1/admin/reports/expenses?${q}`);
+    },
+
+    getInspections: (params?: { campId?: number; district?: string; taluka?: string; startDate?: string; endDate?: string; pageNumber?: number; pageSize?: number }) => {
+      const q = new URLSearchParams(params as any).toString();
+      return this.http.get<M.InspectionAuditReportItemDto[]>(`/api/v1/admin/reports/inspections?${q}`);
+    },
+
+    getExportUrl: (reportType: 'admissions' | 'fodder' | 'expenses' | 'inspections', params?: { campId?: number; district?: string; taluka?: string; startDate?: string; endDate?: string }) => {
+      const q = new URLSearchParams({ reportType, ...(params as any) }).toString();
+      return `/api/v1/admin/reports/export?${q}`;
+    }
+  };
 }

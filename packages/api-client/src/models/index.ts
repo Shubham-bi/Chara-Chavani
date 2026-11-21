@@ -491,14 +491,6 @@ export interface ExpenseCategoryDto {
   marathiName: string;
 }
 
-export interface SeedResultDto {
-  campsCreated: number;
-  farmersCreated: number;
-  animalsCreated: number;
-  operatorsCreated: number;
-  message: string;
-}
-
 export interface RecordCampInspectionRequest {
   chhavaniId: number;
   officerId: string;
@@ -581,5 +573,84 @@ export interface SeedResultDto {
   animalsCreated: number;
   operatorsCreated: number;
   message: string;
+}
+
+// 14. State Government Audit & Reporting Models
+export interface AdmissionAuditReportItemDto {
+  admissionId: number;
+  admissionCode: string;
+  chhavaniId: number;
+  campName: string;
+  campCode: string;
+  district: string;
+  taluka: string;
+  animalId: number;
+  tagNumber: string;
+  animalCategory: string;
+  breed: string;
+  farmerId: number;
+  farmerName: string;
+  farmerMobileNumber: string;
+  maskedAadhaar: string;
+  admittedAt: string;
+  releasedAt?: string;
+  status: string;
+  activeDaysInCamp: number;
+  releaseRemarks?: string;
+}
+
+export interface FodderReconciliationReportItemDto {
+  chhavaniId: number;
+  campName: string;
+  campCode: string;
+  district: string;
+  taluka: string;
+  fodderType: string;
+  totalPurchasedQuintals: number;
+  totalPurchasedKg: number;
+  totalFedKg: number;
+  totalAdjustedKg: number;
+  availableStoreStockKg: number;
+  availableInFarmStockKg: number;
+  totalAvailableStockKg: number;
+  calculatedBalanceKg: number;
+}
+
+export interface ExpenseAuditReportItemDto {
+  expenseId: number;
+  chhavaniId: number;
+  campName: string;
+  campCode: string;
+  district: string;
+  taluka: string;
+  category: string;
+  amount: number;
+  voucherNumber?: string;
+  expenseDate: string;
+  paidTo?: string;
+  description?: string;
+  operatorId: string;
+}
+
+export interface InspectionAuditReportItemDto {
+  inspectionId: number;
+  chhavaniId: number;
+  campName: string;
+  campCode: string;
+  district: string;
+  taluka: string;
+  officerId: string;
+  officerName: string;
+  officerDesignation: string;
+  inspectionDate: string;
+  actualCattleHeadcount: number;
+  systemReportedCattleCount: number;
+  headcountDiscrepancy: number;
+  fodderStockAdequate: boolean;
+  waterSupplyAdequate: boolean;
+  hygieneCondition: string;
+  generalRemarks?: string;
+  latitude: number;
+  longitude: number;
 }
 

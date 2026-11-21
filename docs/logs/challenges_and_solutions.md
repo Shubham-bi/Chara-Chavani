@@ -413,3 +413,39 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 - Applied: Yes
 - Verified: Yes (`dotnet test` 63/63 passed, TypeScript validation passed across all apps, and E2E script created).
 
+---
+
+## [2026-11-22] - Feature / Task: State Government Audit, Compliance & Reporting Engine
+
+### 1. Challenge Faced
+- **Context**: Designing an audit and reporting engine across complex multi-tier relational data (animal admissions, active days, fodder purchases, daily feeding consumption, stock adjustments, operational expenses, and officer spot inspections) with automated CSV export for state auditors.
+- **Symptoms / Friction**: State auditors import exported CSVs into Microsoft Excel on Windows. Standard UTF-8 CSV exports lack a Byte Order Mark (BOM), causing regional Devanagari script (Marathi talukas, farmer names, and remarks) to appear corrupted with mojibake characters (`à¤ªà¥ˆà¤ à¤£`). Additionally, generating itemized reconciliation across large transactional volumes without server-side pagination and indexed filtering would risk database latency spikes and memory exhaustion.
+- **Impact**: State treasury auditors could reject subsidy reconciliation files due to garbled text, and server performance would degrade during heavy reporting queries.
+
+### 2. Solutions Evaluated
+- **Option A**: Generate plain ASCII/UTF-8 CSV files with in-memory filtering across all entities.
+  - *Pros / Cons*: Fails to preserve Devanagari characters in Excel; causes severe memory spikes on large datasets.
+- **Option B (Selected)**: 
+  1. Author `CsvExportHelper` with explicit UTF-8 BOM (`\uFEFF`) and RFC 4180 escaping (double quotes for embedded commas/quotes).
+  2. Implement dedicated CQRS queries with EF Core `.AsNoTracking()`, server-side pagination, and SQL-level aggregations.
+  3. Mask Aadhaar numbers (`XXXX-XXXX-1234`) to comply with national privacy regulations.
+  4. Stream CSV responses via `File(csvBytes, "text/csv; charset=utf-8", fileName)` directly from WebAPI.
+  5. Add typed reporting methods to `@chara-chhavani/api-client` and download links to `apps/web-admin`.
+  - *Pros / Cons*: 100% compliant with Excel regional rendering, PII privacy regulations, zero memory leaks, and seamless state government audit integration.
+
+### 3. Finalized Solution ("What")
+- Created `backend/src/CharaChhavani.Application/Admin/DTOs/ReportDtos.cs` and `CsvExportHelper.cs`.
+- Implemented 4 reporting queries in `backend/src/CharaChhavani.Application/Admin/Queries/Reports/`.
+- Expanded `AdminController.cs` with `/api/v1/admin/reports/*` endpoints.
+- Updated `@chara-chhavani/api-client` and `apps/web-admin`.
+- Added unit tests in `AuditReportingTests.cs`.
+
+### 4. Technical Rationale ("Why")
+- Complies strictly with Section 5.10 ("Reports Screen") of `ReferanceData/FSD.md` and Rule 10 & Rule 43 of `ReferanceData/Development-Guidlines.md`.
+- Protects Aadhaar PII while delivering mathematical fodder reconciliation ($\text{Purchases} - \text{Fed} \pm \text{Adjustments} = \text{Available}$).
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`dotnet test` passed 67/67 tests; CSV BOM encoding verified).
+
+

@@ -161,6 +161,20 @@ Write-TestHeader "7. Government Officer Dashboard"
 $officerDash = Invoke-Api -Method "GET" -Path "/api/v1/officer/dashboard"
 Assert-Result "Officer Audit Overview" ($null -ne $officerDash -and $officerDash.success -eq $true) "Camps Monitored: $($officerDash.data.totalCampsCount), Cattle Headcount: $($officerDash.data.totalActiveCattleCount)"
 
+# 8. State Government Audit & Compliance Reporting
+Write-TestHeader "8. State Government Audit & Compliance Reporting"
+$admissionsReport = Invoke-Api -Method "GET" -Path "/api/v1/admin/reports/admissions?pageNumber=1&pageSize=10"
+Assert-Result "Admissions Audit Report Generation" ($null -ne $admissionsReport -and $admissionsReport.success -eq $true) "Records returned: $($admissionsReport.data.Count)"
+
+$fodderReport = Invoke-Api -Method "GET" -Path "/api/v1/admin/reports/fodder-reconciliation"
+Assert-Result "Fodder Stock Reconciliation Report" ($null -ne $fodderReport -and $fodderReport.success -eq $true) "Stock balances evaluated: $($fodderReport.data.Count)"
+
+$expensesReport = Invoke-Api -Method "GET" -Path "/api/v1/admin/reports/expenses?pageNumber=1&pageSize=10"
+Assert-Result "Operational Expenses Audit Report" ($null -ne $expensesReport -and $expensesReport.success -eq $true) "Expense records returned: $($expensesReport.data.Count)"
+
+$inspectionsReport = Invoke-Api -Method "GET" -Path "/api/v1/admin/reports/inspections?pageNumber=1&pageSize=10"
+Assert-Result "Officer Inspection Audit Report" ($null -ne $inspectionsReport -and $inspectionsReport.success -eq $true) "Inspection logs returned: $($inspectionsReport.data.Count)"
+
 # Final Summary Report
 Write-Host "`n========================================================" -ForegroundColor Magenta
 Write-Host "  SMOKE TEST EXECUTION SUMMARY" -ForegroundColor Magenta
