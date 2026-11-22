@@ -31,8 +31,8 @@ public class SearchAnimalForAdmissionQueryHandler : IRequestHandler<SearchAnimal
         var animals = await _context.Animals
             .Include(a => a.Farmer)
             .Where(a => !a.IsDeleted && (
-                a.AnimalCode == term || 
-                a.TagNumber == term || 
+                a.AnimalCode == term ||
+                a.TagNumber == term ||
                 (a.Farmer != null && a.Farmer.MobileNumber == term)))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
@@ -120,8 +120,8 @@ public class GetCampAdmissionsQueryHandler : IRequestHandler<GetCampAdmissionsQu
             ChhavaniName = a.Chhavani?.Name ?? "",
             OperatorId = a.OperatorId,
             PhotoUrl = a.AdmissionPhotoUrl,
-            AdmissionLocation = a.AdmissionLocation != null 
-                ? new GeoCoordinateDto(a.AdmissionLocation.Y, a.AdmissionLocation.X) 
+            AdmissionLocation = a.AdmissionLocation != null
+                ? new GeoCoordinateDto(a.AdmissionLocation.Y, a.AdmissionLocation.X)
                 : null,
             IsGeofenceValidated = a.IsGeofenceValidated,
             AdmittedAtUtc = a.AdmittedAtUtc,

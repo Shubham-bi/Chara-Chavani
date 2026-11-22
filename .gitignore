@@ -39,3 +39,6 @@ ios/build/
 
 # Logs
 *.log
+
+# Android Intermediate Builds
+build-android/

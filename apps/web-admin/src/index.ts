@@ -55,7 +55,7 @@ export class AdminWebDashboardApp {
       if (badge) badge.innerText = `${camps.length} Centres Active`;
 
       if (camps.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: #64748B;">नोंदणीकृत छावण्या उपलब्ध नाहीत (No active camps registered)</td></tr>`;
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: #64748B;">नोंदणीकृत छावण्या उपलब्ध नाहीत (No active camps registered)</td></tr>';
         return;
       }
 
@@ -74,14 +74,14 @@ export class AdminWebDashboardApp {
           </td>
           <td>
             ${c.hasGeofence 
-              ? `<span class="badge badge-success">✓ Geofenced</span>` 
-              : `<span class="badge badge-warning">⚠ Pending Geofence</span>`}
+              ? '<span class="badge badge-success">✓ Geofenced</span>' 
+              : '<span class="badge badge-warning">⚠ Pending Geofence</span>'}
           </td>
         </tr>
       `).join('');
     } catch (err) {
       console.warn('⚠️ Unable to fetch camps list:', err);
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: #DC2626;">API Connection Offline (WebAPI: http://localhost:5000)</td></tr>`;
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: #DC2626;">API Connection Offline (WebAPI: http://localhost:5000)</td></tr>';
     }
   }
 
@@ -130,7 +130,7 @@ export class AdminWebDashboardApp {
           `;
           const data: AdmissionAuditReportItemDto[] = await AdminDashboardController.fetchAdmissionReport();
           if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: #64748B;">नोंदी आढळल्या नाहीत (No admission records found).</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color: #64748B;">नोंदी आढळल्या नाहीत (No admission records found).</td></tr>';
             return;
           }
           tbody.innerHTML = data.map(r => `
@@ -163,7 +163,7 @@ export class AdminWebDashboardApp {
           `;
           const data: FodderReconciliationReportItemDto[] = await AdminDashboardController.fetchFodderReconciliation();
           if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: #64748B;">नोंदी आढळल्या नाहीत (No fodder reconciliation records found).</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color: #64748B;">नोंदी आढळल्या नाहीत (No fodder reconciliation records found).</td></tr>';
             return;
           }
           tbody.innerHTML = data.map(r => `
@@ -195,7 +195,7 @@ export class AdminWebDashboardApp {
           `;
           const data: ExpenseAuditReportItemDto[] = await AdminDashboardController.fetchExpenseAudit();
           if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: #64748B;">नोंदी आढळल्या नाहीत (No expense records found).</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: #64748B;">नोंदी आढळल्या नाहीत (No expense records found).</td></tr>';
             return;
           }
           tbody.innerHTML = data.map(r => `
@@ -227,7 +227,7 @@ export class AdminWebDashboardApp {
           `;
           const data: InspectionAuditReportItemDto[] = await AdminDashboardController.fetchInspectionAudit();
           if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: #64748B;">नोंदी आढळल्या नाहीत (No inspection records found).</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color: #64748B;">नोंदी आढळल्या नाहीत (No inspection records found).</td></tr>';
             return;
           }
           tbody.innerHTML = data.map(r => `
@@ -239,13 +239,13 @@ export class AdminWebDashboardApp {
               <td>${r.systemReportedCattleCount}</td>
               <td>
                 ${r.headcountDiscrepancy === 0 
-                  ? `<span class="badge badge-success">0 (Match)</span>` 
+                  ? '<span class="badge badge-success">0 (Match)</span>' 
                   : `<span class="badge badge-warning">${r.headcountDiscrepancy > 0 ? '+' : ''}${r.headcountDiscrepancy}</span>`}
               </td>
               <td>
                 ${r.waterSupplyAdequate && r.fodderStockAdequate 
-                  ? `<span class="badge badge-success">Adequate</span>` 
-                  : `<span class="badge badge-warning">Deficient</span>`}
+                  ? '<span class="badge badge-success">Adequate</span>' 
+                  : '<span class="badge badge-warning">Deficient</span>'}
               </td>
               <td>${r.generalRemarks ?? '-'}</td>
             </tr>
@@ -255,7 +255,7 @@ export class AdminWebDashboardApp {
       }
     } catch (err) {
       console.warn(`⚠️ Error rendering ${reportType} report:`, err);
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: #DC2626;">API Error or Server Offline.</td></tr>`;
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color: #DC2626;">API Error or Server Offline.</td></tr>';
     }
   }
 

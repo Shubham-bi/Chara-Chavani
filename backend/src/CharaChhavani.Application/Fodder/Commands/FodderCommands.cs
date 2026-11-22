@@ -70,8 +70,8 @@ public class RecordFodderPurchaseCommandHandler : IRequestHandler<RecordFodderPu
 
         // Atomically increment Store Stock
         var stock = await _context.FodderStocks
-            .FirstOrDefaultAsync(s => s.ChhavaniId == chhavani.Id && 
-                                      s.Source == StockSource.Store && 
+            .FirstOrDefaultAsync(s => s.ChhavaniId == chhavani.Id &&
+                                      s.Source == StockSource.Store &&
                                       s.FodderType == request.FodderType, cancellationToken);
 
         if (stock == null)
@@ -144,8 +144,8 @@ public class RecordFeedingCommandHandler : IRequestHandler<RecordFeedingCommand,
     public async Task<ApiResponse<FeedingRecordResultDto>> Handle(RecordFeedingCommand request, CancellationToken cancellationToken)
     {
         var stock = await _context.FodderStocks
-            .FirstOrDefaultAsync(s => s.ChhavaniId == request.ChhavaniId && 
-                                      s.Source == request.Source && 
+            .FirstOrDefaultAsync(s => s.ChhavaniId == request.ChhavaniId &&
+                                      s.Source == request.Source &&
                                       s.FodderType == request.FodderType, cancellationToken);
 
         // Strict Non-Negative Stock Invariant
@@ -222,8 +222,8 @@ public class RecordStockAdjustmentCommandHandler : IRequestHandler<RecordStockAd
     public async Task<ApiResponse<StockAdjustmentResultDto>> Handle(RecordStockAdjustmentCommand request, CancellationToken cancellationToken)
     {
         var stock = await _context.FodderStocks
-            .FirstOrDefaultAsync(s => s.ChhavaniId == request.ChhavaniId && 
-                                      s.Source == request.Source && 
+            .FirstOrDefaultAsync(s => s.ChhavaniId == request.ChhavaniId &&
+                                      s.Source == request.Source &&
                                       s.FodderType == request.FodderType, cancellationToken);
 
         if (stock == null)

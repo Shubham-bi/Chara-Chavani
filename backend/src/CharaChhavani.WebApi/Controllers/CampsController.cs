@@ -34,7 +34,7 @@ public class CampsController : BaseApiController
     /// </summary>
     [HttpPut("{id:long}/geofence")]
     public async Task<ActionResult<ApiResponse<ChhavaniDto>>> UpdateGeofence(
-        [FromRoute] long id, 
+        [FromRoute] long id,
         [FromBody] List<GeoCoordinateDto> coordinates)
     {
         var command = new UpdateChhavaniGeofenceCommand

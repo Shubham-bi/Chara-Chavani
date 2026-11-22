@@ -103,7 +103,7 @@ public class GetPendingVerificationsQueryHandler : IRequestHandler<GetPendingVer
 }
 
 // 3. Verification History Query
-public record GetVetVerificationHistoryQuery(string? DoctorId = null, int PageNumber = 1, int PageSize = 50) 
+public record GetVetVerificationHistoryQuery(string? DoctorId = null, int PageNumber = 1, int PageSize = 50)
     : IRequest<ApiResponse<List<VetVerificationResultDto>>>;
 
 public class GetVetVerificationHistoryQueryHandler : IRequestHandler<GetVetVerificationHistoryQuery, ApiResponse<List<VetVerificationResultDto>>>
@@ -138,8 +138,8 @@ public class GetVetVerificationHistoryQueryHandler : IRequestHandler<GetVetVerif
             DoctorId = v.DoctorId,
             Result = v.Result.ToString(),
             Remarks = v.Remarks,
-            InspectionLocation = v.InspectionLocation != null 
-                ? new GeoCoordinateDto(v.InspectionLocation.Y, v.InspectionLocation.X) 
+            InspectionLocation = v.InspectionLocation != null
+                ? new GeoCoordinateDto(v.InspectionLocation.Y, v.InspectionLocation.X)
                 : null,
             VerifiedAtUtc = v.VerifiedAtUtc
         }).ToList();

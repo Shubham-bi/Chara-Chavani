@@ -127,7 +127,7 @@ public class GetChhavanisQueryHandler : IRequestHandler<GetChhavanisQuery, ApiRe
                 MobileNumber = o.MobileNumber,
                 IsActive = o.IsActive
             }).ToList(),
-            GeofenceCoordinates = c.GeofenceBoundary != null 
+            GeofenceCoordinates = c.GeofenceBoundary != null
                 ? c.GeofenceBoundary.Coordinates.Select(coord => new GeoCoordinateDto(coord.Y, coord.X)).ToList()
                 : new List<GeoCoordinateDto>()
         }).ToList();
@@ -137,7 +137,7 @@ public class GetChhavanisQueryHandler : IRequestHandler<GetChhavanisQuery, ApiRe
 }
 
 // 3. Validate Point Query
-public record ValidateCampGeofenceQuery(long ChhavaniId, double Latitude, double Longitude) 
+public record ValidateCampGeofenceQuery(long ChhavaniId, double Latitude, double Longitude)
     : IRequest<ApiResponse<GeofenceValidationResultDto>>;
 
 public class ValidateCampGeofenceQueryHandler : IRequestHandler<ValidateCampGeofenceQuery, ApiResponse<GeofenceValidationResultDto>>
@@ -179,8 +179,8 @@ public class ValidateCampGeofenceQueryHandler : IRequestHandler<ValidateCampGeof
             IsInsideGeofence = isInside,
             LatitudeEvaluated = request.Latitude,
             LongitudeEvaluated = request.Longitude,
-            Message = isInside 
-                ? "Coordinates are within the registered Chara Chhavani geofence." 
+            Message = isInside
+                ? "Coordinates are within the registered Chara Chhavani geofence."
                 : "Coordinates are OUTSIDE the registered Chara Chhavani geofence."
         };
 

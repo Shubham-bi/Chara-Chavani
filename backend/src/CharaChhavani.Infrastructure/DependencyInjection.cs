@@ -20,7 +20,7 @@ public static class DependencyInjection
         var envUser = EnvLoader.Get("USERNAME") ?? "root";
         var envPass = EnvLoader.Get("PASSWORD") ?? "NewPassword@123";
 
-        var baseConnectionString = configuration.GetConnectionString("DefaultConnection") 
+        var baseConnectionString = configuration.GetConnectionString("DefaultConnection")
             ?? "Server=localhost;Port=3306;Database=chara_chhavani_db;CharSet=utf8mb4;";
 
         var builder = new MySqlConnectionStringBuilder(baseConnectionString)

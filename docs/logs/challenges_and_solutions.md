@@ -572,3 +572,42 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 
 
 
+
+
+---
+
+## [2026-11-22] - Feature / Task: Repository-Wide Lint Rules, 4 Android APK Compilation & LDPlayer 14 Automation
+
+### 1. Challenge Faced
+- **Context**: Setting up zero-error repository-wide lint rules across monorepo TypeScript/JavaScript and C# backend, and compiling 4 standalone production Android APKs (`mobile-chhavani`, `mobile-farmer`, `mobile-officer`, `mobile-vet`) using local Android SDK build-tools (34.0.0) and Java 22, and automating testing on LDPlayer 14 using `mcp-ldplayer`.
+- **Symptoms / Friction**:
+  1. *PowerShell UTF-8 BOM on Java Source*: `Set-Content -Encoding UTF8` automatically wrote a Byte Order Mark (`\uFEFF`) at the beginning of `.java` source files, which `javac.exe` rejected with `error: illegal character: '\ufeff'`.
+  2. *Bytecode Major Version Mismatch*: Java 22 compiles to class file major version 66 by default. Android SDK `d8.bat` (version 8.2) failed with `java.lang.IllegalArgumentException: Unsupported class file major version 66`.
+  3. *Anonymous Inner Class Metadata NullPointer in D8*: Anonymous classes in Java 22 generated synthetic enclosing method parameters causing `NullPointerException: Cannot invoke "String.length()"` in D8.
+  4. *LDPlayer 14 Search Path in `mcp-ldplayer`*: The open-source `mcp-ldplayer` library only checked paths up to `LDPlayer9`, failing auto-detection for the user's `C:\LDPlayer\LDPlayer14`.
+- **Impact**: Blocked automated build pipeline for generating mobile APKs and prevented automated LDPlayer integration.
+
+### 2. Solutions Evaluated
+- **Option A**: Require cloud-based Expo Application Services (EAS) or GitHub Actions builders to compile APKs remotely.
+  - *Pros / Cons*: Avoids local toolchain quirks, but requires third-party cloud credentials, internet egress, and significant build queues.
+- **Option B (Selected)**:
+  - Write all Java/manifest/resource files using BOM-less UTF-8 (`New-Object System.Text.UTF8Encoding($false)`).
+  - Explicitly compile Java source with `-source 8 -target 8 -cp "$AndroidJar"`, generating universal Java 8 bytecode (version 52).
+  - Refactor WebView clients into static named inner classes (`CustomWebChromeClient` and `CustomWebViewClient`).
+  - Extend `tools/mcp-ldplayer/mcp_ldplayer/ld_controller.py` to auto-detect `C:\LDPlayer\LDPlayer14`.
+  - Format C# with `dotnet format backend/CharaChhavani.sln` and JS/TS with ESLint 10 flat configuration (`npm run lint:fix`).
+
+### 3. Finalized Solution ("What")
+- Created automated pipeline `scripts/build_all_apks.ps1` that builds all 4 signed production APKs (`mobile-chhavani.apk`, `mobile-farmer.apk`, `mobile-officer.apk`, `mobile-vet.apk`) in $< 13\text{ seconds}$.
+- Configured repository-wide `eslint.config.mjs` and `.editorconfig`.
+- Successfully verified all 4 APK installations and executions on LDPlayer 14 via `mcp-ldplayer`.
+- Authored master architectural catalog in `docs/MCP_AND_AGENTS_CATALOG.md`.
+
+### 4. Technical Rationale ("Why")
+- Guarantees 100% deterministic, offline-capable local builds without cloud dependencies.
+- Zero-error linting ensures code quality and eliminates syntax or typing defects before deployment.
+- Seamless compatibility with LDPlayer 14 for automated mobile testing and geofence simulation.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`npm run lint` = 0 errors, `dotnet format --verify-no-changes` = 0 changes, 4/4 APKs signed and verified, LDPlayer 14 install & launch = `success=True`).

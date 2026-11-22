@@ -89,7 +89,7 @@ public class GetFodderReconciliationReportQueryHandler : IRequestHandler<GetFodd
                 var purchasedKg = campPurchases.Where(p => p.FodderType == fType).Sum(p => p.Quantity);
                 var purchasedQuintals = Math.Round(purchasedKg / 100m, 2);
                 var fedKg = campFeedings.Where(f => f.FodderType == fType).Sum(f => f.QuantityIssued);
-                
+
                 var increaseAdj = campAdjustments.Where(a => a.FodderType == fType && a.AdjustmentType == AdjustmentType.Increase).Sum(a => a.Quantity);
                 var decreaseAdj = campAdjustments.Where(a => a.FodderType == fType && a.AdjustmentType == AdjustmentType.Decrease).Sum(a => a.Quantity);
                 var netAdjustmentKg = increaseAdj - decreaseAdj;

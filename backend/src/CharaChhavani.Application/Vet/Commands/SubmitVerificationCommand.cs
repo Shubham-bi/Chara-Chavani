@@ -101,8 +101,8 @@ public class SubmitVerificationCommandHandler : IRequestHandler<SubmitVerificati
             DoctorId = verification.DoctorId,
             Result = verification.Result.ToString(),
             Remarks = verification.Remarks,
-            InspectionLocation = inspectionPoint != null 
-                ? new GeoCoordinateDto(inspectionPoint.Y, inspectionPoint.X) 
+            InspectionLocation = inspectionPoint != null
+                ? new GeoCoordinateDto(inspectionPoint.Y, inspectionPoint.X)
                 : null,
             VerifiedAtUtc = verification.VerifiedAtUtc
         };

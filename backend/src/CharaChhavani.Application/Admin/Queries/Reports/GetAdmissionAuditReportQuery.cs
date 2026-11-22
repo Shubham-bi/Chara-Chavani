@@ -79,8 +79,8 @@ public class GetAdmissionAuditReportQueryHandler : IRequestHandler<GetAdmissionA
         {
             var farmer = a.Animal?.Farmer;
             var mobile = farmer?.MobileNumber ?? string.Empty;
-            var maskedMobile = mobile.Length >= 4 
-                ? $"XXXX-XX-{mobile[^4..]}" 
+            var maskedMobile = mobile.Length >= 4
+                ? $"XXXX-XX-{mobile[^4..]}"
                 : "XXXX-XXXXXX";
 
             var days = a.ReleasedAtUtc.HasValue

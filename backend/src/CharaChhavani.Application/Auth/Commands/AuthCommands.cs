@@ -176,7 +176,7 @@ public class AdminLoginCommandHandler : IRequestHandler<AdminLoginCommand, Admin
     public Task<AdminAuthResponse> Handle(AdminLoginCommand request, CancellationToken cancellationToken)
     {
         // Standard Admin credentials check
-        bool isValid = (request.Username.Equals("admin", StringComparison.OrdinalIgnoreCase) && 
+        bool isValid = (request.Username.Equals("admin", StringComparison.OrdinalIgnoreCase) &&
                         (request.Password == "Admin@123" || request.Password == "NewPassword@123" || request.Password == "admin123" || request.Password == "AdminPassword@123"));
 
         if (!isValid)

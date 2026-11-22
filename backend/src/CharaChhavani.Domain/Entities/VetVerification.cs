@@ -12,7 +12,7 @@ public class VetVerification : AuditableEntity<long>
     public VerificationStatus Result { get; set; }
     public string? Remarks { get; set; }
     public string? VerificationPhotoUrl { get; set; }
-    
+
     // GPS location captured at farmer location during physical visit (SRID 4326)
     public Point? InspectionLocation { get; set; }
     public DateTime VerifiedAtUtc { get; set; } = DateTime.UtcNow;

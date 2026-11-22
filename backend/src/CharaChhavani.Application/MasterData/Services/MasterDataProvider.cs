@@ -154,7 +154,7 @@ public static class MasterDataProvider
 
     public static List<string> GetTalukas(string districtName)
     {
-        var district = _districts.FirstOrDefault(d => 
+        var district = _districts.FirstOrDefault(d =>
             d.Name.Equals(districtName, StringComparison.OrdinalIgnoreCase) ||
             d.MarathiName.Contains(districtName));
 
@@ -170,7 +170,7 @@ public static class MasterDataProvider
 
         if (normalized == "small")
         {
-            return _breeds.Where(b => 
+            return _breeds.Where(b =>
                 b.AnimalType.Equals("Goat", StringComparison.OrdinalIgnoreCase) ||
                 b.AnimalType.Equals("Sheep", StringComparison.OrdinalIgnoreCase) ||
                 b.AnimalType.Equals("Calf", StringComparison.OrdinalIgnoreCase)).ToList();
@@ -178,7 +178,7 @@ public static class MasterDataProvider
 
         if (normalized == "large")
         {
-            return _breeds.Where(b => 
+            return _breeds.Where(b =>
                 b.AnimalType.Equals("Cow", StringComparison.OrdinalIgnoreCase) ||
                 b.AnimalType.Equals("Buffalo", StringComparison.OrdinalIgnoreCase) ||
                 b.AnimalType.Equals("Bullock", StringComparison.OrdinalIgnoreCase)).ToList();
