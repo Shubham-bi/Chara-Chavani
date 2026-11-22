@@ -37,17 +37,18 @@ var app = builder.Build();
 // Global Exception Handling Middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-// Configure HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Chara Chhavani API v1");
-    });
-}
-
 app.UseCors("AllowAll");
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+// Swagger Documentation UI
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Chara Chhavani API v1");
+    c.RoutePrefix = "swagger";
+});
+
 app.UseAuthorization();
 app.MapControllers();
 

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="mr-IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>चारा छावणी व्यवस्थापन प्रणाली | Chara Chhavani Management System</title>
+  <style>
+    :root {
+      --primary: #1B5E20;
+      --primary-light: #E8F5E9;
+      --primary-dark: #0A3D0E;
+      --secondary: #E65100;
+      --secondary-light: #FFF3E0;
+      --bg: #F8F9FA;
+      --surface: #FFFFFF;
+      --text: #1E293B;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --success: #2E7D32;
+      --warning: #D97706;
+      --danger: #DC2626;
+      --info: #0284C7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .gov-banner {
+      background: #0F172A;
+      color: #94A3B8;
+      padding: 6px 24px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #E65100;
+    }
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 24px 32px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .badge-gov {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      flex-grow: 1;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--secondary); color: white; }
+    .btn-secondary:hover { background: #BF360C; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: #F1F5F9; }
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tag-green { background: #DCFCE7; color: #166534; }
+    .tag-orange { background: #FEF3C7; color: #92400E; }
+    .tag-blue { background: #E0F2FE; color: #075985; }
+    .live-status-bar {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #22C55E;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    }
+    .simulator-container {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .simulator-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .sim-tab-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+    }
+    .sim-tab-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .sim-content {
+      padding: 16px 0;
+    }
+    .console-box {
+      background: #0F172A;
+      color: #38BDF8;
+      font-family: monospace;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-top: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+    }
+  </style>
+</head>
+<body>
+  <div class="gov-banner">
+    <div>🇮🇳 महाराष्ट्र शासन | Government of Maharashtra</div>
+    <div>दुष्काळ निवारण व मदत कार्य कक्ष (Drought Relief & Camp Administration)</div>
+  </div>
+
+  <header class="header">
+    <div class="header-content">
+      <div>
+        <span class="badge-gov">MAHARASHTRA RELIEF & REHABILITATION</span>
+        <h1 style="font-size: 26px; font-weight: 800; margin-bottom: 4px;">चारा छावणी व्यवस्थापन प्रणाली</h1>
+        <div style="font-size: 15px; opacity: 0.95;">Chara Chhavani Management System — State Monitoring, Mobile Apps & Audit Engine</div>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <a href="/admin.html" class="btn btn-secondary">📊 Web Admin Dashboard</a>
+        <a href="/swagger" class="btn btn-primary" target="_blank">📖 Swagger API Docs</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Live Telemetry Status Bar -->
+    <div class="live-status-bar">
+      <div class="status-item">
+        <div class="status-dot"></div>
+        <div>
+          <div style="font-size: 13px; font-weight: 700;">ASP.NET Core WebAPI (.NET 8)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">http://localhost:5000 (Active)</div>
+        </div>
+      </div>
+      <div class="status-item">
+        <div class="status-dot"></div>
+        <div>
+          <div style="font-size: 13px; font-weight: 700;">Local MySQL 8.0 (GIS NetTopologySuite)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">localhost:3306 / chara_chhavani_db</div>
+        </div>
+      </div>
+      <div class="status-item">
+        <div class="status-dot"></div>
+        <div>
+          <div style="font-size: 13px; font-weight: 700;">State Executive Dashboard</div>
+          <div style="font-size: 12px; color: var(--text-muted);">http://localhost:3000 & /admin.html</div>
+        </div>
+      </div>
+      <div>
+        <a href="/api/v1/health" target="_blank" class="btn btn-outline" style="font-size: 12px;">🔍 Health API</a>
+      </div>
+    </div>
+
+    <!-- Quick Links & System Components -->
+    <h2 class="section-title">🏛️ मुख्य विभाग व ॲप्लिकेशन्स (Core Portals & Roles)</h2>
+    <div class="cards-grid">
+      <!-- Admin Dashboard Card -->
+      <div class="card">
+        <div>
+          <div class="card-icon">📊</div>
+          <div class="card-title">राज्यस्तरीय प्रशासकीय डॅशबोर्ड (Web Admin)</div>
+          <div class="card-desc">
+            शासकीय सचिव व जिल्हाधिकाऱ्यांसाठी थेट सनियंत्रण: छावण्यांची क्षमता, दाखल जनावरे, चारा साठा ताळमेळ आणि थेट शासकीय ऑडिट अहवाल.
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="/admin.html" class="btn btn-primary" style="flex: 1;">उघडा (Open Portal)</a>
+          <a href="http://localhost:3000" target="_blank" class="btn btn-outline" title="Dedicated Port 3000">Port 3000</a>
+        </div>
+      </div>
+
+      <!-- Swagger API Explorer Card -->
+      <div class="card">
+        <div>
+          <div class="card-icon">📖</div>
+          <div class="card-title">OpenAPI / Swagger दस्तऐवजीकरण</div>
+          <div class="card-desc">
+            १२ कंट्रोलर्स, ५०+ एंडपॉइंट्स, NetTopologySuite जिओफेन्स व्हॅलिडेशन, शेतकरी नोंदणी, चारा साठा व खर्च हिशेब यांचे इंटरॅक्टिव्ह API एक्सप्लोरर.
+          </div>
+        </div>
+        <a href="/swagger" target="_blank" class="btn btn-secondary">API Explorer उघडा</a>
+      </div>
+
+      <!-- Farmer Mobile App Card -->
+      <div class="card">
+        <div>
+          <div class="card-icon">👨‍🌾</div>
+          <div class="card-title">शेतकरी ॲप (Farmer Mobile App)</div>
+          <div class="card-desc">
+            शेतकरी लॉगिन (OTP), प्रोफाईल, ७/१२ नोंद, जनावरांची छावणी प्रवेशासाठी पूर्व-नोंदणी (टॅग/फोटो) आणि अर्जाची थेट स्थिती.
+          </div>
+        </div>
+        <button class="btn btn-outline" onclick="selectSimulator('farmer')">सिम्युलेटर चालवा (Simulate)</button>
+      </div>
+
+      <!-- Vet Mobile App Card -->
+      <div class="card">
+        <div>
+          <div class="card-icon">🩺</div>
+          <div class="card-title">पशुवैद्यकीय डॉक्टर ॲप (Vet Doctor App)</div>
+          <div class="card-desc">
+            शेतकऱ्यांच्या गोठ्यावर जाऊन प्रत्यक्ष तपासणी, आरोग्य दाखला, लसीकरण स्थिती आणि जिओटॅगिंगसह मंजुरी/नकार अहवाल.
+          </div>
+        </div>
+        <button class="btn btn-outline" onclick="selectSimulator('vet')">सिम्युलेटर चालवा (Simulate)</button>
+      </div>
+
+      <!-- Camp Operator Card -->
+      <div class="card">
+        <div>
+          <div class="card-icon">⛺</div>
+          <div class="card-title">छावणी चालक ॲप (Camp Operator App)</div>
+          <div class="card-desc">
+            कडक जिओफेन्स (Rule 9.6) अंतर्गत जनावरे छावणीत दाखल करणे, सोडवणूक पावती, चारा खरेदी वजन काटा नोंद व दैनंदिन खर्च नोंदणी.
+          </div>
+        </div>
+        <button class="btn btn-outline" onclick="selectSimulator('operator')">सिम्युलेटर चालवा (Simulate)</button>
+      </div>
+
+      <!-- Officer Mobile App Card -->
+      <div class="card">
+        <div>
+          <div class="card-icon">📋</div>
+          <div class="card-title">महसूल तपासणी अधिकारी (Officer App)</div>
+          <div class="card-desc">
+            छावणीत अचानक भेट देऊन प्रत्यक्ष जनावरांची मोजणी, प्रणालीतील संख्येसोबत तफावत तपासणी, पाणी व चारा दर्जा ऑडिट.
+          </div>
+        </div>
+        <button class="btn btn-outline" onclick="selectSimulator('officer')">सिम्युलेटर चालवा (Simulate)</button>
+      </div>
+    </div>
+
+    <!-- Interactive Live Role Simulators -->
+    <h2 class="section-title">🧪 थेट कार्यप्रणाली चाचणी सिम्युलेटर (Interactive Role Simulators)</h2>
+    <div class="simulator-container">
+      <div class="simulator-tabs">
+        <button class="sim-tab-btn active" id="tab-btn-farmer" onclick="switchSimTab('farmer')">👨‍🌾 शेतकरी (Farmer Flow)</button>
+        <button class="sim-tab-btn" id="tab-btn-vet" onclick="switchSimTab('vet')">🩺 डॉक्टर तपासणी (Vet Verification)</button>
+        <button class="sim-tab-btn" id="tab-btn-operator" onclick="switchSimTab('operator')">⛺ छावणी प्रवेश व जिओफेन्स (Admission & Geofence)</button>
+        <button class="sim-tab-btn" id="tab-btn-officer" onclick="switchSimTab('officer')">📋 अधिकारी अचानक तपासणी (Officer Audit)</button>
+      </div>
+
+      <div class="sim-content" id="sim-content-body">
+        <!-- Content will be injected dynamically by JavaScript -->
+      </div>
+
+      <div style="margin-top: 16px;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">लाइव्ह API आउटपुट कन्सोल / Realtime API Response:</div>
+        <pre class="console-box" id="sim-console">// थेट चाचणी करण्यासाठी वरील बटणावर क्लिक करा...</pre>
+      </div>
+    </div>
+
+    <!-- Government Audit Reports & CSV Export Hub -->
+    <h2 class="section-title">📥 शासकीय ऑडिट व CSV अहवाल केंद्र (State Audit Export Hub)</h2>
+    <div class="cards-grid">
+      <div class="card">
+        <div>
+          <div class="card-title">१. प्रवेश व सोडवणूक ऑडिट अहवाल</div>
+          <div class="card-desc">सर्व दाखल जनावरे, मालकाचे नाव, आधार, प्रवेश दिनांक व एकूण दिवस.</div>
+        </div>
+        <a href="/api/v1/admin/reports/export?reportType=admissions" class="btn btn-primary">📥 Admissions CSV डाउनलोड</a>
+      </div>
+      <div class="card">
+        <div>
+          <div class="card-title">२. चारा साठा ताळमेळ अहवाल</div>
+          <div class="card-desc">खरेदी केलेले क्विंटल, जनावरांना वाटप, घट आणि शिल्लक साठा.</div>
+        </div>
+        <a href="/api/v1/admin/reports/export?reportType=fodder" class="btn btn-primary" style="background: var(--success);">📥 Fodder Balance CSV डाउनलोड</a>
+      </div>
+      <div class="card">
+        <div>
+          <div class="card-title">३. दैनंदिन खर्च तपशील अहवाल</div>
+          <div class="card-desc">पाण्याचे टँकर, कामगार, वीज, शेड दुरुस्ती व औषधे खर्च व्हाउचर्स.</div>
+        </div>
+        <a href="/api/v1/admin/reports/export?reportType=expenses" class="btn btn-primary" style="background: #0284C7;">📥 Expenses CSV डाउनलोड</a>
+      </div>
+      <div class="card">
+        <div>
+          <div class="card-title">४. क्षेत्रीय तपासणी अहवाल</div>
+          <div class="card-desc">अधिकारी अचानक तपासणी, जनावरांची मोजणी तफावत व पाण्याचा दर्जा.</div>
+        </div>
+        <a href="/api/v1/admin/reports/export?reportType=inspections" class="btn btn-primary" style="background: var(--secondary);">📥 Inspections CSV डाउनलोड</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>महाराष्ट्र शासन - महसूल, वन, मदत व पुनर्वसन विभाग | Chara Chhavani Management System</p>
+    <p style="margin-top: 4px; opacity: 0.8;">तंत्रज्ञान: ASP.NET Core (.NET 8) • MySQL 8.0 GIS (NetTopologySuite) • React Native Mobile Packages</p>
+  </footer>
+
+  <script>
+    const API_BASE = '';
+
+    function logConsole(title, data) {
+      const el = document.getElementById('sim-console');
+      el.innerText = `[${new Date().toLocaleTimeString()}] ${title}:\n` + JSON.stringify(data, null, 2);
+    }
+
+    function switchSimTab(tab) {
+      document.querySelectorAll('.sim-tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-btn-${tab}`).classList.add('active');
+      renderSimContent(tab);
+    }
+
+    function selectSimulator(tab) {
+      switchSimTab(tab);
+      document.querySelector('.simulator-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderSimContent(tab) {
+      const body = document.getElementById('sim-content-body');
+      if (tab === 'farmer') {
+        body.innerHTML = `
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 280px;">
+              <h4 style="margin-bottom: 8px;">पायरी १: शेतकरी लॉगिन (Mobile OTP)</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">शेतकऱ्याचा मोबाईल क्रमांक टाकून लॉगिन करा:</p>
+              <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <input type="text" id="farmer-mobile" value="9822012345" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; flex: 1;" placeholder="10-digit mobile" />
+                <button class="btn btn-primary" onclick="simFarmerOtp()">OTP मागवा (Send OTP)</button>
+              </div>
+            </div>
+            <div style="flex: 1; min-width: 280px;">
+              <h4 style="margin-bottom: 8px;">पायरी २: जनावरांची यादी (My Animals)</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">शेतकऱ्याची नोंदणीकृत जनावरे तपासा:</p>
+              <button class="btn btn-outline" onclick="simFetchFarmerAnimals()">नोंदणीकृत जनावरे पहा (Fetch Animals)</button>
+            </div>
+          </div>
+        `;
+      } else if (tab === 'vet') {
+        body.innerHTML = `
+          <div>
+            <h4 style="margin-bottom: 8px;">पशुवैद्यकीय डॉक्टर तपासणी रांग (Pending Verifications Queue)</h4>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">शेतकऱ्यांच्या गोठ्यावर तपासणीसाठी प्रलंबित असलेली जनावरे:</p>
+            <button class="btn btn-primary" onclick="simVetPendingQueue()">प्रलंबित जनावरे तपासा (Fetch Queue)</button>
+          </div>
+        `;
+      } else if (tab === 'operator') {
+        body.innerHTML = `
+          <div>
+            <h4 style="margin-bottom: 8px;">छावणी जिओफेन्स पडताळणी (Camp Geofence Point-in-Polygon Check)</h4>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">छावणीच्या आत आणि बाहेर असलेल्या जीपीएस स्थानाची पडताळणी करा:</p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="simTestGeofence(19.82, 75.33, 'Inside')">📍 छावणीच्या आत (19.82, 75.33) तपासा</button>
+              <button class="btn btn-secondary" onclick="simTestGeofence(18.00, 74.00, 'Outside')">📍 छावणीच्या बाहेर (18.00, 74.00) तपासा</button>
+            </div>
+          </div>
+        `;
+      } else if (tab === 'officer') {
+        body.innerHTML = `
+          <div>
+            <h4 style="margin-bottom: 8px;">महसूल व कृषी अधिकारी अचानक तपासणी (Surprise Spot Audit)</h4>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">छावणीतील प्रत्यक्ष जनावरे संख्या व पाण्याच्या साठ्याची पडताळणी:</p>
+            <button class="btn btn-primary" onclick="simOfficerDashboard()">अधिकारी डॅशबोर्ड सारांश (Fetch Officer Dashboard)</button>
+          </div>
+        `;
+      }
+    }
+
+    async function simFarmerOtp() {
+      const mobile = document.getElementById('farmer-mobile').value;
+      try {
+        const res = await fetch('/api/v1/auth/mobile/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mobileNumber: mobile, role: 'Farmer' })
+        });
+        const data = await res.json();
+        logConsole('Mobile OTP Dispatch Response', data);
+      } catch (err) {
+        logConsole('Error', err.message);
+      }
+    }
+
+    async function simFetchFarmerAnimals() {
+      try {
+        const res = await fetch('/api/v1/farmers/1/animals');
+        const data = await res.json();
+        logConsole('Farmer Animals Response', data);
+      } catch (err) {
+        logConsole('Error', err.message);
+      }
+    }
+
+    async function simVetPendingQueue() {
+      try {
+        const res = await fetch('/api/v1/vet/pending-animals');
+        const data = await res.json();
+        logConsole('Vet Pending Queue Response', data);
+      } catch (err) {
+        logConsole('Error', err.message);
+      }
+    }
+
+    async function simTestGeofence(lat, lng, label) {
+      try {
+        const campsRes = await fetch('/api/v1/camps');
+        const camps = await campsRes.json();
+        if (camps.data && camps.data.length > 0) {
+          const campId = camps.data[0].id;
+          const res = await fetch('/api/v1/camps/' + campId + '/validate-point?latitude=' + lat + '&longitude=' + lng);
+          const data = await res.json();
+          logConsole('Geofence Validation Result (' + label + ': ' + lat + ', ' + lng + ')', data);
+        }
+      } catch (err) {
+        logConsole('Error', err.message);
+      }
+    }
+
+    async function simOfficerDashboard() {
+      try {
+        const res = await fetch('/api/v1/officer/dashboard');
+        const data = await res.json();
+        logConsole('Officer Dashboard Response', data);
+      } catch (err) {
+        logConsole('Error', err.message);
+      }
+    }
+
+    // Default initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSimContent('farmer');
+    });
+  </script>
+</body>
+</html>
