@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './common/TestFixtures';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { ApiClientHelper } from './pages/ApiClientHelper';
 

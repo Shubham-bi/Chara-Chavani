@@ -1019,3 +1019,42 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (135/135 tests passed 100% green in headed mode).
+
+---
+
+## [2026-11-22] - Feature / Task: Playwright Persistent Browser Instance & Page Reuse
+
+### 1. Challenge Faced
+- **Context**: Running Playwright automated test suites in headed and headless modes without launching a fresh browser/page for each test ("do not lounch browser foro each test, lounch once and reuse where possible").
+- **Symptoms / Friction**:
+  - By default, Playwright creates a new `BrowserContext` and `Page` for each `test()` declaration.
+  - In headed mode, this caused a Chromium window to open, render, close, and re-open on the desktop for every test case. For suites with 10 to 45 tests, this created distracting desktop window flashing and incurred 400ms - 1200ms of context initialization overhead per test.
+- **Impact**: Slower test execution cycles and jarring visual experience during headed test observation.
+
+### 2. Solutions Evaluated
+- **Option A**: Manual `beforeAll` / `afterAll` state tracking and serial mode configured individually inside every spec file.
+  - *Pros / Cons*: Fragile, adds repetitive boilerplate across 14 spec files, easy to misconfigure.
+- **Option B (Selected)**: Worker-scoped persistent context and page fixtures (`sharedWorkerContext`, `sharedWorkerPage`) in `tests/e2e-web/common/TestFixtures.ts`.
+  - *Pros / Cons*: Clean, centralized, and adheres to Playwright fixture architecture. Overrides default test-scoped `context` and `page` to inject the worker-level page, preserving `workerInfo.project.use` device emulation settings (viewport, user agent). All test suites automatically reuse the single open browser window without touching individual test method signatures.
+
+### 3. Finalized Solution ("What")
+- Extended `TestFixtures.ts` with `ChhavaniWorkerFixtures`:
+  - `sharedWorkerContext`: `[async ({ browser }, use, workerInfo) => { const context = await browser.newContext(workerInfo.project.use); await use(context); await context.close(); }, { scope: 'worker' }]`
+  - `sharedWorkerPage`: `[async ({ sharedWorkerContext }, use) => { const page = await sharedWorkerContext.newPage(); await use(page); await page.close(); }, { scope: 'worker' }]`
+  - Overrode test-scoped `context` and `page` to yield `sharedWorkerContext` and `sharedWorkerPage`.
+- Updated all 6 remaining standalone spec files (`web-admin-dashboard.spec.ts`, `smoke.spec.ts`, `sanity.spec.ts`, `regression.spec.ts`, `e2e-full-workflow.spec.ts`, `ldplayer-integration.spec.ts`) to import `{ test, expect }` from `./common/TestFixtures`.
+- Created alias fixture `tests/e2e-web/fixtures/baseTest.ts`.
+
+### 4. Technical Rationale ("Why")
+- Launching the browser once per worker eliminates window flashing in headed mode.
+- Drastically reduces test execution time (full 45-test suite execution reduced from ~48s down to **19.1s**).
+- Preserves test independence as tests navigate via `page.goto('/')` without window teardown overhead.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes:
+  - Web admin dashboard suite (10 tests): **10/10 passed in 7.3s** in headed mode within 1 browser window.
+  - Smoke + All-Apps + Sanity (10 tests): **10/10 passed in 7.6s** in headed mode within 1 browser window.
+  - Full desktop suite (45 tests): **45/45 passed in 19.1s** (100% green).
+  - TypeScript typecheck: 0 errors across 7 workspace packages.
+  - ESLint & `dotnet format`: 0 errors.

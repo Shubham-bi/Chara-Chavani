@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './common/TestFixtures';
 
 test.describe('Chara Chhavani - State Relief Administration Web Admin Dashboard', () => {
 
