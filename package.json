@@ -19,7 +19,8 @@
     "typecheck:all": "npm run typecheck",
     "test:playwright": "playwright test",
     "test:playwright:headed": "playwright test --headed",
-    "test:playwright:headed:slow": "playwright test --headed --slowmo=300"
+    "test:playwright:headed:slow": "playwright test --headed --slowmo=300",
+    "test:ldplayer:headed": "playwright test tests/e2e-web/ldplayer-integration.spec.ts --project=desktop-chrome --headed"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",
