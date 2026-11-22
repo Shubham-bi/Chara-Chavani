@@ -1206,10 +1206,10 @@ class DashboardApp {
     const container = document.getElementById('csv-export-actions');
     if (!container) return;
     container.innerHTML = `
-      <a href="${API_BASE}/api/v1/admin/reports/export?reportType=admissions" class="btn" style="background: var(--primary); color: white;">📥 Admissions CSV</a>
-      <a href="${API_BASE}/api/v1/admin/reports/export?reportType=fodder" class="btn" style="background: var(--success); color: white;">📥 Fodder Balance CSV</a>
-      <a href="${API_BASE}/api/v1/admin/reports/export?reportType=expenses" class="btn" style="background: #0277BD; color: white;">📥 Expenses CSV</a>
-      <a href="${API_BASE}/api/v1/admin/reports/export?reportType=inspections" class="btn" style="background: var(--secondary); color: white;">📥 Inspection Logs CSV</a>
+      <a id="export-admissions-csv" href="${API_BASE}/api/v1/admin/reports/export?reportType=admissions" class="btn" style="background: var(--primary); color: white;">📥 Admissions CSV</a>
+      <a id="export-fodder-csv" href="${API_BASE}/api/v1/admin/reports/export?reportType=fodder" class="btn" style="background: var(--success); color: white;">📥 Fodder Balance CSV</a>
+      <a id="export-expenses-csv" href="${API_BASE}/api/v1/admin/reports/export?reportType=expenses" class="btn" style="background: #0277BD; color: white;">📥 Expenses CSV</a>
+      <a id="export-inspections-csv" href="${API_BASE}/api/v1/admin/reports/export?reportType=inspections" class="btn" style="background: var(--secondary); color: white;">📥 Inspection Logs CSV</a>
     `;
   }
 

@@ -1,0 +1,50 @@
+[
+  {
+    "scenarioId": "FARMER_VALID_01",
+    "mobileNumber": "9822012345",
+    "farmerName": "Rameshwar B. Shinde",
+    "district": "Chhatrapati Sambhajinagar",
+    "taluka": "Paithan",
+    "village": "Pachod",
+    "aadhaarLast4": "4321",
+    "expectedStatus": "Registered",
+    "expectedDevOtp": "123456",
+    "expectedRole": "Farmer"
+  },
+  {
+    "scenarioId": "FARMER_VALID_02",
+    "mobileNumber": "9822098765",
+    "farmerName": "Suresh G. Patil",
+    "district": "Jalna",
+    "taluka": "Ambad",
+    "village": "Wadigodri",
+    "aadhaarLast4": "8765",
+    "expectedStatus": "Registered",
+    "expectedDevOtp": "123456",
+    "expectedRole": "Farmer"
+  },
+  {
+    "scenarioId": "FARMER_PROVISIONAL_01",
+    "mobileNumber": "9822055555",
+    "farmerName": "Kisanrao B. Chavan",
+    "district": "Beed",
+    "taluka": "Georai",
+    "village": "Umapur",
+    "aadhaarLast4": "9988",
+    "expectedStatus": "Provisional",
+    "expectedDevOtp": "123456",
+    "expectedRole": "Farmer"
+  },
+  {
+    "scenarioId": "FARMER_INVALID_MOBILE_01",
+    "mobileNumber": "12345",
+    "farmerName": "Invalid Number",
+    "district": "Solapur",
+    "taluka": "Madha",
+    "village": "Kurduvadi",
+    "aadhaarLast4": "0000",
+    "expectedStatus": "Rejected",
+    "expectedDevOtp": "",
+    "expectedRole": "None"
+  }
+]

@@ -801,3 +801,51 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`test:playwright` Desktop = 29/29 PASS, `test:playwright` Mobile = 29/29 PASS, `e2e_smoke_test.ps1` = 19/19 PASS, `dotnet test` = 67/67 PASS, `npm run lint:all` = 0 errors, `npm run typecheck` = 0 errors across 7 workspace packages).
+
+
+---
+
+## [2026-11-22] - Feature / Task: Playwright Data-Driven Testing (JSON/Excel) & Common Utilities Architecture
+
+### 1. Challenge Faced
+- **Context**: Upgrading the Playwright E2E automation framework to support Data-Driven Testing (DDT) using externalized datasets in both JSON and Excel (`.xlsx`) formats, alongside a reusable common utilities layer (custom fixtures, domain assertions, environment configuration, reporting).
+- **Symptoms / Friction**:
+  1. *Excel File Ingestion in TypeScript*: TypeScript tests running under Playwright require structured access to multi-sheet binary Excel workbooks without slowing down execution or adding fragile filesystem logic.
+  2. *API Contract Nuances*: Initial data assertions assumed fields like `name` on breed items and `capacity` on live camp DTOs, whereas ASP.NET Core controllers return `englishName` / `marathiName` for master breeds and `totalCapacity` on camp records.
+  3. *DOM Selector Alignment*: Navigation sections in `apps/web-admin/index.html` were named `geographic`, `camps`, `animals`, `veterinary`, `fodder`, `financial`, `reports` rather than generic names, and CSV export action anchors required unique DOM IDs (`#export-admissions-csv`, etc.) for robust locator targeting.
+- **Impact**: Test failures when asserting undefined properties, flakiness on element locators, or redundant test boilerplate across spec files.
+
+### 2. Solutions Evaluated
+- **Option A**: Hardcode all test matrices directly inside test `.spec.ts` files with static arrays.
+  - *Pros / Cons*: Simple to write, but creates severe duplication, violates DDT best practices, and prevents non-developer QA / domain specialists from maintaining test data in standard spreadsheets.
+- **Option B (Selected)**:
+  - Install `xlsx` (SheetJS) and create `DataLoader.ts` providing typed `loadJson<T>()` and `loadExcel<T>()` with in-memory caching.
+  - Create standard `tests/fixtures/data/test_matrix.xlsx` with sheets: `Farmers`, `Camps`, `Geofences`, `Animals`, `KPIThresholds`.
+  - Create `TestFixtures.ts` extending Playwright's base `test` with pre-wired page objects, API clients, and common utilities.
+  - Add explicit DOM IDs to report export buttons in `apps/web-admin/dashboard.js`.
+
+### 3. Finalized Solution ("What")
+- Created Common Utilities:
+  - `tests/e2e-web/common/EnvironmentConfig.ts`
+  - `tests/e2e-web/common/DataLoader.ts`
+  - `tests/e2e-web/common/CommonAssertions.ts`
+  - `tests/e2e-web/common/ReportingHelper.ts`
+  - `tests/e2e-web/common/TestFixtures.ts`
+- Created Datasets:
+  - `tests/fixtures/data/farmers.json`, `camps.json`, `animals.json`, `geofences.json`, `dashboard-metrics.json`
+  - `tests/fixtures/data/test_matrix.xlsx` (Multi-sheet workbook created via `scripts/generate_test_matrix_excel.js`)
+- Implemented 5 Data-Driven Test Suites (15 new test cases, expanding test suite to 44 tests):
+  - `tests/e2e-web/data-driven/data-driven-farmers.spec.ts`
+  - `tests/e2e-web/data-driven/data-driven-camps.spec.ts`
+  - `tests/e2e-web/data-driven/data-driven-geofences.spec.ts`
+  - `tests/e2e-web/data-driven/data-driven-animals-vet.spec.ts`
+  - `tests/e2e-web/data-driven/data-driven-reports-export.spec.ts`
+
+### 4. Technical Rationale ("Why")
+- Complies directly with enterprise SDLC standards and `QA roles.md`.
+- Decouples test data management from test execution logic, allowing QA engineers to add test iterations simply by adding rows to Excel sheets or JSON files.
+- Common fixtures and assertions guarantee DRY test authoring with zero code duplication.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`test:playwright` Desktop = 44/44 PASS, `test:playwright` Mobile = 44/44 PASS, `e2e_smoke_test.ps1` = 19/19 PASS, `dotnet test` = 67/67 PASS, `npm run lint:all` = 0 errors, `npm run typecheck` = 0 errors across 7 workspace packages).

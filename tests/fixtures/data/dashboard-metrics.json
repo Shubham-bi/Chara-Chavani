@@ -1,0 +1,65 @@
+{
+  "statutoryReports": [
+    {
+      "tabId": "tab-admissions",
+      "exportLinkId": "export-admissions-csv",
+      "endpoint": "/api/v1/admin/reports/export?reportType=admissions",
+      "fileName": "admissions_audit_report.csv",
+      "expectedColumns": ["AdmissionId", "CampName", "FarmerName", "TagNumber", "Breed"]
+    },
+    {
+      "tabId": "tab-fodder",
+      "exportLinkId": "export-fodder-csv",
+      "endpoint": "/api/v1/admin/reports/export?reportType=fodder",
+      "fileName": "fodder_stock_reconciliation.csv",
+      "expectedColumns": ["CampName", "FodderType", "AvailableStoreStockKg"]
+    },
+    {
+      "tabId": "tab-expenses",
+      "exportLinkId": "export-expenses-csv",
+      "endpoint": "/api/v1/admin/reports/export?reportType=expenses",
+      "fileName": "operational_expenses_audit.csv",
+      "expectedColumns": ["ExpenseId", "CampName", "Category", "Amount"]
+    },
+    {
+      "tabId": "tab-inspections",
+      "exportLinkId": "export-inspections-csv",
+      "endpoint": "/api/v1/admin/reports/export?reportType=inspections",
+      "fileName": "officer_inspections_log.csv",
+      "expectedColumns": ["InspectionId", "CampName", "OfficerName", "ActualCattleHeadcount"]
+    }
+  ],
+  "kpiThresholds": [
+    {
+      "kpiKey": "total-farmers",
+      "label": "Total Registered Farmers",
+      "minExpected": 0
+    },
+    {
+      "kpiKey": "total-cattle",
+      "label": "Active Admitted Cattle",
+      "minExpected": 0
+    },
+    {
+      "kpiKey": "active-camps",
+      "label": "Active Relief Camps",
+      "minExpected": 1
+    },
+    {
+      "kpiKey": "utilization",
+      "label": "Overall Capacity Utilization",
+      "minExpected": 0,
+      "maxExpected": 100
+    }
+  ],
+  "analyticalSections": [
+    { "id": "overview", "navSelector": "button[data-section='overview']", "viewSelector": "#section-overview" },
+    { "id": "geographic", "navSelector": "button[data-section='geographic']", "viewSelector": "#section-geographic" },
+    { "id": "camps", "navSelector": "button[data-section='camps']", "viewSelector": "#section-camps" },
+    { "id": "animals", "navSelector": "button[data-section='animals']", "viewSelector": "#section-animals" },
+    { "id": "veterinary", "navSelector": "button[data-section='veterinary']", "viewSelector": "#section-veterinary" },
+    { "id": "fodder", "navSelector": "button[data-section='fodder']", "viewSelector": "#section-fodder" },
+    { "id": "financial", "navSelector": "button[data-section='financial']", "viewSelector": "#section-financial" },
+    { "id": "reports", "navSelector": "button[data-section='reports']", "viewSelector": "#section-reports" }
+  ]
+}

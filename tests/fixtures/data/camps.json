@@ -1,0 +1,65 @@
+[
+  {
+    "campId": 3,
+    "campCode": "CHV-MH-PAITHAN-001",
+    "name": "Paithan Taluka Shasan-Manya Chara Chhavani",
+    "district": "Chhatrapati Sambhajinagar",
+    "taluka": "Paithan",
+    "village": "Pachod",
+    "operatorName": "Rameshwar B. Shinde",
+    "operatorMobile": "9822114455",
+    "capacity": 500,
+    "status": "Active",
+    "expectedPerimeterKm": 8.8,
+    "expectedAreaHectares": 462,
+    "verticesCount": 4,
+    "polygonCoordinates": [
+      [19.81, 75.32],
+      [19.81, 75.34],
+      [19.83, 75.34],
+      [19.83, 75.32]
+    ]
+  },
+  {
+    "campId": 101,
+    "campCode": "CHV-MH-JALNA-001",
+    "name": "Ambad Taluka Fodder Camp",
+    "district": "Jalna",
+    "taluka": "Ambad",
+    "village": "Wadigodri",
+    "operatorName": "Ambad Sahakari Sakhar Karkhana",
+    "operatorMobile": "9822334411",
+    "capacity": 1200,
+    "status": "Active",
+    "expectedPerimeterKm": 12.4,
+    "expectedAreaHectares": 850,
+    "verticesCount": 4,
+    "polygonCoordinates": [
+      [19.61, 75.78],
+      [19.61, 75.82],
+      [19.64, 75.82],
+      [19.64, 75.78]
+    ]
+  },
+  {
+    "campId": 102,
+    "campCode": "CHV-MH-BEED-001",
+    "name": "Georai Drought Relief Camp",
+    "district": "Beed",
+    "taluka": "Georai",
+    "village": "Umapur",
+    "operatorName": "Georai Agricultural Trust",
+    "operatorMobile": "9822445522",
+    "capacity": 1500,
+    "status": "Active",
+    "expectedPerimeterKm": 14.1,
+    "expectedAreaHectares": 980,
+    "verticesCount": 4,
+    "polygonCoordinates": [
+      [19.25, 75.72],
+      [19.25, 75.76],
+      [19.28, 75.76],
+      [19.28, 75.72]
+    ]
+  }
+]

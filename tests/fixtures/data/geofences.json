@@ -1,0 +1,52 @@
+[
+  {
+    "testCaseId": "GEO_INSIDE_CENTROID",
+    "campId": 3,
+    "campCode": "CHV-MH-PAITHAN-001",
+    "latitude": 19.8200,
+    "longitude": 75.3300,
+    "expectedInside": true,
+    "locationType": "Centroid",
+    "description": "Center of Paithan camp geofence"
+  },
+  {
+    "testCaseId": "GEO_INSIDE_EAST",
+    "campId": 3,
+    "campCode": "CHV-MH-PAITHAN-001",
+    "latitude": 19.8250,
+    "longitude": 75.3350,
+    "expectedInside": true,
+    "locationType": "Interior Near East Boundary",
+    "description": "Valid interior coordinate near eastern boundary"
+  },
+  {
+    "testCaseId": "GEO_INSIDE_GATE",
+    "campId": 3,
+    "campCode": "CHV-MH-PAITHAN-001",
+    "latitude": 19.8150,
+    "longitude": 75.3250,
+    "expectedInside": true,
+    "locationType": "Gate Entrance Vicinity",
+    "description": "Official camp gate admission point"
+  },
+  {
+    "testCaseId": "GEO_OUTSIDE_TALUKA",
+    "campId": 3,
+    "campCode": "CHV-MH-PAITHAN-001",
+    "latitude": 19.7500,
+    "longitude": 75.2500,
+    "expectedInside": false,
+    "locationType": "Outside Camp in Paithan Taluka",
+    "description": "Farmer village location outside camp perimeter"
+  },
+  {
+    "testCaseId": "GEO_OUTSIDE_MUMBAI",
+    "campId": 3,
+    "campCode": "CHV-MH-PAITHAN-001",
+    "latitude": 18.9220,
+    "longitude": 72.8347,
+    "expectedInside": false,
+    "locationType": "Distant Location (Mumbai)",
+    "description": "Completely outside drought district boundary"
+  }
+]

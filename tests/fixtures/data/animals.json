@@ -1,0 +1,50 @@
+[
+  {
+    "scenarioId": "ANIMAL_LARGE_01",
+    "tagNumber": "MH-TAG-1001",
+    "category": "Large Cattle",
+    "breed": "Khillari Cow",
+    "ageMonths": 36,
+    "gender": "Female",
+    "farmerMobile": "9822012345",
+    "expectedDailyFodderKg": 15.0,
+    "vetApprovalRequired": true,
+    "expectedStatus": "Verified"
+  },
+  {
+    "scenarioId": "ANIMAL_LARGE_02",
+    "tagNumber": "MH-TAG-1002",
+    "category": "Large Cattle",
+    "breed": "Murrah Buffalo",
+    "ageMonths": 48,
+    "gender": "Female",
+    "farmerMobile": "9822012345",
+    "expectedDailyFodderKg": 18.0,
+    "vetApprovalRequired": true,
+    "expectedStatus": "Verified"
+  },
+  {
+    "scenarioId": "ANIMAL_SMALL_01",
+    "tagNumber": "MH-TAG-2001",
+    "category": "Small Cattle",
+    "breed": "Osmanabadi Goat",
+    "ageMonths": 18,
+    "gender": "Female",
+    "farmerMobile": "9822098765",
+    "expectedDailyFodderKg": 3.5,
+    "vetApprovalRequired": true,
+    "expectedStatus": "Verified"
+  },
+  {
+    "scenarioId": "ANIMAL_SMALL_02",
+    "tagNumber": "MH-TAG-2002",
+    "category": "Small Cattle",
+    "breed": "Deccani Sheep",
+    "ageMonths": 24,
+    "gender": "Male",
+    "farmerMobile": "9822098765",
+    "expectedDailyFodderKg": 3.0,
+    "vetApprovalRequired": true,
+    "expectedStatus": "Verified"
+  }
+]
