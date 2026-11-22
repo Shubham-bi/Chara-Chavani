@@ -467,10 +467,163 @@
     .analytics-section.active {
       display: block;
     }
+
+    /* Multi-App Top Launcher Bar */
+    .app-launcher-bar {
+      background: #101820;
+      color: white;
+      padding: 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-bottom: 2px solid var(--primary);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .app-launcher-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+    .app-switcher-tabs {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .app-tab-btn {
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      color: #E2E8F0;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .app-tab-btn:hover {
+      background: rgba(255,255,255,0.2);
+      color: #FFFFFF;
+    }
+    .app-tab-btn.active {
+      background: var(--primary);
+      border-color: #4CAF50;
+      color: #FFFFFF;
+      box-shadow: 0 0 8px rgba(76,175,80,0.5);
+    }
+    .app-launcher-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Smartphone Device Simulation Frame */
+    .smartphone-bezel {
+      max-width: 412px;
+      margin: 20px auto;
+      background: #FFFFFF;
+      border: 12px solid #1E293B;
+      border-radius: 36px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: max-width 0.3s;
+    }
+    .smartphone-bezel.full-width {
+      max-width: 960px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .mobile-header {
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .phone-status-bar {
+      background: #0D3810;
+      color: #FFFFFF;
+      padding: 6px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .phone-screen {
+      padding: 16px;
+      background: #F8F9FA;
+      min-height: 580px;
+      max-height: 720px;
+      overflow-y: auto;
+    }
+    .action-card {
+      background: #FFFFFF;
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 14px;
+    }
+    .action-card h4 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .quad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      max-width: 1440px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
   </style>
 </head>
 <body>
-  <!-- Header -->
+  <!-- Multi-App Top Launcher Bar -->
+  <div class="app-launcher-bar" id="app-launcher-bar">
+    <div class="app-launcher-brand">
+      <span style="font-size: 18px;">🛰️</span>
+      <strong>Chara Chhavani Platform</strong>
+      <span class="badge" style="background: rgba(255,255,255,0.2); color: #fff; font-size: 10px;">Maharashtra Drought Relief</span>
+    </div>
+    <div class="app-switcher-tabs" id="app-switcher-tabs">
+      <button class="app-tab-btn active" id="app-tab-admin" onclick="DashboardApp.switchApp('admin')">🏛️ State Admin Portal</button>
+      <button class="app-tab-btn" id="app-tab-farmer" onclick="DashboardApp.switchApp('farmer')">🌾 Farmer App</button>
+      <button class="app-tab-btn" id="app-tab-chhavani" onclick="DashboardApp.switchApp('chhavani')">🏕️ Camp Operator App</button>
+      <button class="app-tab-btn" id="app-tab-vet" onclick="DashboardApp.switchApp('vet')">🩺 Vet Doctor App</button>
+      <button class="app-tab-btn" id="app-tab-officer" onclick="DashboardApp.switchApp('officer')">👮 Officer Audit App</button>
+      <button class="app-tab-btn" id="app-tab-quad" onclick="DashboardApp.switchApp('quad')">📱 Quad-App View</button>
+    </div>
+    <div class="app-launcher-controls">
+      <label for="role-selector" style="font-size: 11px; font-weight: 600; color: #fff;">Actor Role:</label>
+      <select id="role-selector" class="filter-select" onchange="DashboardApp.onRoleChange(this.value)" style="padding: 4px 8px; font-size: 12px;">
+        <option value="admin">🏛️ State Administrator</option>
+        <option value="farmer">🌾 Drought-Affected Farmer</option>
+        <option value="operator">🏕️ Relief Camp Operator</option>
+        <option value="vet">🩺 Veterinary Doctor</option>
+        <option value="officer">👮 Inspection Officer</option>
+      </select>
+      <button class="btn btn-sm" id="btn-toggle-frame" onclick="DashboardApp.toggleDeviceFrame()" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); font-size: 11px; cursor: pointer; border-radius: 4px; padding: 4px 8px;">📱 Phone Frame</button>
+    </div>
+  </div>
+
+  <!-- Application 1: State Relief Admin Portal -->
+  <div id="app-view-admin">
   <div class="header">
     <div style="display: flex; align-items: center; gap: 12px;">
       <span style="font-size: 24px;">🏛️</span>
@@ -950,6 +1103,481 @@
       </div>
     </div>
   </div>
+  </div> <!-- end app-view-admin -->
+
+  <!-- Application 2: Farmer Mobile App View -->
+  <div id="app-view-farmer" class="mobile-app-wrapper" style="display: none;">
+    <div class="smartphone-bezel" id="farmer-bezel">
+      <div class="phone-status-bar">
+        <span>09:41</span>
+        <span>5G 📶 • 100% 🔋</span>
+      </div>
+      <div class="mobile-header" style="background: var(--primary); padding: 12px 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">🌾</span>
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">शेतकरी मदत पोर्टल (Farmer App)</div>
+            <div style="font-size: 11px; opacity: 0.85;">किसन तुकाराम जाधव • 9890123456</div>
+          </div>
+        </div>
+        <span class="badge badge-success" style="font-size: 10px;">प्रमाणित शेतकरी</span>
+      </div>
+      <div class="phone-screen">
+        <!-- Farmer Profile Card -->
+        <div class="action-card">
+          <h4>
+            <span>शेतकरी तपशील (Profile)</span>
+            <span class="badge badge-info">FRM-MH-4012</span>
+          </h4>
+          <div style="font-size: 12px; line-height: 1.6; color: var(--text);">
+            <div><strong>नाव:</strong> किसन तुकाराम जाधव (Kisan Jadhav)</div>
+            <div><strong>पत्ता:</strong> घर क्र. ४५, हनुमान मंदिराजवळ, पाचोड</div>
+            <div><strong>गाव / तालुका:</strong> पाचोड, पैठण (छत्रपती संभाजीनगर)</div>
+            <div><strong>आधार:</strong> XXXX-XX-3456 • <strong>मोबाईल:</strong> 9890123456</div>
+          </div>
+        </div>
+
+        <!-- My Animals Card -->
+        <div class="action-card">
+          <h4>
+            <span>माझी नोंदणीकृत जनावरे (My Cattle)</span>
+            <span class="badge badge-success" id="farmer-cattle-count-badge">२ नोंदणीकृत</span>
+          </h4>
+          <div id="farmer-cattle-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+            <div style="border: 1px solid var(--border); border-radius: 6px; padding: 10px; background: #fff;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong>🏷️ MH-20-4001</strong>
+                <span class="badge badge-success">तपासणी मान्य (Approved)</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                गीर गाय (Gir Cow) • मादी • ३६ महिने • लसीकरण पूर्ण
+              </div>
+              <div style="font-size: 11px; color: var(--primary); font-weight: 600; margin-top: 4px;">
+                📍 पैठण छावणीत दाखल (Admitted: ५ दिवस)
+              </div>
+            </div>
+            <div style="border: 1px solid var(--border); border-radius: 6px; padding: 10px; background: #fff;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong>🏷️ MH-20-4002</strong>
+                <span class="badge badge-success">तपासणी मान्य (Approved)</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                खिल्लारी बैल (Khillari Bullock) • नर • ४८ महिने • निरोगी
+              </div>
+              <div style="font-size: 11px; color: var(--primary); font-weight: 600; margin-top: 4px;">
+                📍 पैठण छावणीत दाखल (Admitted: ५ दिवस)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Register New Animal Form -->
+        <div class="action-card">
+          <h4>
+            <span>नवीन जनावर नोंदणी (Add Cattle)</span>
+            <span class="badge badge-warning">नोंदणी अर्ज</span>
+          </h4>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+            <div>
+              <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">कान टॅग क्रमांक (Ear Tag No):</label>
+              <input type="text" id="farmer-reg-tag" class="filter-select" style="width: 100%;" placeholder="उदा. MH-20-4005" value="MH-20-4005">
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <div style="flex: 1;">
+                <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">पशू जात (Breed):</label>
+                <select id="farmer-reg-breed" class="filter-select" style="width: 100%;">
+                  <option value="Gir">गीर गाय (Gir Cow)</option>
+                  <option value="Khillari">खिल्लारी बैल (Khillari)</option>
+                  <option value="Murrah">मुऱ्हा म्हैस (Murrah)</option>
+                  <option value="Osmanabadi">उस्मानाबादी शेळी (Goat)</option>
+                  <option value="Deccani">दख्खनी मेंढी (Sheep)</option>
+                </select>
+              </div>
+              <div style="flex: 1;">
+                <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">लिंग (Gender):</label>
+                <select id="farmer-reg-gender" class="filter-select" style="width: 100%;">
+                  <option value="Female">मादी (Female)</option>
+                  <option value="Male">नर (Male)</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">वय (महिने / Age in Months):</label>
+              <input type="number" id="farmer-reg-age" class="filter-select" style="width: 100%;" value="32">
+            </div>
+            <button class="btn btn-primary" id="farmer-btn-register" onclick="DashboardApp.submitFarmerRegistration()" style="width: 100%; margin-top: 6px; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+              ➕ जनावर नोंदणी सबमिट करा (Submit)
+            </button>
+            <div id="farmer-reg-feedback" style="font-size: 11px; display: none; margin-top: 6px; padding: 6px 10px; border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <!-- Fodder Quota & Subsidy Card -->
+        <div class="action-card">
+          <h4><span>शासकीय चारा कोटा (Drought Quota)</span></h4>
+          <div style="font-size: 11px; color: var(--text); line-height: 1.6;">
+            <div>🌾 <strong>मोठी जनावरे:</strong> १५ किलो प्रतिदिन (हिरवा + सुका चारा)</div>
+            <div>🐐 <strong>लहान जनावरे:</strong> ३.५ किलो प्रतिदिन</div>
+            <div style="color: var(--success); font-weight: 600; margin-top: 4px;">💧 छावणीत मोफत पाणी, निवारा व वैद्यकीय उपचार उपलब्ध</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application 3: Camp Operator Mobile App View -->
+  <div id="app-view-chhavani" class="mobile-app-wrapper" style="display: none;">
+    <div class="smartphone-bezel" id="operator-bezel">
+      <div class="phone-status-bar">
+        <span>09:41</span>
+        <span>5G 📶 • 98% 🔋</span>
+      </div>
+      <div class="mobile-header" style="background: var(--secondary); padding: 12px 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">🏕️</span>
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">छावणी व्यवस्थापक (Operator App)</div>
+            <div style="font-size: 11px; opacity: 0.85;">पैठण छावणी • CHV-MH-PAITHAN-001</div>
+          </div>
+        </div>
+        <span class="badge badge-warning" style="font-size: 10px; background: white; color: var(--secondary);">गेट ऑपरेटर</span>
+      </div>
+      <div class="phone-screen">
+        <!-- Camp Status Card -->
+        <div class="action-card">
+          <h4>
+            <span>छावणी क्षमता स्थिती (Capacity)</span>
+            <span class="badge badge-success">सक्रिय (Active)</span>
+          </h4>
+          <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px;">
+            <div style="background: var(--surface-subtle); padding: 8px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 10px; color: var(--text-muted);">एकूण क्षमता</div>
+              <div style="font-size: 16px; font-weight: 700;">५००</div>
+            </div>
+            <div style="background: var(--primary-light); padding: 8px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 10px; color: var(--primary);">दाखल जनावरे</div>
+              <div style="font-size: 16px; font-weight: 700; color: var(--primary);" id="op-admitted-count">३</div>
+            </div>
+            <div style="background: var(--secondary-light); padding: 8px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 10px; color: var(--secondary);">उपलब्ध जागा</div>
+              <div style="font-size: 16px; font-weight: 700; color: var(--secondary);">४९७</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gate Admission & Geofence Validator -->
+        <div class="action-card">
+          <h4>
+            <span>गेट प्रवेश व जिओफेन्स पडताळणी</span>
+            <span class="badge badge-info">GPS Validator</span>
+          </h4>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+            <div>
+              <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">दाखल करायचे टॅग (Tag Number):</label>
+              <input type="text" id="op-adm-tag" class="filter-select" style="width: 100%;" value="MH-20-4003" placeholder="MH-20-4003">
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <div style="flex: 1;">
+                <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">अक्षांश (Latitude):</label>
+                <input type="text" id="op-adm-lat" class="filter-select" style="width: 100%;" value="19.8210">
+              </div>
+              <div style="flex: 1;">
+                <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">रेखांश (Longitude):</label>
+                <input type="text" id="op-adm-lon" class="filter-select" style="width: 100%;" value="75.3310">
+              </div>
+            </div>
+            <button class="btn" id="op-btn-validate-geofence" onclick="DashboardApp.validateGateAdmissionGeofence()" style="width: 100%; background: #0288D1; color: white; padding: 10px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+              📡 जिओफेन्स पडताळा व प्रवेश द्या (Validate & Admit)
+            </button>
+            <div id="op-geofence-feedback" style="font-size: 11px; padding: 8px 10px; border-radius: 6px; background: #E8F5E9; color: var(--success); font-weight: 600;">
+              ✅ गेट जिओफेन्स स्थिती: अक्षांश १९.८२१०, रेखांश ७५.३३१० हे पैठण छावणीच्या नोंदणीकृत कुंपणाच्या आत आहेत.
+            </div>
+          </div>
+        </div>
+
+        <!-- Fodder Inventory Card -->
+        <div class="action-card">
+          <h4><span>चारा साठा शिल्लक (Fodder Inventory)</span></h4>
+          <div style="font-size: 11px; line-height: 1.8;">
+            <div>📦 <strong>कोठार साठा (Store):</strong> १५,००० kg हिरवा • २५,००० kg सुका • ५,००० kg खाद्य</div>
+            <div>🚜 <strong>शेतकरी साठा (In-Farm):</strong> ४,००० kg हिरवा • ८,००० kg सुका</div>
+          </div>
+          <button class="btn btn-sm" id="op-btn-quick-feeding" onclick="DashboardApp.recordOperatorFeeding()" style="margin-top: 8px; width: 100%; background: var(--primary); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            🥣 दैनिक चारा वाटप नोंदवा (Issue Rations)
+          </button>
+          <div id="op-feeding-feedback" style="display: none; font-size: 11px; color: var(--success); font-weight: 600; margin-top: 4px;"></div>
+        </div>
+
+        <!-- Operational Expense Card -->
+        <div class="action-card">
+          <h4><span>दैनिक खर्च नोंद (Record Expense)</span></h4>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <select id="op-exp-category" class="filter-select" style="width: 100%;">
+              <option value="Water">पाणी पुरवठा टँकर (Water Tanker)</option>
+              <option value="Labour">मजुरी खर्च (Labour Wages)</option>
+              <option value="Electricity">वीज बिल / सोलर दुरुस्ती (Electricity)</option>
+              <option value="Transportation">चारा वाहतूक (Transportation)</option>
+            </select>
+            <input type="number" id="op-exp-amount" class="filter-select" style="width: 100%;" placeholder="रक्कम (₹)" value="2500">
+            <button class="btn btn-sm" id="op-btn-record-expense" onclick="DashboardApp.recordOperatorExpense()" style="width: 100%; background: #455A64; color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+              📝 पावती खर्च सबमिट करा (Save Expense)
+            </button>
+            <div id="op-expense-feedback" style="display: none; font-size: 11px; color: var(--success); font-weight: 600; margin-top: 4px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application 4: Veterinary Doctor Mobile App View -->
+  <div id="app-view-vet" class="mobile-app-wrapper" style="display: none;">
+    <div class="smartphone-bezel" id="vet-bezel">
+      <div class="phone-status-bar">
+        <span>09:41</span>
+        <span>5G 📶 • 95% 🔋</span>
+      </div>
+      <div class="mobile-header" style="background: #00695C; padding: 12px 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">🩺</span>
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">पशुवैद्यकीय तपासणी (Vet App)</div>
+            <div style="font-size: 11px; opacity: 0.85;">डॉ. आर. के. शिंदे • DOC-MH-AUR-01</div>
+          </div>
+        </div>
+        <span class="badge" style="background: white; color: #00695C; font-size: 10px;">पशुधन विकास अधिकारी</span>
+      </div>
+      <div class="phone-screen">
+        <!-- Doctor Profile Card -->
+        <div class="action-card">
+          <h4><span>पशुवैद्यकीय अधिकारी माहिती</span></h4>
+          <div style="font-size: 12px; line-height: 1.6;">
+            <div><strong>नाव:</strong> डॉ. आर. के. शिंदे (Dr. R. K. Shinde)</div>
+            <div><strong>पदनाम:</strong> तालुका पशुधन विकास अधिकारी (LDO)</div>
+            <div><strong>मुख्यालय:</strong> पैठण, जिल्हा छत्रपती संभाजीनगर</div>
+          </div>
+        </div>
+
+        <!-- Pending Verifications Queue -->
+        <div class="action-card">
+          <h4>
+            <span>तपासणी प्रलंबित जनावरे (Queue)</span>
+            <span class="badge badge-warning" id="vet-pending-badge">१ प्रलंबित</span>
+          </h4>
+          <div id="vet-pending-container" style="border: 1px solid var(--border); border-radius: 6px; padding: 12px; background: #fff; margin-top: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong>🏷️ MH-20-4004</strong>
+              <span class="badge badge-warning">पडताळणी प्रलंबित</span>
+            </div>
+            <div style="font-size: 11px; color: var(--text); margin-top: 6px; line-height: 1.6;">
+              <div><strong>जात:</strong> डांगी गाय (Dangi Cow) • ३० महिने</div>
+              <div><strong>शेतकरी:</strong> रामेश्वर शिंदे (मोबाईल: 9822012345)</div>
+              <div><strong>शेतकरी स्थान:</strong> १९.८१८०, ७५.३२८० (पाचोड शिवार)</div>
+            </div>
+            <div style="font-size: 11px; margin-top: 8px; background: var(--surface-subtle); padding: 8px; border-radius: 4px;">
+              <div>☑️ लाळ-खुरकत (FMD) लसीकरण पूर्ण</div>
+              <div>☑️ कान टॅग MH-20-4004 सुरक्षित व सुस्थितीत</div>
+              <div>☑️ संसर्गजन्य रोग लक्षणे नाहीत</div>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+              <button class="btn btn-sm" id="vet-btn-approve" onclick="DashboardApp.approveVetLivestock()" style="flex: 2; background: var(--success); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                ✅ वैद्यकीय मंजुरी द्या (Approve)
+              </button>
+              <button class="btn btn-sm" id="vet-btn-reject" onclick="DashboardApp.rejectVetLivestock()" style="flex: 1; background: var(--danger); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                ❌ नामंजूर (Reject)
+              </button>
+            </div>
+            <div id="vet-approval-feedback" style="display: none; font-size: 11px; color: var(--success); font-weight: 600; margin-top: 6px;"></div>
+          </div>
+        </div>
+
+        <!-- Verification History -->
+        <div class="action-card">
+          <h4><span>मंजूर केलेल्या तपासण्यांचा इतिहास (History)</span></h4>
+          <div style="font-size: 11px; line-height: 1.8; color: var(--text);">
+            <div>✔️ <strong>MH-20-4001</strong> - गीर गाय (किसन जाधव) • <em>मंजूर</em></div>
+            <div>✔️ <strong>MH-20-4002</strong> - खिल्लारी बैल (किसन जाधव) • <em>मंजूर</em></div>
+            <div>✔️ <strong>MH-20-4003</strong> - मुऱ्हा म्हैस (रामेश्वर शिंदे) • <em>मंजूर</em></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application 5: Inspection Officer Mobile App View -->
+  <div id="app-view-officer" class="mobile-app-wrapper" style="display: none;">
+    <div class="smartphone-bezel" id="officer-bezel">
+      <div class="phone-status-bar">
+        <span>09:41</span>
+        <span>5G 📶 • 92% 🔋</span>
+      </div>
+      <div class="mobile-header" style="background: #283593; padding: 12px 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">👮</span>
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">शासकीय तपासणी अधिकारी (Officer App)</div>
+            <div style="font-size: 11px; opacity: 0.85;">डॉ. आनंद देशमुख • जिल्हा पशुसंवर्धन अधिकारी</div>
+          </div>
+        </div>
+        <span class="badge" style="background: white; color: #283593; font-size: 10px;">स्पॉट ऑडिट</span>
+      </div>
+      <div class="phone-screen">
+        <!-- Officer Profile -->
+        <div class="action-card">
+          <h4><span>तपासणी अधिकारी तपशील</span></h4>
+          <div style="font-size: 12px; line-height: 1.6;">
+            <div><strong>नाव:</strong> डॉ. आनंद देशमुख (Dr. Anand Deshmukh)</div>
+            <div><strong>पदनाम:</strong> जिल्हा पशुसंवर्धन अधिकारी (District AHO)</div>
+            <div><strong>तपासणी अधिकार:</strong> महाराष्ट्र दुष्काळ मदत नियमावली नियम ९.५</div>
+          </div>
+        </div>
+
+        <!-- Spot Inspection Form -->
+        <div class="action-card">
+          <h4>
+            <span>छावणी अचानक तपासणी अहवाल</span>
+            <span class="badge badge-info">Spot Audit</span>
+          </h4>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+            <div>
+              <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">तपासणी छावणी निवडा (Select Camp):</label>
+              <select id="officer-camp-select" class="filter-select" style="width: 100%;" onchange="DashboardApp.onOfficerCampSelect(this.value)">
+                <option value="CHV-MH-PAITHAN-001">पैठण तालुका छावणी (Paithan, Sambhajinagar)</option>
+                <option value="CHV-MH-AMBAD-101">अंबड तालुका छावणी (Ambad, Jalna)</option>
+                <option value="CHV-MH-GEORAI-102">गेवराई तालुका छावणी (Georai, Beed)</option>
+                <option value="CHV-MH-MADHA-103">माढा तालुका छावणी (Madha, Solapur)</option>
+              </select>
+            </div>
+
+            <!-- Headcount Audit -->
+            <div style="background: var(--surface-subtle); padding: 10px; border-radius: 6px;">
+              <div style="font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 6px;">पशू संख्या प्रत्यक्ष मोजणी व ताळमेळ:</div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <div style="flex: 1;">
+                  <label style="font-size: 10px; color: var(--text-muted);">प्रत्यक्ष संख्या (Physical):</label>
+                  <input type="number" id="officer-physical-count" class="filter-select" style="width: 100%;" value="3" oninput="DashboardApp.calculateOfficerDiscrepancy()">
+                </div>
+                <div style="flex: 1;">
+                  <label style="font-size: 10px; color: var(--text-muted);">नोंद संख्या (System):</label>
+                  <div id="officer-system-count" style="font-size: 16px; font-weight: 700; padding: 6px 0;">3</div>
+                </div>
+                <div style="flex: 1;">
+                  <label style="font-size: 10px; color: var(--text-muted);">तफावत (Diff):</label>
+                  <div id="officer-discrepancy-badge" class="badge badge-success" style="display: inline-block;">0 (MATCH)</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+              <div style="flex: 1;">
+                <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">पाणी पुरवठा:</label>
+                <select id="officer-water" class="filter-select" style="width: 100%;">
+                  <option value="Adequate">पुरेसा (Adequate)</option>
+                  <option value="Scarce">तुटवडा (Scarce)</option>
+                  <option value="Critical">गंभीर (Critical)</option>
+                </select>
+              </div>
+              <div style="flex: 1;">
+                <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">चारा दर्जा:</label>
+                <select id="officer-fodder" class="filter-select" style="width: 100%;">
+                  <option value="Satisfactory">समाधानकारक</option>
+                  <option value="Deficient">कमी दर्जा</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">स्वच्छता व आरोग्य रेटिंग:</label>
+              <select id="officer-cleanliness" class="filter-select" style="width: 100%;">
+                <option value="5">⭐⭐⭐⭐⭐ उत्कृष्ट दर्जा (5/5)</option>
+                <option value="4" selected>⭐⭐⭐⭐ उत्तम दर्जा (4/5)</option>
+                <option value="3">⭐⭐⭐ मध्यम (3/5)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">तपासणी शेरा (Official Remarks):</label>
+              <textarea id="officer-remarks" class="filter-select" style="width: 100%; height: 50px; font-size: 11px;">छावणीचे कामकाज व जनावरांची देखभाल नियमानुसार सुरू आहे. चारा व पाणी साठा पुरेसा आहे.</textarea>
+            </div>
+
+            <button class="btn" id="officer-btn-submit" onclick="DashboardApp.submitOfficerInspection()" style="width: 100%; background: #283593; color: white; padding: 10px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+              📋 शासकीय तपासणी अहवाल सादर करा (Submit Audit)
+            </button>
+            <div id="officer-inspection-feedback" style="display: none; font-size: 11px; color: var(--success); font-weight: 600; margin-top: 4px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application 6: Quad Multi-App Simultaneous Chrome View -->
+  <div id="app-view-quad" class="quad-app-wrapper" style="display: none;">
+    <div style="max-width: 1440px; margin: 16px auto; padding: 0 16px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h3 style="margin: 0;">📱 सर्व ४ मोबाईल ॲप्स एकाच वेळी (Quad Mobile Simulator)</h3>
+        <p style="margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted);">
+          Simultaneous live simulation of all 4 field actors interacting with the central relief database:
+        </p>
+      </div>
+      <span class="badge badge-success">Live Multi-Actor Sync</span>
+    </div>
+    <div class="quad-grid">
+      <!-- Mini Farmer -->
+      <div class="action-card" style="padding: 12px; border-top: 4px solid var(--primary);">
+        <div style="font-weight: 700; font-size: 13px; color: var(--primary); margin-bottom: 8px;">🌾 शेतकरी ॲप (Farmer)</div>
+        <div style="font-size: 11px; line-height: 1.6;">
+          <div><strong>नाव:</strong> किसन जाधव (9890123456)</div>
+          <div><strong>गाव:</strong> पाचोड, पैठण</div>
+          <div style="margin-top: 6px; padding: 6px; background: var(--surface-subtle); border-radius: 4px;">
+            🏷️ MH-20-4001: गीर गाय • <span class="badge badge-success" style="font-size: 9px;">Approved</span>
+          </div>
+          <div style="margin-top: 4px; padding: 6px; background: var(--surface-subtle); border-radius: 4px;">
+            🏷️ MH-20-4002: खिल्लारी बैल • <span class="badge badge-success" style="font-size: 9px;">Approved</span>
+          </div>
+          <div style="margin-top: 8px; color: var(--primary); font-weight: 600;">दैनिक चारा कोटा: १५ किलो/दिवस</div>
+        </div>
+      </div>
+
+      <!-- Mini Operator -->
+      <div class="action-card" style="padding: 12px; border-top: 4px solid var(--secondary);">
+        <div style="font-weight: 700; font-size: 13px; color: var(--secondary); margin-bottom: 8px;">🏕️ छावणी ऑपरेटर (Operator)</div>
+        <div style="font-size: 11px; line-height: 1.6;">
+          <div><strong>छावणी:</strong> पैठण छावणी (CHV-001)</div>
+          <div><strong>सद्य जनावरे:</strong> ३ / ५०० (उपलब्ध: ४९७)</div>
+          <div style="margin-top: 6px; padding: 6px; background: var(--surface-subtle); border-radius: 4px;">
+            📡 जिओफेन्स: <span class="badge badge-success" style="font-size: 9px;">INSIDE BOUNDARY</span>
+          </div>
+          <div style="margin-top: 6px; color: var(--secondary); font-weight: 600;">कोठार साठा: ४५,००० kg एकूण</div>
+        </div>
+      </div>
+
+      <!-- Mini Vet -->
+      <div class="action-card" style="padding: 12px; border-top: 4px solid #00695C;">
+        <div style="font-weight: 700; font-size: 13px; color: #00695C; margin-bottom: 8px;">🩺 पशुवैद्यकीय अधिकारी (Vet Doctor)</div>
+        <div style="font-size: 11px; line-height: 1.6;">
+          <div><strong>डॉक्टर:</strong> डॉ. आर. के. शिंदे (DOC-AUR-01)</div>
+          <div><strong>मुख्यालय:</strong> पैठण तालुका</div>
+          <div style="margin-top: 6px; padding: 6px; background: var(--surface-subtle); border-radius: 4px;">
+            🏷️ MH-20-4004 (डांगी गाय) • <span class="badge badge-warning" style="font-size: 9px;">Pending Check</span>
+          </div>
+          <div style="margin-top: 6px; color: #00695C; font-weight: 600;">३ जनावरे तपासणी पूर्ण व प्रमाणित</div>
+        </div>
+      </div>
+
+      <!-- Mini Officer -->
+      <div class="action-card" style="padding: 12px; border-top: 4px solid #283593;">
+        <div style="font-weight: 700; font-size: 13px; color: #283593; margin-bottom: 8px;">👮 क्षेत्रीय तपासणी (Officer Audit)</div>
+        <div style="font-size: 11px; line-height: 1.6;">
+          <div><strong>अधिकारी:</strong> डॉ. आनंद देशमुख (AHO)</div>
+          <div><strong>तपासणी क्षेत्र:</strong> संभाजीनगर विभाग</div>
+          <div style="margin-top: 6px; padding: 6px; background: var(--surface-subtle); border-radius: 4px;">
+            प्रत्यक्ष: ३ | नोंद: ३ | तफावत: <span class="badge badge-success" style="font-size: 9px;">0 MATCH</span>
+          </div>
+          <div style="margin-top: 6px; color: #283593; font-weight: 600;">पाणी: पुरेसा • स्वच्छता: ⭐⭐⭐⭐</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script src="dashboard.js"></script>
 </body>

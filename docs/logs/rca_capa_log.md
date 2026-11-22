@@ -139,4 +139,40 @@ This log records all identified bugs, root cause analyses (RCA), and corrective 
 - **Regression Check**: [Passed] Verified against full multi-camp database state.
 - **Sign-off**: [Approved] BUG-0002 resolved and verified. 
 
-```
+---
+
+## [BUG-0003] Playwright Strict Mode Locator Ambiguity on `.header` Class Collision
+
+- **Date**: 2026-11-22
+- **Module / Component**: Web Admin & Mobile Simulators (`apps/web-admin/index.html`, `smoke.spec.ts`, `web-admin-dashboard.spec.ts`)
+- **Severity**: Low
+- **Status**: Verified & Closed
+
+### 1. Bug Description & Reproduction
+- **Description**: Adding the 4 mobile application views to `apps/web-admin/index.html` caused existing Playwright desktop tests in `smoke.spec.ts` and `web-admin-dashboard.spec.ts` to fail:
+  `strict mode violation: locator('.header') resolved to 5 elements`
+- **Steps to Reproduce**:
+  1. Add `#app-view-farmer`, `#app-view-chhavani`, `#app-view-vet`, `#app-view-officer` with `<div class="header">`.
+  2. Run `npx playwright test tests/e2e-web/smoke.spec.ts --project=desktop-chrome`.
+  3. Observe Playwright strict mode exception locating `.header`.
+- **Expected Behavior**: Locators should resolve uniquely to the targeted component.
+- **Actual Behavior**: 5 DOM elements matched class `.header`.
+
+### 2. Root Cause Analysis (RCA) - 5 Whys
+- **Why 1**: `page.locator('.header')` matched 5 DOM nodes instead of 1.
+- **Why 2**: Each of the 4 mobile app containers reused the generic `.header` class for their mobile status/title bars.
+- **Why 3**: The web admin stylesheet and markup shared the `.header` CSS class name without namespace prefixing.
+- **Why 4**: Mobile simulator templates were copied with generic class names rather than scoped component classes.
+- **Why 5 (Root Cause)**: Lack of BEM/namespaced styling conventions between desktop portal shell and embedded mobile simulator widgets.
+
+### 3. Corrective Action (Immediate Fix)
+- Renamed all mobile app header classes from `class="header"` to `class="mobile-header"` in `apps/web-admin/index.html` and updated CSS styles in `dashboard.js` accordingly.
+
+### 4. Preventive Action (Long-Term Prevention)
+- Enforce namespacing for all embedded mobile simulator elements (`.mobile-*`, `#app-view-*`) so they never conflict with top-level desktop portal styles or test locators.
+
+### 5. Re-Verification Results
+- **Date Re-Tested**: 2026-11-22
+- **Test Results**: All 45 Playwright Desktop tests, 44 Mobile tests, and 3 Mobile Safari tests passed (100% green).
+- **Regression Check**: [Passed] All existing smoke and dashboard tests pass without strict mode locator warnings.
+- **Sign-off**: [Approved] BUG-0003 resolved and verified.

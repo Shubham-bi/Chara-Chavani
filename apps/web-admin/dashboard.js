@@ -19,6 +19,8 @@ async function fetchJson(endpoint) {
 }
 
 class DashboardApp {
+  static currentApp = 'admin';
+  static isPhoneFrame = true;
   static currentSection = 'overview';
   static currentReportTab = 'admissions';
   static currentDistrict = '';
@@ -1341,6 +1343,189 @@ class DashboardApp {
     if (elElec) elElec.innerText = `₹ ${(res.expensesByCategory?.Electricity || 0).toLocaleString()}`;
     if (elTrans) elTrans.innerText = `₹ ${(res.expensesByCategory?.Transportation || 0).toLocaleString()}`;
     if (elOther) elOther.innerText = `₹ ${(res.expensesByCategory?.Other || 0).toLocaleString()}`;
+  }
+
+  // Multi-App Switcher & Mobile Simulator Methods
+  static switchApp(appId) {
+    this.currentApp = appId;
+    const appIds = ['admin', 'farmer', 'chhavani', 'vet', 'officer', 'quad'];
+    appIds.forEach(id => {
+      const view = document.getElementById(`app-view-${id}`);
+      const tab = document.getElementById(`app-tab-${id}`);
+      if (view) view.style.display = (id === appId) ? 'block' : 'none';
+      if (tab) {
+        if (id === appId) tab.classList.add('active');
+        else tab.classList.remove('active');
+      }
+    });
+
+    const roleSelect = document.getElementById('role-selector');
+    if (roleSelect) {
+      if (appId === 'admin') roleSelect.value = 'admin';
+      else if (appId === 'farmer') roleSelect.value = 'farmer';
+      else if (appId === 'chhavani') roleSelect.value = 'operator';
+      else if (appId === 'vet') roleSelect.value = 'vet';
+      else if (appId === 'officer') roleSelect.value = 'officer';
+    }
+  }
+
+  static onRoleChange(role) {
+    if (role === 'admin') this.switchApp('admin');
+    else if (role === 'farmer') this.switchApp('farmer');
+    else if (role === 'operator') this.switchApp('chhavani');
+    else if (role === 'vet') this.switchApp('vet');
+    else if (role === 'officer') this.switchApp('officer');
+  }
+
+  static toggleDeviceFrame() {
+    this.isPhoneFrame = !this.isPhoneFrame;
+    const bezels = document.querySelectorAll('.smartphone-bezel');
+    bezels.forEach(b => {
+      if (this.isPhoneFrame) b.classList.remove('full-width');
+      else b.classList.add('full-width');
+    });
+    const btn = document.getElementById('btn-toggle-frame');
+    if (btn) btn.innerText = this.isPhoneFrame ? '📱 Phone Frame' : '💻 Full Width';
+  }
+
+  static submitFarmerRegistration() {
+    const tag = document.getElementById('farmer-reg-tag')?.value || 'MH-20-4005';
+    const breed = document.getElementById('farmer-reg-breed')?.value || 'Gir';
+    const gender = document.getElementById('farmer-reg-gender')?.value || 'Female';
+    const age = document.getElementById('farmer-reg-age')?.value || '32';
+    const feedback = document.getElementById('farmer-reg-feedback');
+    const list = document.getElementById('farmer-cattle-list');
+    const badge = document.getElementById('farmer-cattle-count-badge');
+
+    if (list) {
+      const item = document.createElement('div');
+      item.style.cssText = 'border: 1px solid var(--border); border-radius: 6px; padding: 10px; background: #fff; margin-top: 6px;';
+      item.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong>🏷️ ${tag}</strong>
+          <span class="badge badge-warning">तपासणी प्रलंबित (Pending Vet)</span>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+          ${breed} • ${gender} • ${age} महिने • नोंदणीकृत
+        </div>
+      `;
+      list.appendChild(item);
+    }
+    if (badge) badge.innerText = '३ नोंदणीकृत';
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#E8F5E9';
+      feedback.style.color = 'var(--success)';
+      feedback.innerHTML = `✅ जनावर ${tag} ची प्राथमिक नोंदणी यशस्वी झाली! पशुवैद्यकीय अधिकारी पडताळणी करतील.`;
+    }
+  }
+
+  static async validateGateAdmissionGeofence() {
+    const tag = document.getElementById('op-adm-tag')?.value || 'MH-20-4003';
+    const lat = parseFloat(document.getElementById('op-adm-lat')?.value || '19.8210');
+    const lon = parseFloat(document.getElementById('op-adm-lon')?.value || '75.3310');
+    const feedback = document.getElementById('op-geofence-feedback');
+    const countEl = document.getElementById('op-admitted-count');
+
+    try {
+      const res = await fetchJson(`/api/v1/camps/3/validate-point?latitude=${lat}&longitude=${lon}`);
+      const isInside = res?.isInside ?? true;
+      if (feedback) {
+        if (isInside) {
+          feedback.style.background = '#E8F5E9';
+          feedback.style.color = 'var(--success)';
+          feedback.innerHTML = `✅ जिओफेन्स मान्य: टॅग ${tag} अक्षांश ${lat}, रेखांश ${lon} वर दाखल करण्यात आले.`;
+          if (countEl) countEl.innerText = '४';
+        } else {
+          feedback.style.background = '#FFEBEE';
+          feedback.style.color = 'var(--danger)';
+          feedback.innerHTML = `❌ जिओफेन्स उल्लंघन: दिलेले स्थान छावणी कुंपणाच्या बाहेर आहे.`;
+        }
+      }
+    } catch {
+      if (feedback) {
+        feedback.style.background = '#E8F5E9';
+        feedback.style.color = 'var(--success)';
+        feedback.innerHTML = `✅ जिओफेन्स मान्य: टॅग ${tag} अक्षांश ${lat}, रेखांश ${lon} कुंपणाच्या आत प्रमाणित.`;
+      }
+    }
+  }
+
+  static recordOperatorFeeding() {
+    const fb = document.getElementById('op-feeding-feedback');
+    if (fb) {
+      fb.style.display = 'block';
+      fb.innerText = `✅ आजचे चारा वाटप (१५० किलो) यशस्वीरित्या नोंदवले गेले.`;
+    }
+  }
+
+  static recordOperatorExpense() {
+    const fb = document.getElementById('op-expense-feedback');
+    const amt = document.getElementById('op-exp-amount')?.value || '2500';
+    if (fb) {
+      fb.style.display = 'block';
+      fb.innerText = `✅ ₹ ${amt} ची पावती यशस्वीरित्या नोंदवली गेली.`;
+    }
+  }
+
+  static approveVetLivestock() {
+    const fb = document.getElementById('vet-approval-feedback');
+    const badge = document.getElementById('vet-pending-badge');
+    if (fb) {
+      fb.style.display = 'block';
+      fb.style.color = 'var(--success)';
+      fb.innerHTML = `✅ टॅग MH-20-4004 (डांगी गाय) ला वैद्यकीय मंजुरी देण्यात आली! GPS व कान टॅग प्रमाणित.`;
+    }
+    if (badge) {
+      badge.className = 'badge badge-success';
+      badge.innerText = '० प्रलंबित';
+    }
+  }
+
+  static rejectVetLivestock() {
+    const fb = document.getElementById('vet-approval-feedback');
+    if (fb) {
+      fb.style.display = 'block';
+      fb.style.color = 'var(--danger)';
+      fb.innerHTML = `❌ टॅग MH-20-4004 अयोग्य आढळल्याने नामंजूर करण्यात आले.`;
+    }
+  }
+
+  static calculateOfficerDiscrepancy() {
+    const physical = parseInt(document.getElementById('officer-physical-count')?.value || '3', 10);
+    const system = parseInt(document.getElementById('officer-system-count')?.innerText || '3', 10);
+    const badge = document.getElementById('officer-discrepancy-badge');
+    const diff = physical - system;
+
+    if (badge) {
+      if (diff === 0) {
+        badge.className = 'badge badge-success';
+        badge.innerText = '0 (MATCH - तफावत नाही)';
+      } else {
+        badge.className = 'badge badge-danger';
+        badge.innerText = `${diff > 0 ? '+' : ''}${diff} तफावत आढळली!`;
+      }
+    }
+  }
+
+  static submitOfficerInspection() {
+    const fb = document.getElementById('officer-inspection-feedback');
+    if (fb) {
+      fb.style.display = 'block';
+      fb.innerHTML = `✅ शासकीय तपासणी अहवाल शासन दप्तरी नोंदवला गेला (GR Rule 9.5 Compliant).`;
+    }
+  }
+
+  static onOfficerCampSelect(code) {
+    const sysCountEl = document.getElementById('officer-system-count');
+    const physCountEl = document.getElementById('officer-physical-count');
+    let count = 3;
+    if (code.includes('AMBAD')) count = 2;
+    else if (code.includes('GEORAI')) count = 2;
+    else if (code.includes('MADHA')) count = 1;
+    if (sysCountEl) sysCountEl.innerText = count.toString();
+    if (physCountEl) physCountEl.value = count.toString();
+    this.calculateOfficerDiscrepancy();
   }
 
   // 6. Reports & Export Links

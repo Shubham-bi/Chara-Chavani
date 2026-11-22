@@ -936,3 +936,54 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
   - PowerShell E2E Smoke Tests: 19/19 passed (100% green).
   - ESLint & `dotnet format`: 0 errors.
   - TypeScript Typecheck across all packages: 0 errors.
+
+---
+
+## [2026-11-22] - Feature / Task: Multi-App Chrome View Portal & Interactive Mobile Simulators
+
+### 1. Challenge Faced
+- **Context**: Enabling developers, QA engineers, and state stakeholders to run, view, and interact with all 5 applications in Google Chrome (`http://localhost:3000`) simultaneously:
+  1. State Relief Admin Portal (`web-admin`)
+  2. Farmer Mobile App (`mobile-farmer`)
+  3. Chhavani Camp Operator App (`mobile-chhavani`)
+  4. Veterinary Doctor App (`mobile-vet`)
+  5. Government Inspection Officer App (`mobile-officer`)
+  plus a Quad-App View showing all 4 field apps side-by-side.
+- **Symptoms / Friction**:
+  - React Native / Expo development typically requires launching 4 separate mobile simulators (Android emulator or iOS simulator) or multiple terminal processes, consuming high memory and preventing unified inspection.
+  - In automated CI and live Chrome testing, switching between actor personas and observing real-time workflow handoffs (e.g. farmer registers animal -> vet approves -> operator admits -> officer audits) required seamless navigation within a single high-fidelity viewport.
+  - CSS scoping: Adding mobile containers that shared classes like `.header` with the web admin dashboard caused Playwright strict mode locators to fail with multi-element ambiguity errors.
+- **Impact**: Without an integrated Chrome view, QA and state reviewers could not easily preview mobile apps without mobile emulator setup.
+
+### 2. Solutions Evaluated
+- **Option A**: Run multiple Expo Web instances on distinct ports (e.g., 3001, 3002, 3003, 3004).
+  - *Pros / Cons*: High CPU/RAM overhead, disjointed browser tabs, difficult cross-app automated testing in a single Playwright context.
+- **Option B (Selected)**: Integrate high-fidelity mobile application simulators directly into the `web-admin` portal with a top persistent Multi-App Switcher Bar (`#app-launcher-bar`), realistic smartphone bezels (`.smartphone-bezel`), toggleable phone frame dimensions (`📱 Phone Frame` vs `💻 Full Width`), and a **Quad-App Simultaneous View** (`#app-view-quad`).
+  - *Pros / Cons*: Ultra-lightweight, zero additional port management, allows side-by-side quad-app comparison in a single tab, supports interactive forms, geofence ray-casting gate checks, and full Playwright automated testability.
+
+### 3. Finalized Solution ("What")
+- Built persistent `#app-launcher-bar` with 6 interactive tabs (`#app-tab-admin`, `#app-tab-farmer`, `#app-tab-chhavani`, `#app-tab-vet`, `#app-tab-officer`, `#app-tab-quad`), `#role-selector`, and `#btn-toggle-frame`.
+- Implemented realistic smartphone bezel layout (`.smartphone-bezel`, `.speaker-notch`, `.phone-screen`) with toggle to full-width desktop layout.
+- Added comprehensive interactive functionality to each mobile simulator:
+  - **Farmer View**: Livestock list, new animal registration form, drought quota tracker.
+  - **Operator View**: Camp metrics, interactive GPS Geofence ray-casting validator, fodder inventory card, feeding issuance, and expense logger.
+  - **Vet Doctor View**: Pending verifications queue, clinical checklist, GPS stamp, approval/rejection actions.
+  - **Officer View**: Camp selector, physical headcount audit with real-time discrepancy calculation, water/fodder rating, hygiene score, and audit submission.
+  - **Quad View**: 4-column responsive grid embedding all 4 mobile views side-by-side.
+- Scoped all mobile headers to `.mobile-header` to prevent Playwright locator collisions with `.header`.
+- Created Page Object Model (`MobileAppViewPage.ts`) and E2E Playwright test suite (`tests/e2e-web/all-apps-chrome-view.spec.ts`) asserting all 5 apps and capturing 6 high-res screenshots to conversation artifacts.
+
+### 4. Technical Rationale ("Why")
+- Empowers all stakeholders to inspect the complete 5-actor relief ecosystem in any standard Google Chrome browser without emulator overhead.
+- Enables single-click role switching and full interactive simulation while retaining 100% test automation coverage.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes:
+  - Playwright Desktop Chrome: 45/45 passed (100% green).
+  - Playwright Mobile Chrome: 44/44 passed (100% green).
+  - Playwright Mobile Safari: 3/3 passed (100% green).
+  - Backend Unit Tests: 67/67 passed (100% green).
+  - PowerShell Smoke Runner: 19/19 passed (100% green).
+  - ESLint & `dotnet format`: 0 errors.
+  - TypeScript Typecheck across all 7 workspaces: 0 errors.
