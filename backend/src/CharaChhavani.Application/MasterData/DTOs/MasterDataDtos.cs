@@ -36,5 +36,10 @@ public record SeedResultDto
     public int FarmersCreated { get; init; }
     public int AnimalsCreated { get; init; }
     public int OperatorsCreated { get; init; }
+    public int AdmissionsCreated { get; init; }
+    public int ExpensesCreated { get; init; }
+    public int InspectionsCreated { get; init; }
+    public int PurchasesCreated { get; init; }
+    public int FeedingEntriesCreated { get; init; }
     public string Message { get; init; } = string.Empty;
 }

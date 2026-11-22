@@ -35,7 +35,7 @@ test.describe('Chara Chhavani - End-to-End (E2E) Multi-Actor Lifecycle Flow', ()
     // ---------------------------------------------------------
     const camps = await api.getCamps();
     expect(camps.length).toBeGreaterThan(0);
-    const targetCamp = camps[0];
+    const targetCamp = camps.find(c => c.campCode === 'CHV-MH-PAITHAN-001') || camps[0];
 
     // Verify valid admission coordinates fall strictly inside camp boundary
     const admissionCheck = await api.checkGeofence(targetCamp.id, 19.82, 75.33);

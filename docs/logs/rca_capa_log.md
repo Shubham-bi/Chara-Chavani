@@ -95,4 +95,48 @@ This log records all identified bugs, root cause analyses (RCA), and corrective 
 - **Test Results**: 19/19 E2E smoke tests passed (100% green). All 8 pipeline steps executed cleanly against the live ASP.NET Core WebAPI on `http://localhost:5000` and local MySQL on `localhost:3306`.
 - **Regression Check**: [Passed] 67/67 unit tests in `CharaChhavani.UnitTests` passing with 0 failures; Node.js SessionManager and OfflineActionQueue Rule 9.6 tests 100% green.
 - **Sign-off**: [Approved] BUG-0001 verified and closed. Feature marked complete for Stage 13 sign-off.
+
+---
+
+## [BUG-0002] E2E Geofence Test Assertions Coupled to Single Seeded Camp Index Zero
+
+- **Date**: 2026-11-22
+- **Module / Component**: Playwright E2E Test Suite (`sanity.spec.ts`, `e2e-full-workflow.spec.ts`)
+- **Severity**: Medium
+- **Status**: In-Progress
+
+### 1. Bug Description & Reproduction
+- **Description**: Following comprehensive multi-district database seeding, `sanity.spec.ts` and `e2e-full-workflow.spec.ts` failed during geofence boundary validation:
+  `expect(insideCheck.isInside).toBe(true) -> Expected true, Received false`
+- **Steps to Reproduce**:
+  1. Seed database with 4 camps via `POST /api/v1/master/seed`.
+  2. Run `npx playwright test tests/e2e-web/sanity.spec.ts --project=desktop-chrome`.
+  3. Observe assertion failure at line 32.
+- **Expected Behavior**: Geofence inside test should pass with `isInside: true`.
+- **Actual Behavior**: Failed because `camps[0]` evaluated to `CHV-MH-MADHA-103` (Solapur), but coordinates tested were `(19.82, 75.33)` (Paithan).
+- **Logs / Error Trace**:
+  `Error: expect(received).toBe(expected) // Object.is equality`
+  `Expected: true`
+  `Received: false`
+  `at sanity.spec.ts:32:34`
+
+### 2. Root Cause Analysis (RCA) - 5 Whys
+- **Why 1**: `insideCheck.isInside` returned `false` for the target camp ID.
+- **Why 2**: The GPS point `(19.82, 75.33)` was validated against Camp ID 26 (`CHV-MH-MADHA-103` in Solapur).
+- **Why 3**: The test selected `camps[0]` assuming it would be the Paithan camp.
+- **Why 4**: The comprehensive seeder seeded 4 relief camps (Paithan, Ambad, Georai, Madha), changing the returned ordering from `GET /api/v1/camps`.
+- **Why 5 (Root Cause)**: The test assumed a single-camp database state and indexed `camps[0]` instead of explicitly resolving the camp matching the tested coordinates (`CHV-MH-PAITHAN-001`).
+
+### 3. Corrective Action (Immediate Fix)
+- In `sanity.spec.ts` and `e2e-full-workflow.spec.ts`, resolve the target camp using `camps.find(c => c.campCode === 'CHV-MH-PAITHAN-001') || camps[0]` to ensure coordinate-to-boundary parity.
+
+### 4. Preventive Action (Long-Term Prevention)
+- Enforce standard test pattern: any spatial geofence validation test must either query the camp explicitly by code or dynamically extract the test coordinates from `camp.location.latitude` and `camp.location.longitude`.
+
+### 5. Re-Verification Results
+- **Date Re-Tested**: 2026-11-22
+- **Test Results**: All 5 tests across `sanity.spec.ts` and `e2e-full-workflow.spec.ts` pass cleanly (100% green).
+- **Regression Check**: [Passed] Verified against full multi-camp database state.
+- **Sign-off**: [Approved] BUG-0002 resolved and verified. 
+
 ```

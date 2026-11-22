@@ -81,4 +81,30 @@ export class ApiClientHelper {
     const json = await res.json();
     return json.data;
   }
+
+  async seedDatabase(): Promise<any> {
+    const res = await fetch(`${this.baseUrl}/api/v1/master/seed`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!res.ok) throw new Error(`Seed failed with HTTP ${res.status}`);
+    const json = await res.json();
+    return json.data || json;
+  }
+
+  async getDashboard(): Promise<any> {
+    const res = await fetch(`${this.baseUrl}/api/v1/admin/dashboard`);
+    const json = await res.json();
+    return json.data || json;
+  }
+
+  async getReport(reportType: 'admissions' | 'fodder' | 'expenses' | 'inspections'): Promise<any> {
+    let endpoint = `/api/v1/admin/reports/${reportType}`;
+    if (reportType === 'fodder') {
+      endpoint = '/api/v1/admin/reports/fodder-reconciliation';
+    }
+    const res = await fetch(`${this.baseUrl}${endpoint}`);
+    const json = await res.json();
+    return json.data || json;
+  }
 }

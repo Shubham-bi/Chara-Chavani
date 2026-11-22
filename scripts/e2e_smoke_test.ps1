@@ -143,7 +143,9 @@ $camps = Invoke-Api -Method "GET" -Path "/api/v1/camps"
 Assert-Result "Camps Listing Retrieval" ($null -ne $camps -and $camps.success -eq $true -and $camps.data.Count -ge 1) "Active camps found: $($camps.data.Count)"
 
 if ($camps -ne $null -and $camps.data.Count -gt 0) {
-    $campId = $camps.data[0].id
+    $targetCamp = ($camps.data | Where-Object { $_.campCode -eq "CHV-MH-PAITHAN-001" })
+    if ($null -eq $targetCamp) { $targetCamp = $camps.data[0] }
+    $campId = $targetCamp.id
     # Inside coordinate (Paithan camp center: 19.82, 75.33)
     $pointInside = Invoke-Api -Method "GET" -Path "/api/v1/camps/$campId/validate-point?latitude=19.82&longitude=75.33"
     Assert-Result "Camp Geofence Validation (Point Inside)" ($null -ne $pointInside -and $pointInside.success -eq $true -and $pointInside.data.isInside -eq $true) "Status: $($pointInside.data.message)"

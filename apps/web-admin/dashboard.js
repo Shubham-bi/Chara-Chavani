@@ -1393,8 +1393,8 @@ class DashboardApp {
     }
 
     if (reportType === 'admissions') {
-      thead.innerHTML = `<tr><th>टॅग क्र. (Tag)</th><th>पशू प्रकार (Type)</th><th>शेतकरी नाव (Farmer)</th><th>छावणी (Camp)</th><th>प्रवेश दिनांक (Date)</th><th>सद्य स्थिती (Status)</th><th>अनुदान दिवस</th></tr>`;
-      tbody.innerHTML = records.map(r => `<tr><td><strong>${r.tagNumber || 'PENDING'}</strong></td><td>${r.animalType} (${r.breed})</td><td>${r.farmerName}</td><td>${r.campName}</td><td>${r.admissionDate?.split('T')[0]}</td><td><span class="badge badge-success">${r.status}</span></td><td>${r.activeDaysInCamp} दिवस</td></tr>`).join('');
+      thead.innerHTML = `<tr><th>प्रवेश कोड / टॅग क्र.</th><th>पशू प्रकार (Type)</th><th>शेतकरी नाव (Farmer)</th><th>छावणी (Camp)</th><th>प्रवेश दिनांक (Date)</th><th>सद्य स्थिती (Status)</th><th>अनुदान दिवस</th></tr>`;
+      tbody.innerHTML = records.map(r => `<tr><td><strong>${r.admissionCode || r.tagNumber || 'PENDING'}</strong><br><small style="color:var(--text-muted);">${r.tagNumber || ''}</small></td><td>${r.animalCategory || r.animalType || ''} (${r.breed || ''})</td><td>${r.farmerName}</td><td>${r.campName}</td><td>${(r.admittedAt || r.admissionDate || '')?.split('T')[0]}</td><td><span class="badge badge-success">${r.status}</span></td><td>${r.activeDaysInCamp} दिवस</td></tr>`).join('');
     } else if (reportType === 'fodder') {
       thead.innerHTML = `<tr><th>छावणी कोड</th><th>चारा प्रकार (Type)</th><th>स्रोत (Source)</th><th>उपलब्ध साठा (Available)</th><th>एकूण खरेदी</th><th>वाटप (Issued)</th><th>ताळमेळ स्थिती</th></tr>`;
       tbody.innerHTML = records.map(r => `<tr><td><strong>${r.campCode}</strong></td><td>${r.fodderType}</td><td><span class="badge badge-info">${r.source}</span></td><td><strong>${r.availableQuantityKg} kg</strong></td><td>${r.totalPurchasedKg} kg</td><td>${r.totalFeedingIssuedKg} kg</td><td><span class="badge badge-success">Balanced</span></td></tr>`).join('');

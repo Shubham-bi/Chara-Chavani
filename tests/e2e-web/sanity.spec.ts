@@ -25,7 +25,8 @@ test.describe('Chara Chhavani - Sanity Test Suite', () => {
   test('Sanity 02: Camp Geofence boundary verification (Inside vs Outside)', async () => {
     const camps = await api.getCamps();
     expect(camps.length).toBeGreaterThanOrEqual(1);
-    const campId = camps[0].id;
+    const paithanCamp = camps.find(c => c.campCode === 'CHV-MH-PAITHAN-001') || camps[0];
+    const campId = paithanCamp.id;
 
     // Inside coordinates (Paithan camp center: 19.82, 75.33)
     const insideCheck = await api.checkGeofence(campId, 19.82, 75.33);

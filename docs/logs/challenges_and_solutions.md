@@ -889,3 +889,50 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`test:playwright` Desktop = 44/44 PASS, `test:playwright` Mobile = 44/44 PASS, `e2e_smoke_test.ps1` = 19/19 PASS, `dotnet test` = 67/67 PASS, `npm run lint:all` = 0 errors, `npm run typecheck` = 0 errors across 7 workspace packages).
+
+
+---
+
+## [2026-11-22] - Feature / Task: Comprehensive Multi-Camp Database Seeder & Full System Hydration
+
+### 1. Challenge Faced
+- **Context**: Hydrating realistic state relief operations across all 12 database entities for multi-district executive monitoring and statutory audit reports.
+- **Symptoms / Friction**:
+  - The baseline seeder only inserted 1 camp and 1 farmer. Because both already existed in persistent MySQL storage, re-running the seeder created 0 records, leaving admissions at 0, expenses at 0, inspections at 0, and statutory audit reports empty.
+  - Seeding must remain completely idempotent: running `POST /api/v1/master/seed` multiple times must never duplicate records, violate unique indexes (`CampCode`, `AnimalCode`, `AdmissionCode`, `PurchaseCode`, etc.), or corrupt foreign key relations.
+  - Adding multiple camps across districts changed the default sort ordering of `GET /api/v1/camps`, exposing tests that assumed `camps[0]` was always the Paithan camp.
+- **Impact**: Without rich data, the executive dashboard showed 0 active admissions, 0% utilization, empty audit tables, and test coverage was incomplete.
+
+### 2. Solutions Evaluated
+- **Option A**: Truncate and wipe all tables before seeding.
+  - *Pros / Cons*: Simple to write, but destructive. Wipes any live operational records created by test suites or manual actions, risking foreign key constraint failures during truncation.
+- **Option B (Selected)**: Idempotent lookup-and-provision architecture.
+  - *Pros / Cons*: Checks for each entity's existence by business key (`CampCode`, `MobileNumber`, `AnimalCode`, `AdmissionCode`, `PurchaseCode`) before inserting. Safe for development, testing, and continuous deployment environments. Automatically calculates and syncs active animal headcounts and capacity metrics.
+
+### 3. Finalized Solution ("What")
+- Refactored `DatabaseSeeder.cs` (`backend/src/CharaChhavani.Infrastructure/Persistence/DatabaseSeeder.cs`):
+  - Seeded 4 operational cattle relief camps across drought districts (Paithan in Chhatrapati Sambhajinagar, Ambad in Jalna, Georai in Beed, Madha in Solapur) with closed WGS84 polygons (SRID 4326), entrance centroids, and operators.
+  - Seeded 5 farmers with authentic agricultural profiles and 10 livestock animals across native and dairy breeds (Gir, Khillari, Murrah, Osmanabadi, Deccani, Dangi, Red Kandhari).
+  - Seeded approved veterinary inspection records with doctor IDs and GPS coordinates.
+  - Seeded 8 active admissions into camps with geofence validation and updated camp `ActiveAnimalCount`.
+  - Seeded fodder purchase batches across Green, Dry, and Concentrate feeds.
+  - Seeded daily feeding logs and 8 itemized operational expense vouchers across Labour, Water, Electricity, Transportation, and Medical.
+  - Seeded 3 official surprise spot inspections by government officers with headcount audit comparisons and hygiene ratings.
+- Extended `SeedResultDto` with detailed entity counters.
+- Created `tests/e2e-web/seed.spec.ts` executing `POST /api/v1/master/seed` and asserting KPI values, camp table rows, and statutory audit reports.
+- Fixed `apps/web-admin/dashboard.js` admissions report rendering to display animal category and formatted admission dates.
+- Updated `sanity.spec.ts`, `e2e-full-workflow.spec.ts`, and `e2e_smoke_test.ps1` to explicitly query the target camp by `campCode` (`CHV-MH-PAITHAN-001`).
+
+### 4. Technical Rationale ("Why")
+- Fully complies with BRD/FSD guidelines for drought relief governance, ensuring the executive dashboard, geographic map, camp capacity rankings, and statutory audit CSV exports reflect real-world operational state.
+- Idempotency guarantees non-destructive repeatability across test runs and CI/CD pipelines.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes:
+  - Playwright Desktop Chrome: 44/44 passed (100% green).
+  - Playwright Mobile Chrome: 44/44 passed (100% green).
+  - .NET 8 Unit Tests: 67/67 passed (100% green).
+  - PowerShell E2E Smoke Tests: 19/19 passed (100% green).
+  - ESLint & `dotnet format`: 0 errors.
+  - TypeScript Typecheck across all packages: 0 errors.
