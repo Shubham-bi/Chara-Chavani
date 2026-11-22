@@ -42,3 +42,7 @@ ios/build/
 
 # Android Intermediate Builds
 build-android/
+
+# Playwright Test Artifacts
+test-results/
+playwright-report/

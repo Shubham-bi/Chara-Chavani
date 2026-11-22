@@ -651,3 +651,39 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 - Applied: Yes
 - Verified: Yes (`npm run lint:all` = 0 errors, `npm run typecheck` across all 7 packages = 0 errors, `e2e_smoke_test.ps1` = 19/19 PASS, `dotnet test` = 67/67 PASS).
 
+---
+
+## [2026-11-22] - Feature / Task: Recommended MCP Servers, Specialized AI Agents & Playwright E2E Integration
+
+### 1. Challenge Faced
+- **Context**: Consolidating 9 Model Context Protocol (MCP) servers across database, backend, contract, design, emulator, and web automation layers, creating formal specialized agent personas, and implementing an automated Playwright browser test harness for the Web Admin Dashboard while aligning with [ReferanceData/QA/QA roles.md](file:///c:/Users/Shubham/Downloads/0_myDisk/Personal-Projects/Chara-Chhavani/ReferanceData/QA/QA%20roles.md).
+- **Symptoms / Friction**:
+  1. *LDPlayer Location Ambiguity*: The custom LDPlayer MCP was previously added in `tools/mcp-ldplayer` but was not yet indexed in root `mcp_config.json`.
+  2. *Playwright Test Harness Missing*: While backend integration tests and mobile builds existed, automated headless browser testing for the Web Admin Dashboard (`http://localhost:3000`) had not been configured.
+  3. *Unstructured Agent Personas*: Domain prompts were dispersed across documentation rather than codified in structured persona definition documents.
+- **Impact**: Incomplete tool integration and lack of automated UI regression testing for the State Relief Administration Dashboard.
+
+### 2. Solutions Evaluated
+- **Option A**: Manual browser smoke verification using ad-hoc screenshots.
+  - *Pros / Cons*: Fragile, unrepeatable, and violates the Five Quality Gates required in `QA roles.md`.
+- **Option B (Selected)**:
+  - Consolidate all 9 MCP servers in `mcp_config.json` including `ldplayer` (`tools/mcp-ldplayer/mcp_ldplayer/mcp_server.py`) and `playwright`.
+  - Codify formal persona markdown specifications in `.agents/personas/` for 8 specialized agents.
+  - Configure `@playwright/test` targeting `http://localhost:3000` with 6 automated test scenarios verifying titles, KPI cards, camp tables, audit report tabs, CSV exports, and responsive layouts.
+  - Author comprehensive guide `docs/MCP_AND_SPECIALIZED_AGENTS_GUIDE.md` linking all layers.
+
+### 3. Finalized Solution ("What")
+- Configured 9 MCP servers in `mcp_config.json` (`mysql`, `dotnet-execution`, `openapi-swagger`, `figma`, `chrome-devtools`, `git`, `filesystem`, `playwright`, `ldplayer`).
+- Created 8 specialized domain agent personas in `.agents/personas/`.
+- Built Playwright test suite `tests/e2e-web/web-admin-dashboard.spec.ts` (6/6 tests passing in 3.6s).
+- Verified full monorepo compliance across `npm run lint:all`, `npm run typecheck`, `npm run test:playwright`, `scripts/e2e_smoke_test.ps1`, and `dotnet test`.
+
+### 4. Technical Rationale ("Why")
+- Complies with BRD/FSD standards and `ReferanceData/QA/QA roles.md` 10 QA responsibility domains and 5 Quality Gates.
+- Direct programmatic control over LDPlayer 14 Android emulator and Chromium browser allows full automated regression testing across mobile and web.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`test:playwright` = 6/6 PASS, `lint:all` = 0 errors, `typecheck` = 0 errors, `dotnet test` = 67/67 PASS, `e2e_smoke_test.ps1` = 19/19 PASS).
+
+

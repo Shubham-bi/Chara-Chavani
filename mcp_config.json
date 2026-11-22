@@ -11,13 +11,40 @@
         "MYSQL_DATABASE": "chara_chhavani_db"
       }
     },
+    "dotnet-execution": {
+      "command": "dotnet",
+      "args": ["--info"]
+    },
+    "openapi-swagger": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    },
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-figma"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "YOUR_FIGMA_ACCESS_TOKEN"
+      }
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-plugin"]
+    },
     "git": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "."]
     },
-    "openapi-fetch": {
+    "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"]
+    },
+    "ldplayer": {
+      "command": "python",
+      "args": ["tools/mcp-ldplayer/mcp_ldplayer/mcp_server.py"]
     }
   }
 }

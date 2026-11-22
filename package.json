@@ -16,9 +16,11 @@
     "lint:backend:fix": "dotnet format backend/CharaChhavani.sln",
     "lint:all": "npm run lint && npm run lint:backend",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "typecheck:all": "npm run typecheck"
+    "typecheck:all": "npm run typecheck",
+    "test:playwright": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "eslint": "^9.21.0",
