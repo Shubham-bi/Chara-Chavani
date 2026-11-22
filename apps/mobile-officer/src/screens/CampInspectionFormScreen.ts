@@ -11,7 +11,7 @@ export class CampInspectionFormController {
     if (request.physicalAnimalCount < 0) {
       return { success: false, message: 'प्रत्यक्ष जनावरांची संख्या ० किंवा जास्त असावी.' };
     }
-    if (request.cleanlinessScore < 1 || request.cleanlinessScore > 5) {
+    if (request.cleanlinessScore !== undefined && (request.cleanlinessScore < 1 || request.cleanlinessScore > 5)) {
       return { success: false, message: 'स्वच्छता गुण १ ते ५ दरम्यान असावे.' };
     }
 

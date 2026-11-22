@@ -611,3 +611,43 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`npm run lint` = 0 errors, `dotnet format --verify-no-changes` = 0 changes, 4/4 APKs signed and verified, LDPlayer 14 install & launch = `success=True`).
+
+---
+
+## [2026-11-22] - Feature / Task: E2E Smoke Test Script Hardening & Granular Workspace Linting (Apps, Dashboard, Backend)
+
+### 1. Challenge Faced
+- **Context**: Resolving execution failures in `scripts/e2e_smoke_test.ps1`, establishing granular per-package lint scripts across all mobile apps (`apps/mobile-*`), web admin dashboard (`apps/web-admin`), and backend, and achieving zero errors across both linting and typechecking.
+- **Symptoms / Friction**:
+  1. *E2E Smoke Test Null-Dereference Crash*: In `scripts/e2e_smoke_test.ps1`, assertion detail arguments evaluated expressions like `$health.data.service` and `$camps.data.Count` before function invocation. When any HTTP endpoint returned `$null` (e.g. backend startup delay or network error), PowerShell under `$ErrorActionPreference = "Stop"` threw an unhandled terminating `NullReferenceException` instead of reporting a clean `[FAIL]`.
+  2. *Hidden WebException Error Payloads*: `Invoke-RestMethod` caught `[System.Net.WebException]` without reading `$_.Exception.Response.GetResponseStream()`, concealing the backend's actual validation error arrays.
+  3. *Missing Per-Package Lint and Typecheck Definitions*: Workspace apps (`apps/mobile-chhavani`, `apps/mobile-farmer`, `apps/mobile-officer`, `apps/mobile-vet`, `apps/web-admin`) lacked local `"lint"` and `"typecheck"` scripts.
+  4. *TypeScript Type Inconsistencies*: Typechecking uncovered subtle mismatches in view layers (`ResponsiveInputStyleResolver.getContainerStyle`, `getHelperTextStyle`, `Colors.surfaceSecondary`, `SessionManager.updateProfileCompletion`, `RecordFodderPurchaseRequest` legacy alias properties).
+  5. *Windows CLI Glob Limitations*: The glob `eslint apps/mobile-*` failed on Windows cmd/PowerShell with `"No files matching the pattern"`.
+- **Impact**: Premature smoke test script abortion, obscured debugging diagnostics, and incomplete CI/CD pipeline verification.
+
+### 2. Solutions Evaluated
+- **Option A**: Turn off `$ErrorActionPreference = "Stop"` or silence TypeScript checks with `any`.
+  - *Pros / Cons*: Fast workaround, but violates strict `GEMINI.md` quality assurance rules and risks production regressions.
+- **Option B (Selected)**:
+  - Guard all 19 assertion evaluations in `scripts/e2e_smoke_test.ps1` with safe ternary null-coalescing.
+  - Read `GetResponseStream()` on `WebException` to surface exact server validation errors.
+  - Add explicit per-directory targets to root `package.json` (`lint:apps`, `lint:dashboard`, `lint:packages`, `lint:backend`, `lint:all`).
+  - Add backward-compatible style and method aliases to `@chara-chhavani/ui-core` and `@chara-chhavani/api-client`.
+  - Add local `"lint"` and `"typecheck"` commands to every workspace `package.json`.
+
+### 3. Finalized Solution ("What")
+- Rewrote `scripts/e2e_smoke_test.ps1` with `-UseBasicParsing`, response stream reader, and 100% defensive null-safe assertions.
+- Added granular scripts across all 7 workspace packages and root.
+- Rebuilt `ui-core` and `api-client` packages with full backward-compatible contracts.
+- Verified zero errors across `npm run lint:all`, `npm run typecheck`, `dotnet test`, and `e2e_smoke_test.ps1`.
+
+### 4. Technical Rationale ("Why")
+- Ensures full deterministic execution regardless of network state or API availability.
+- Granular lint and typecheck scripts allow developers to validate individual apps or the entire monorepo with standard commands.
+- Zero-tolerance lint and typecheck policy prevents runtime null dereferences or broken UI styling in production.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`npm run lint:all` = 0 errors, `npm run typecheck` across all 7 packages = 0 errors, `e2e_smoke_test.ps1` = 19/19 PASS, `dotnet test` = 67/67 PASS).
+

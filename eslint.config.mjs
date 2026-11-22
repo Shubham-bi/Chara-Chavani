@@ -20,7 +20,7 @@ export default [
     ]
   },
   {
-    files: ['packages/**/*.ts', 'packages/**/*.tsx', 'apps/**/*.ts', 'apps/**/*.tsx'],
+    files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {

@@ -9,7 +9,14 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "lint:apps": "eslint apps/mobile-chhavani apps/mobile-farmer apps/mobile-officer apps/mobile-vet",
+    "lint:dashboard": "eslint apps/web-admin",
+    "lint:packages": "eslint packages/api-client packages/ui-core",
+    "lint:backend": "dotnet format backend/CharaChhavani.sln --verify-no-changes",
+    "lint:backend:fix": "dotnet format backend/CharaChhavani.sln",
+    "lint:all": "npm run lint && npm run lint:backend",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "typecheck:all": "npm run typecheck"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.26.0",

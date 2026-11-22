@@ -71,6 +71,14 @@ export class SessionManager {
     this.notifyListeners();
   }
 
+  public async updateProfileCompletion(isCompleted: boolean): Promise<void> {
+    if (this.currentSession) {
+      this.currentSession.isProfileCompleted = isCompleted;
+      await this.storage.setItem(this.STORAGE_KEY, JSON.stringify(this.currentSession));
+      this.notifyListeners();
+    }
+  }
+
   public async logout(): Promise<void> {
     this.currentSession = null;
     await this.storage.removeItem(this.STORAGE_KEY);

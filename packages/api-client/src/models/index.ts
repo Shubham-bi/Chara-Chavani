@@ -320,6 +320,10 @@ export interface RecordFodderPurchaseRequest {
   unit?: string;
   ratePerUnit: number;
   purchaseDate?: string;
+  // Backward compatibility aliases
+  quantityKg?: number;
+  ratePerKg?: number;
+  supplierName?: string;
 }
 
 export interface RecordFeedingRequest {

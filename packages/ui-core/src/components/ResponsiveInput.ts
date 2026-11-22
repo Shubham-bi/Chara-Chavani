@@ -52,6 +52,10 @@ export class ResponsiveInputStyleResolver {
     };
   }
 
+  public static getContainerStyle(props?: ResponsiveInputProps): BaseLayoutProps {
+    return this.getFieldContainerStyle(props);
+  }
+
   public static getTextInputStyle(props?: ResponsiveInputProps): ComputedTextStyle {
     return {
       ...Typography.bodyLarge(),
@@ -61,12 +65,16 @@ export class ResponsiveInputStyleResolver {
     };
   }
 
-  public static getErrorTextStyle(): ComputedTextStyle {
+  public static getErrorTextStyle(props?: ResponsiveInputProps): ComputedTextStyle {
     return {
       ...Typography.bodySmall(),
-      color: Colors.error,
+      color: props?.hasError ? Colors.error : Colors.textMuted,
       textAlign: 'left',
       flexShrink: 1,
     };
+  }
+
+  public static getHelperTextStyle(props?: ResponsiveInputProps): ComputedTextStyle {
+    return this.getErrorTextStyle(props);
   }
 }

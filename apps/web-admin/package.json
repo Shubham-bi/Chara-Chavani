@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "main": "src/index.ts",
+  "scripts": {
+    "lint": "eslint src server.mjs",
+    "lint:fix": "eslint src server.mjs --fix",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@chara-chhavani/api-client": "^1.0.0"
   }

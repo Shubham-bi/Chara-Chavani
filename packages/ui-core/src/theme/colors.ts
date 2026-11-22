@@ -19,6 +19,7 @@ export const Colors = {
   background: '#F8F9FA',    // Anti-glare soft background
   surface: '#FFFFFF',       // Card surface
   surfaceSubtle: '#F1F3F5',
+  surfaceSecondary: '#F1F3F5',
   surfaceActive: '#E9ECEF',
 
   // Text Hierarchy

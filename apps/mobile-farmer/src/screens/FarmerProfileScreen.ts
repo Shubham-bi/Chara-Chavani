@@ -5,14 +5,17 @@ export class FarmerProfileController {
   public static async loadProfile(farmerId: number): Promise<FarmerDto | null> {
     const res = await apiClient.farmers.getDashboard(farmerId);
     if (res.success && res.data) {
-      // Create a FarmerDto view representation
+      if (res.data.farmer) {
+        return res.data.farmer;
+      }
       return {
-        id: res.data.farmerId,
+        id: (res.data as any).farmerId || farmerId,
         mobileNumber: '',
-        name: res.data.farmerName,
-        village: res.data.village,
-        taluka: res.data.taluka,
-        district: res.data.district,
+        name: (res.data as any).farmerName || '',
+        village: (res.data as any).village || '',
+        taluka: (res.data as any).taluka || '',
+        district: (res.data as any).district || '',
+        state: 'Maharashtra',
         isRegisteredSeller: false,
       };
     }

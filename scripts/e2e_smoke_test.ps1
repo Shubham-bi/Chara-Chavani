@@ -43,7 +43,8 @@ function Assert-Result([string]$TestName, [bool]$Condition, [string]$Details = "
         if ($Details) {
             Write-Host "        $Details" -ForegroundColor Gray
         }
-    } else {
+    }
+    else {
         $script:FailedTests++
         Write-Host " [FAIL] $TestName" -ForegroundColor Red
         if ($Details) {
@@ -59,9 +60,9 @@ function Invoke-Api([string]$Method, [string]$Path, [object]$Body = $null) {
     }
     
     $params = @{
-        Uri = $url
-        Method = $Method
-        Headers = $headers
+        Uri        = $url
+        Method     = $Method
+        Headers    = $headers
         TimeoutSec = $TimeoutSeconds
     }
 
@@ -73,7 +74,8 @@ function Invoke-Api([string]$Method, [string]$Path, [object]$Body = $null) {
     try {
         $res = Invoke-RestMethod @params
         return $res
-    } catch {
+    }
+    catch {
         Write-Host "  [HTTP ERROR] $Method $url : $_" -ForegroundColor Red
         return $null
     }
@@ -97,8 +99,8 @@ $geofencePayload = @{
         @{ latitude = 19.4810; longitude = 75.3910 },
         @{ latitude = 19.4780; longitude = 75.3910 }
     )
-    pointLatitude = 19.4795
-    pointLongitude = 75.3895
+    pointLatitude      = 19.4795
+    pointLongitude     = 75.3895
 }
 $geofenceCheck = Invoke-Api -Method "POST" -Path "/api/v1/health/verify-geofence" -Body $geofencePayload
 Assert-Result "Spatial Ray-Casting Geofence Check" ($null -ne $geofenceCheck -and $geofenceCheck.success -eq $true -and $geofenceCheck.data.isInside -eq $true) "Point inside polygon: $($geofenceCheck.data.isInside)"
@@ -186,6 +188,7 @@ Write-Host "========================================================`n" -Foregro
 
 if ($script:FailedTests -gt 0) {
     exit 1
-} else {
+}
+else {
     exit 0
 }
