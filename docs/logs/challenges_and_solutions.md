@@ -987,3 +987,35 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
   - PowerShell Smoke Runner: 19/19 passed (100% green).
   - ESLint & `dotnet format`: 0 errors.
   - TypeScript Typecheck across all 7 workspaces: 0 errors.
+
+---
+
+## [2026-11-22] - Feature / Task: Playwright Headed Mode Execution & npm Scripts
+
+### 1. Challenge Faced
+- **Context**: Executing Playwright E2E automation in headed mode (`--headed`) across desktop and mobile device emulations, allowing QA engineers and government stakeholders to visually observe automated clicks, form submissions, and Google Maps GIS interactions live on the desktop display.
+- **Symptoms / Friction**:
+  - Running multi-project headed suites with concurrent parallel workers can cause multiple browser windows to rapidly spawn, steal OS focus, and close before the user can observe actions.
+  - Passing `--project` flags through `npm run` scripts without explicit script definitions can trigger npm CLI warnings (`npm warn Unknown cli config "--project"`).
+- **Impact**: Inconvenience for developers wanting a single command to watch live browser execution.
+
+### 2. Solutions Evaluated
+- **Option A**: Rely exclusively on manual `npx playwright test --headed` commands in the terminal.
+  - *Pros / Cons*: Works, but requires remembering CLI flags and syntax; no standard project-level script.
+- **Option B (Selected)**: Add standard npm scripts to root `package.json` (`"test:playwright:headed"` and `"test:playwright:headed:slow"` with 300ms action delay), leverage single-worker serialization (`workers: 1` in `playwright.config.ts`), and run targeted or full test suites in headed mode.
+  - *Pros / Cons*: Provides intuitive one-click visual test execution with zero window thrashing, allowing clear human observation of all 5 application flows.
+
+### 3. Finalized Solution ("What")
+- Updated `package.json` with dedicated scripts:
+  - `"test:playwright:headed": "playwright test --headed"`
+  - `"test:playwright:headed:slow": "playwright test --headed --slowmo=300"`
+- Executed headed test suites across desktop and mobile projects:
+  - First run (Targeted desktop suites: multi-app view, smoke, web-admin-dashboard): 16/16 passed in 16.2s.
+  - Second run (Full suite across all projects): 135/135 passed in 2.9m.
+
+### 4. Technical Rationale ("Why")
+- Adheres to QA best practices in `ReferanceData/QA/QA roles.md`, giving testers visual proof of UI behavior, map rendering, and form submission validation.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (135/135 tests passed 100% green in headed mode).

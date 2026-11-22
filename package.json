@@ -17,7 +17,9 @@
     "lint:all": "npm run lint && npm run lint:backend",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "typecheck:all": "npm run typecheck",
-    "test:playwright": "playwright test"
+    "test:playwright": "playwright test",
+    "test:playwright:headed": "playwright test --headed",
+    "test:playwright:headed:slow": "playwright test --headed --slowmo=300"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",
