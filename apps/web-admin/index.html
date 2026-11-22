@@ -539,6 +539,7 @@
             <label><input type="checkbox" id="toggle-layer-boundaries" checked> Boundaries</label>
             <label><input type="checkbox" id="toggle-layer-markers" checked> Camp Markers</label>
             <label><input type="checkbox" id="toggle-layer-geofence" checked> Actual Geofences</label>
+            <label><input type="checkbox" id="toggle-layer-graticule" checked> Lat/Lon Grid</label>
           </div>
         </div>
 
@@ -557,6 +558,13 @@
           <div class="dossier-row"><span class="dossier-label">Store Fodder:</span><span class="dossier-val" id="dossier-store-stock">35,000 kg</span></div>
           <div class="dossier-row"><span class="dossier-label">In Farm Fodder:</span><span class="dossier-val" id="dossier-infarm-stock">22,000 kg</span></div>
           <div class="dossier-row"><span class="dossier-label">Geofence Coordinates:</span><span class="dossier-val" id="dossier-geofence-status">4 Vertices (Verified)</span></div>
+          <div id="dossier-geofence-details" style="font-size: 11px; background: var(--surface-subtle); padding: 8px; border-radius: 4px; border: 1px solid var(--border); font-family: monospace;">
+            <div>V1: 19.8100°N, 75.3200°E (SW Corner)</div>
+            <div>V2: 19.8100°N, 75.3400°E (SE Corner)</div>
+            <div>V3: 19.8300°N, 75.3400°E (NE Corner)</div>
+            <div>V4: 19.8300°N, 75.3200°E (NW Corner)</div>
+            <div style="margin-top: 4px; color: var(--primary); font-weight: 600;">Perimeter: ~8.8 km | Area: ~462 Hectares</div>
+          </div>
           <div style="margin-top: 8px;">
             <button class="btn" style="width: 100%; justify-content: center; background: var(--primary); color: white;" onclick="alert('Viewing Complete Camp Operational Record Dossier.')">🔍 Open Full Camp Information Dossier</button>
           </div>
