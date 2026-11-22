@@ -55,8 +55,99 @@ test.describe('Chara Chhavani - State Relief Administration Web Admin Dashboard'
     expect(count).toBeGreaterThanOrEqual(1);
   });
 
-  test('should display and navigate audit and compliance report tabs', async ({ page }) => {
+  test('should render and navigate through all 8 Power BI analytical section tabs', async ({ page }) => {
     await page.goto('/');
+
+    const sections = [
+      { tab: 'overview', sectionId: '#section-overview' },
+      { tab: 'geographic', sectionId: '#section-geographic' },
+      { tab: 'camps', sectionId: '#section-camps' },
+      { tab: 'animals', sectionId: '#section-animals' },
+      { tab: 'veterinary', sectionId: '#section-veterinary' },
+      { tab: 'fodder', sectionId: '#section-fodder' },
+      { tab: 'financial', sectionId: '#section-financial' },
+      { tab: 'reports', sectionId: '#section-reports' },
+    ];
+
+    for (const sec of sections) {
+      const tabBtn = page.locator(`button[data-section="${sec.tab}"]`);
+      await expect(tabBtn).toBeVisible();
+      await tabBtn.click();
+      await expect(tabBtn).toHaveClass(/active/);
+      const sectionEl = page.locator(sec.sectionId);
+      await expect(sectionEl).toBeVisible();
+    }
+  });
+
+  test('should display interactive Geographic Intelligence Map and support metric toggles', async ({ page }) => {
+    await page.goto('/');
+
+    // Geographic viewport is on Overview
+    const mapViewport = page.locator('#map-viewport');
+    await expect(mapViewport).toBeVisible();
+
+    // Map legend
+    const legend = page.locator('#map-legend-container');
+    await expect(legend).toBeVisible();
+
+    // Metric selector toggle
+    const metricSelect = page.locator('#filter-metric');
+    await expect(metricSelect).toBeVisible();
+
+    // Change to animals metric
+    await metricSelect.selectOption('animals');
+    await page.waitForTimeout(300);
+    await expect(legend).toBeVisible();
+
+    // Change to utilization metric
+    await metricSelect.selectOption('utilization');
+    await page.waitForTimeout(300);
+    await expect(legend).toBeVisible();
+  });
+
+  test('should open Camp Dossier Side Panel when camp row is clicked', async ({ page }) => {
+    await page.goto('/');
+
+    // Ensure camps are loaded
+    await page.waitForTimeout(1000);
+    const firstCampRow = page.locator('#camps-table-body tr').first();
+    await expect(firstCampRow).toBeVisible();
+
+    // Click camp row
+    await firstCampRow.click();
+
+    // Verify Camp Dossier Side Panel
+    const dossierPanel = page.locator('#camp-dossier-panel');
+    await expect(dossierPanel).toBeVisible();
+
+    const campName = page.locator('#dossier-camp-name');
+    await expect(campName).toBeVisible();
+    const campCode = page.locator('#dossier-camp-code');
+    await expect(campCode).toBeVisible();
+    const capacity = page.locator('#dossier-capacity');
+    await expect(capacity).toBeVisible();
+  });
+
+  test('should filter geographic hierarchy and update breadcrumbs', async ({ page }) => {
+    await page.goto('/');
+
+    const districtFilter = page.locator('#filter-district');
+    await expect(districtFilter).toBeVisible();
+
+    // Select Chhatrapati Sambhajinagar
+    await districtFilter.selectOption('Chhatrapati Sambhajinagar');
+    await page.waitForTimeout(300);
+
+    // Verify breadcrumbs contain district name
+    const breadcrumbs = page.locator('#map-breadcrumbs');
+    await expect(breadcrumbs).toContainText('Chhatrapati Sambhajinagar');
+  });
+
+  test('should display and navigate audit and compliance report tabs inside Reports section', async ({ page }) => {
+    await page.goto('/');
+
+    // Navigate to Reports section
+    await page.locator('button[data-section="reports"]').click();
 
     const tabAdmissions = page.locator('#tab-admissions');
     const tabFodder = page.locator('#tab-fodder');
@@ -87,8 +178,11 @@ test.describe('Chara Chhavani - State Relief Administration Web Admin Dashboard'
     await expect(tabExpenses).not.toHaveClass(/active/);
   });
 
-  test('should display all four CSV audit export download links', async ({ page }) => {
+  test('should display all four CSV audit export download links inside Reports section', async ({ page }) => {
     await page.goto('/');
+
+    // Navigate to Reports section
+    await page.locator('button[data-section="reports"]').click();
 
     const exportContainer = page.locator('#csv-export-actions');
     await expect(exportContainer).toBeVisible();

@@ -8,15 +8,22 @@
     :root {
       --primary: #1B5E20;
       --primary-light: #E8F5E9;
+      --primary-dark: #0D3810;
       --secondary: #E65100;
+      --secondary-light: #FFF3E0;
       --bg: #F8F9FA;
       --surface: #FFFFFF;
+      --surface-subtle: #F1F3F5;
       --text: #1A202C;
       --text-muted: #64748B;
       --border: #E2E8F0;
       --success: #2E7D32;
       --warning: #F57C00;
       --danger: #C62828;
+      --info: #0288D1;
+    }
+    * {
+      box-sizing: border-box;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -29,36 +36,252 @@
     .header {
       background-color: var(--primary);
       color: white;
-      padding: 16px 24px;
+      padding: 14px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
     }
     .container {
-      max-width: 1200px;
-      margin: 24px auto;
+      max-width: 1360px;
+      margin: 16px auto;
       padding: 0 16px;
     }
+    
+    /* Global Navigation Bar (Power BI Section Tabs) */
+    .nav-tabs-bar {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 6px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+      overflow-x: auto;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .nav-tab-btn {
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .nav-tab-btn:hover {
+      background: var(--surface-subtle);
+      color: var(--primary);
+    }
+    .nav-tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Breadcrumbs & Global Filters Bar */
+    .filter-bar {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .breadcrumb-item {
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .breadcrumb-item.active {
+      color: var(--text);
+      text-decoration: none;
+      cursor: default;
+    }
+    .filter-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .filter-select {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+    }
+    .filter-select:focus {
+      border-color: var(--primary);
+    }
+
+    /* KPI Grids */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
     }
     .card {
       background: var(--surface);
       border-radius: 8px;
-      padding: 20px;
+      padding: 18px;
       border: 1px solid var(--border);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .metric-title {
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .metric-value {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 700;
       color: var(--primary);
+      margin-top: 6px;
+      line-height: 1.2;
+    }
+    .metric-subtext {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Map Section Styling */
+    .map-card-wrapper {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 992px) {
+      .map-card-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+    .map-container {
+      background: #FFFFFF;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 16px;
+      position: relative;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+    }
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .map-svg-viewport {
+      width: 100%;
+      height: 420px;
+      background: #F1F5F9;
+      border-radius: 6px;
+      border: 1px solid #CBD5E1;
+      overflow: hidden;
+      position: relative;
+    }
+    .map-legend {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .legend-color-box {
+      width: 16px;
+      height: 12px;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* Layer Controls */
+    .map-layer-toggles {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
       margin-top: 8px;
     }
+    .map-layer-toggles label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    /* Camp Details Dossier Panel */
+    .camp-dossier-panel {
+      background: var(--surface);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .dossier-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .dossier-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 4px 0;
+      border-bottom: 1px dashed #F1F5F9;
+    }
+    .dossier-label {
+      color: var(--text-muted);
+    }
+    .dossier-val {
+      font-weight: 600;
+    }
+
+    /* Tables */
     .table-container {
       background: var(--surface);
       border-radius: 8px;
@@ -70,14 +293,14 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 14px;
+      font-size: 13px;
     }
     th, td {
-      padding: 12px 16px;
+      padding: 10px 14px;
       border-bottom: 1px solid var(--border);
     }
     th {
-      background-color: #F1F3F5;
+      background-color: var(--surface-subtle);
       font-weight: 600;
       color: #334155;
     }
@@ -86,18 +309,20 @@
     }
     .badge {
       display: inline-block;
-      padding: 4px 8px;
+      padding: 3px 8px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
     }
     .badge-success { background: #E8F5E9; color: #1B5E20; }
     .badge-warning { background: #FFF3E0; color: #E65100; }
+    .badge-danger { background: #FFEBEE; color: #C62828; }
     .badge-info { background: #E1F5FE; color: #0277BD; }
+
     .progress-bar-bg {
       background-color: #E2E8F0;
       border-radius: 4px;
-      height: 8px;
+      height: 6px;
       width: 100%;
       overflow: hidden;
       margin-top: 4px;
@@ -107,133 +332,519 @@
       height: 100%;
       border-radius: 4px;
     }
+
+    /* Audit Tabs */
     .tabs-header {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       border-bottom: 2px solid var(--border);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       overflow-x: auto;
     }
     .tab-btn {
-      padding: 10px 18px;
+      padding: 8px 16px;
       background: none;
       border: none;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
       border-bottom: 2px solid transparent;
       margin-bottom: -2px;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .tab-btn.active {
       color: var(--primary);
       border-bottom-color: var(--primary);
     }
+
     .btn {
-      display: inline-block;
-      padding: 8px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
       border-radius: 6px;
       text-decoration: none;
       font-weight: 600;
-      font-size: 13px;
+      font-size: 12px;
+      cursor: pointer;
+      border: none;
       transition: opacity 0.2s;
     }
     .btn:hover {
       opacity: 0.9;
     }
+
+    /* Analytical Sections */
+    .analytics-section {
+      display: none;
+    }
+    .analytics-section.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
+  <!-- Header -->
   <div class="header">
-    <h2>महाराष्ट्र शासन - चारा छावणी राज्यस्तरीय डॅशबोर्ड (State Relief Dashboard)</h2>
-    <div>Admin: <strong>State Relief Commissioner</strong></div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 24px;">🏛️</span>
+      <div>
+        <h2>महाराष्ट्र शासन - चारा छावणी राज्यस्तरीय डॅशबोर्ड (State Relief Dashboard)</h2>
+        <div style="font-size: 11px; opacity: 0.85;">Revenue & Forest Department, Disaster Management Division</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span id="last-refresh-time">Synced: Live</span>
+      <div>Admin: <strong>State Relief Commissioner</strong></div>
+      <button class="btn" id="btn-refresh" style="background: white; color: var(--primary);">↻ Refresh</button>
+    </div>
   </div>
 
   <div class="container" id="root">
-    <!-- Top KPI Grid -->
-    <div class="grid" id="metrics-grid">
-      <div class="card">
-        <div style="color: var(--text-muted); font-size: 13px;">एकूण नोंदणीकृत शेतकरी / Total Farmers</div>
-        <div class="metric-value" id="total-farmers">--</div>
+    <!-- Power BI Analytical Section Tabs Bar -->
+    <div class="nav-tabs-bar" id="main-nav-bar">
+      <button class="nav-tab-btn active" data-section="overview">📊 Overview</button>
+      <button class="nav-tab-btn" data-section="geographic">🗺️ Geographic Analytics</button>
+      <button class="nav-tab-btn" data-section="camps">⛺ Camp Analytics</button>
+      <button class="nav-tab-btn" data-section="animals">🐂 Animal Analytics</button>
+      <button class="nav-tab-btn" data-section="veterinary">🩺 Veterinary Verification</button>
+      <button class="nav-tab-btn" data-section="fodder">🌾 Fodder & Stock</button>
+      <button class="nav-tab-btn" data-section="financial">💰 Financial Analytics</button>
+      <button class="nav-tab-btn" data-section="reports">📄 Reports & Exports</button>
+    </div>
+
+    <!-- Global Breadcrumb & Filter Bar -->
+    <div class="filter-bar">
+      <div class="breadcrumbs" id="map-breadcrumbs">
+        <span class="breadcrumb-item" data-level="state">Maharashtra (State)</span>
+        <span class="breadcrumb-separator">›</span>
+        <span class="breadcrumb-item active" id="breadcrumb-district">District: All</span>
+        <span class="breadcrumb-separator">›</span>
+        <span class="breadcrumb-item active" id="breadcrumb-taluka">Taluka: All</span>
       </div>
-      <div class="card">
-        <div style="color: var(--text-muted); font-size: 13px;">एकूण मंजूर जनावरे / Total Admitted Cattle</div>
-        <div class="metric-value" id="total-cattle">--</div>
-      </div>
-      <div class="card">
-        <div style="color: var(--text-muted); font-size: 13px;">सक्रिय चारा छावण्या / Active Camps</div>
-        <div class="metric-value" id="active-camps">--</div>
-      </div>
-      <div class="card">
-        <div style="color: var(--text-muted); font-size: 13px;">क्षमता वापर / Capacity Utilization</div>
-        <div class="metric-value" id="utilization">--</div>
+
+      <div class="filter-controls">
+        <select class="filter-select" id="filter-district">
+          <option value="">All Districts (महाराष्ट्र सर्व जिल्हे)</option>
+          <option value="Chhatrapati Sambhajinagar">Chhatrapati Sambhajinagar</option>
+          <option value="Jalna">Jalna</option>
+          <option value="Beed">Beed</option>
+          <option value="Dharashiv">Dharashiv</option>
+          <option value="Solapur">Solapur</option>
+          <option value="Ahmednagar">Ahmednagar</option>
+          <option value="Parbhani">Parbhani</option>
+          <option value="Latur">Latur</option>
+          <option value="Nanded">Nanded</option>
+          <option value="Hingoli">Hingoli</option>
+        </select>
+
+        <select class="filter-select" id="filter-taluka">
+          <option value="">All Talukas (सर्व तालुके)</option>
+        </select>
+
+        <select class="filter-select" id="filter-metric">
+          <option value="camps">Map Metric: Camp Count</option>
+          <option value="animals">Map Metric: Admitted Animals</option>
+          <option value="utilization">Map Metric: Capacity Utilization %</option>
+        </select>
+
+        <button class="btn" id="btn-reset-filters" style="background: var(--surface-subtle); color: var(--text);">Clear Filters</button>
       </div>
     </div>
 
-    <!-- Active Cattle Camps Overview -->
-    <div class="card" style="margin-bottom: 24px;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="margin: 0;">चारा छावण्या क्षमता व सद्यस्थिती / Cattle Camps Capacity Monitoring</h3>
-        <span class="badge badge-info" id="camps-count-badge">Loading...</span>
+    <!-- ==================== SECTION 1: OVERVIEW ==================== -->
+    <div class="analytics-section active" id="section-overview">
+      <!-- Top Primary KPI Grid -->
+      <div class="grid" id="metrics-grid">
+        <div class="card">
+          <div class="metric-title">एकूण नोंदणीकृत शेतकरी / Total Farmers</div>
+          <div class="metric-value" id="total-farmers">--</div>
+          <div class="metric-subtext">Direct beneficiary households</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">एकूण मंजूर जनावरे / Total Admitted Cattle</div>
+          <div class="metric-value" id="total-cattle">--</div>
+          <div class="metric-subtext">Active cattle inside camps</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">सक्रिय चारा छावण्या / Active Camps</div>
+          <div class="metric-value" id="active-camps">--</div>
+          <div class="metric-subtext">Government approved relief centres</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">क्षमता वापर / Capacity Utilization</div>
+          <div class="metric-value" id="utilization">--</div>
+          <div class="metric-subtext">Admitted vs Total capacity</div>
+        </div>
       </div>
-      <div class="table-container" id="camps-table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>छावणी कोड (Code)</th>
-              <th>छावणीचे नाव (Camp Name)</th>
-              <th>जिल्हा / तालुका (District/Taluka)</th>
-              <th>एकूण क्षमता (Capacity)</th>
-              <th>सद्य जनावरे (Active Cattle)</th>
-              <th>वापर टक्केवारी (Utilization %)</th>
-              <th>भौगोलिक कुंपण (Geofence)</th>
-            </tr>
-          </thead>
-          <tbody id="camps-table-body">
-            <tr>
-              <td colspan="7" style="text-align: center; color: var(--text-muted);">माहिती लोड होत आहे... (Fetching live camps...)</td>
-            </tr>
-          </tbody>
-        </table>
+
+      <!-- Secondary KPI Grid -->
+      <div class="grid" id="secondary-kpis-grid" style="margin-bottom: 24px;">
+        <div class="card">
+          <div class="metric-title">प्रलंबित तपासणी / Pending Vet Approval</div>
+          <div class="metric-value" id="kpi-pending-vet" style="color: var(--warning);">--</div>
+          <div class="metric-subtext">Awaiting doctor examination</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">मंजूर जनावरे / Verified Animals</div>
+          <div class="metric-value" id="kpi-verified-animals" style="color: var(--success);">--</div>
+          <div class="metric-subtext">Officially certified livestock</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">उपलब्ध चारा साठा / Total Fodder Stock</div>
+          <div class="metric-value" id="kpi-fodder-stock">-- kg</div>
+          <div class="metric-subtext">Store + In Farm balance</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">एकूण शासकीय खर्च / Total Relief Spend</div>
+          <div class="metric-value" id="kpi-total-spend" style="color: #0288D1;">₹ --</div>
+          <div class="metric-subtext">Fodder procurement + operations</div>
+        </div>
+      </div>
+
+      <!-- Geographic Map & Camp Dossier Container -->
+      <div class="map-card-wrapper">
+        <div class="map-container">
+          <div class="map-header">
+            <div>
+              <h3 style="margin: 0; font-size: 15px;">भौगोलिक माहिती नकाशा / Geographic Intelligence Map</h3>
+              <span style="font-size: 12px; color: var(--text-muted);" id="map-scope-label">State Level View: Maharashtra Districts</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn" id="btn-map-drillup" style="background: var(--surface-subtle); color: var(--text);" disabled>⬆ Drill Up</button>
+              <button class="btn" id="btn-map-reset" style="background: var(--surface-subtle); color: var(--text);">↺ Reset View</button>
+            </div>
+          </div>
+
+          <!-- Interactive SVG/Vector Map Canvas -->
+          <div class="map-svg-viewport" id="map-viewport">
+            <!-- Dynamically rendered SVG elements -->
+          </div>
+
+          <!-- Dynamic Map Legend -->
+          <div class="map-legend" id="map-legend-container">
+            <span style="font-weight: 600;">Legend:</span>
+            <div class="legend-item"><div class="legend-color-box" style="background: #E2E8F0;"></div><span>0</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background: #BAE6FD;"></div><span>1–5</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background: #7DD3FC;"></div><span>6–10</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background: #0284C7;"></div><span>11–20</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background: #0369A1;"></div><span>21–50</span></div>
+            <div class="legend-item"><div class="legend-color-box" style="background: #0C4A6E;"></div><span>> 50</span></div>
+          </div>
+
+          <!-- Layer Visibility Toggles -->
+          <div class="map-layer-toggles">
+            <label><input type="checkbox" id="toggle-layer-boundaries" checked> Boundaries</label>
+            <label><input type="checkbox" id="toggle-layer-markers" checked> Camp Markers</label>
+            <label><input type="checkbox" id="toggle-layer-geofence" checked> Actual Geofences</label>
+          </div>
+        </div>
+
+        <!-- Selected Camp Dossier Side Panel -->
+        <div class="camp-dossier-panel" id="camp-dossier-panel">
+          <div class="dossier-header">
+            <h4 style="margin: 0; color: var(--primary);" id="dossier-camp-name">Paithan Shasan-Manya Chhavani</h4>
+            <span class="badge badge-success" id="dossier-camp-status">Active Camp</span>
+          </div>
+          <div class="dossier-row"><span class="dossier-label">Camp Code:</span><span class="dossier-val" id="dossier-camp-code">CMP-PTN-001</span></div>
+          <div class="dossier-row"><span class="dossier-label">Location:</span><span class="dossier-val" id="dossier-location">Pachod, Paithan, Sambhajinagar</span></div>
+          <div class="dossier-row"><span class="dossier-label">Operator:</span><span class="dossier-val" id="dossier-operator">Rameshwar B. Shinde</span></div>
+          <div class="dossier-row"><span class="dossier-label">Configured Capacity:</span><span class="dossier-val" id="dossier-capacity">500 Cattle</span></div>
+          <div class="dossier-row"><span class="dossier-label">Currently Admitted:</span><span class="dossier-val" id="dossier-admitted" style="color: var(--primary);">0 Cattle</span></div>
+          <div class="dossier-row"><span class="dossier-label">Available Capacity:</span><span class="dossier-val" id="dossier-available">500 Slots</span></div>
+          <div class="dossier-row"><span class="dossier-label">Store Fodder:</span><span class="dossier-val" id="dossier-store-stock">35,000 kg</span></div>
+          <div class="dossier-row"><span class="dossier-label">In Farm Fodder:</span><span class="dossier-val" id="dossier-infarm-stock">22,000 kg</span></div>
+          <div class="dossier-row"><span class="dossier-label">Geofence Coordinates:</span><span class="dossier-val" id="dossier-geofence-status">4 Vertices (Verified)</span></div>
+          <div style="margin-top: 8px;">
+            <button class="btn" style="width: 100%; justify-content: center; background: var(--primary); color: white;" onclick="alert('Viewing Complete Camp Operational Record Dossier.')">🔍 Open Full Camp Information Dossier</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cattle Camps Capacity Monitoring Table -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="margin: 0; font-size: 15px;">चारा छावण्या क्षमता व सद्यस्थिती / Cattle Camps Capacity Monitoring</h3>
+          <span class="badge badge-info" id="camps-count-badge">Loading...</span>
+        </div>
+        <div class="table-container" id="camps-table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>छावणी कोड (Code)</th>
+                <th>छावणीचे नाव (Camp Name)</th>
+                <th>जिल्हा / तालुका (District/Taluka)</th>
+                <th>एकूण क्षमता (Capacity)</th>
+                <th>सद्य जनावरे (Active Cattle)</th>
+                <th>वापर टक्केवारी (Utilization %)</th>
+                <th>भौगोलिक कुंपण (Geofence)</th>
+              </tr>
+            </thead>
+            <tbody id="camps-table-body">
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted);">माहिती लोड होत आहे... (Fetching live camps...)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Government Audit & Compliance Reports -->
-    <div class="card" style="margin-bottom: 24px;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-        <div>
-          <h3 style="margin: 0 0 4px 0;">शासकीय तपासणी व अहवाल / Government Audit & Compliance Reports</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 13px;">Live preview and direct RFC 4180 CSV export with UTF-8 BOM encoding for Microsoft Excel:</p>
+    <!-- ==================== SECTION 2: GEOGRAPHIC ANALYTICS ==================== -->
+    <div class="analytics-section" id="section-geographic">
+      <div class="card" style="margin-bottom: 16px;">
+        <h3>भौगोलिक विश्‍लेषण व वितरण / Geographic Drilldown & Administrative Distribution</h3>
+        <p style="color: var(--text-muted); font-size: 13px;">Hierarchical breakdown across Maharashtra administrative units with choropleth rankings:</p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>प्रशासकीय विभाग / Administrative Area</th>
+                <th>पालक विभाग / Parent Area</th>
+                <th>नोंदणीकृत छावण्या / Camps</th>
+                <th>मंजूर जनावरे / Admitted</th>
+                <th>एकूण क्षमता / Total Capacity</th>
+                <th>वापर टक्केवारी / Utilization</th>
+                <th>रंग श्रेणी / Color Grade</th>
+                <th>क्रिया / Action</th>
+              </tr>
+            </thead>
+            <tbody id="geo-drilldown-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
         </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="csv-export-actions">
-          <a href="/api/v1/admin/reports/export?reportType=admissions" class="btn" style="background: var(--primary); color: white;">📥 Admissions CSV</a>
-          <a href="/api/v1/admin/reports/export?reportType=fodder" class="btn" style="background: var(--success); color: white;">📥 Fodder Balance CSV</a>
-          <a href="/api/v1/admin/reports/export?reportType=expenses" class="btn" style="background: #0277BD; color: white;">📥 Expenses CSV</a>
-          <a href="/api/v1/admin/reports/export?reportType=inspections" class="btn" style="background: var(--secondary); color: white;">📥 Inspection Logs CSV</a>
+      </div>
+    </div>
+
+    <!-- ==================== SECTION 3: CAMP ANALYTICS ==================== -->
+    <div class="analytics-section" id="section-camps">
+      <div class="grid" style="margin-bottom: 16px;">
+        <div class="card">
+          <div class="metric-title">सक्रिय छावण्या / Active Camps</div>
+          <div class="metric-value" id="camp-analytics-active">--</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">एकूण मंजूर क्षमता / Total Configured Capacity</div>
+          <div class="metric-value" id="camp-analytics-total-cap">--</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">उपलब्ध क्षमता / Available Animal Capacity</div>
+          <div class="metric-value" id="camp-analytics-avail-cap" style="color: var(--success);">--</div>
         </div>
       </div>
 
-      <!-- Tabs Header -->
-      <div class="tabs-header">
-        <button class="tab-btn active" id="tab-admissions" data-tab="admissions">प्रवेश व सोडवणूक (Admissions)</button>
-        <button class="tab-btn" id="tab-fodder" data-tab="fodder">चारा साठा ताळमेळ (Fodder Balance)</button>
-        <button class="tab-btn" id="tab-expenses" data-tab="expenses">खर्च तपशील (Expenses)</button>
-        <button class="tab-btn" id="tab-inspections" data-tab="inspections">क्षेत्रीय तपासणी (Inspections)</button>
+      <div class="card" style="margin-bottom: 16px;">
+        <h3>छावणी क्षमता वापर रँकिंग / Camp Capacity Utilization Rankings</h3>
+        <p style="color: var(--text-muted); font-size: 13px;">Camps sorted by utilization rate with near-capacity threshold alerts (&gt; 90%):</p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>छावणीचे नाव (Camp Name)</th>
+                <th>जिल्हा / तालुका</th>
+                <th>एकूण क्षमता</th>
+                <th>सद्य जनावरे</th>
+                <th>उपलब्ध स्लॉट</th>
+                <th>वापर टक्केवारी</th>
+                <th>स्थिती सूचना (Alert)</th>
+              </tr>
+            </thead>
+            <tbody id="camp-rankings-table-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SECTION 4: ANIMAL ANALYTICS ==================== -->
+    <div class="analytics-section" id="section-animals">
+      <div class="grid" style="margin-bottom: 16px;">
+        <div class="card">
+          <div class="metric-title">एकूण नोंदणीकृत जनावरे / Total Animals</div>
+          <div class="metric-value" id="animal-stat-total">--</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">मंजूर / Approved for Camp</div>
+          <div class="metric-value" id="animal-stat-verified" style="color: var(--success);">--</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">नाकारलेली / Rejected Animals</div>
+          <div class="metric-value" id="animal-stat-rejected" style="color: var(--danger);">--</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">सोडलेली / Discharged / Released</div>
+          <div class="metric-value" id="animal-stat-released">--</div>
+        </div>
       </div>
 
-      <!-- Report Table Preview Container -->
-      <div class="table-container" id="report-table-container">
-        <table>
-          <thead id="report-table-head">
-            <!-- Dynamic Headers -->
-          </thead>
-          <tbody id="report-table-body">
-            <tr>
-              <td colspan="7" style="text-align: center; color: var(--text-muted);">माहिती लोड होत आहे... (Loading audit records...)</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="card" style="margin-bottom: 16px;">
+        <h3>पशु प्रकार वितरण / Livestock Category Breakdown</h3>
+        <div class="grid" style="margin-top: 12px;" id="animal-type-grid">
+          <div class="card" style="border-left: 4px solid var(--primary);">
+            <div style="font-weight: 600;">गाय (Cow)</div>
+            <div style="font-size: 22px; font-weight: 700;" id="type-cow-count">--</div>
+          </div>
+          <div class="card" style="border-left: 4px solid var(--secondary);">
+            <div style="font-weight: 600;">म्हैस (Buffalo)</div>
+            <div style="font-size: 22px; font-weight: 700;" id="type-buffalo-count">--</div>
+          </div>
+          <div class="card" style="border-left: 4px solid #0288D1;">
+            <div style="font-weight: 600;">शेळी (Goat)</div>
+            <div style="font-size: 22px; font-weight: 700;" id="type-goat-count">--</div>
+          </div>
+          <div class="card" style="border-left: 4px solid #7B1FA2;">
+            <div style="font-weight: 600;">मेंढी (Sheep)</div>
+            <div style="font-size: 22px; font-weight: 700;" id="type-sheep-count">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SECTION 5: VETERINARY VERIFICATION ==================== -->
+    <div class="analytics-section" id="section-veterinary">
+      <div class="grid" style="margin-bottom: 16px;">
+        <div class="card">
+          <div class="metric-title">एकूण तपासणी विनंत्या / Total Requests</div>
+          <div class="metric-value" id="vet-total-req">--</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">तपासणी पूर्ण दर / Verification Rate</div>
+          <div class="metric-value" id="vet-approval-rate" style="color: var(--success);">--%</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">प्रलंबित विनंत्या / Pending Queue</div>
+          <div class="metric-value" id="vet-pending-count" style="color: var(--warning);">--</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <h3>जिल्हानिहाय प्रलंबित तपासणी यादी / District-wise Pending Verification Queue</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>जिल्हा (District)</th>
+                <th>प्रलंबित तपासणी विनंत्या (Pending Count)</th>
+                <th>प्राधान्य स्थिती (Priority)</th>
+              </tr>
+            </thead>
+            <tbody id="vet-pending-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SECTION 6: FODDER & STOCK ==================== -->
+    <div class="analytics-section" id="section-fodder">
+      <div class="grid" style="margin-bottom: 16px;">
+        <div class="card">
+          <div class="metric-title">शासकीय कोठार साठा / Store Stock</div>
+          <div class="metric-value" id="fodder-store-stock" style="color: var(--primary);">-- kg</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">शेतकरी पुरवठा साठा / In Farm Stock</div>
+          <div class="metric-value" id="fodder-infarm-stock" style="color: var(--secondary);">-- kg</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">एकूण खरेदी / Total Fodder Procured</div>
+          <div class="metric-value" id="fodder-total-purchased">-- kg</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">दैनिक वाटप / Daily Consumption</div>
+          <div class="metric-value" id="fodder-total-feeding">-- kg</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <h3>छावणीनिहाय उपलब्ध चारा साठा / Top Cattle Camps by Fodder Inventory</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>छावणीचे नाव</th>
+                <th>जिल्हा</th>
+                <th>कोठार साठा (Store kg)</th>
+                <th>शेतकरी साठा (In Farm kg)</th>
+                <th>एकूण उपलब्ध साठा (Total kg)</th>
+              </tr>
+            </thead>
+            <tbody id="fodder-camps-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SECTION 7: FINANCIAL ANALYTICS ==================== -->
+    <div class="analytics-section" id="section-financial">
+      <div class="grid" style="margin-bottom: 16px;">
+        <div class="card">
+          <div class="metric-title">चारा खरेदी खर्च / Fodder Procurement</div>
+          <div class="metric-value" id="fin-fodder-spend" style="color: var(--primary);">₹ --</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">प्रशासकीय व दैनंदिन खर्च / Operational Expenses</div>
+          <div class="metric-value" id="fin-operational-spend" style="color: var(--secondary);">₹ --</div>
+        </div>
+        <div class="card">
+          <div class="metric-title">एकूण शासकीय अनुदान / Combined Expenditure</div>
+          <div class="metric-value" id="fin-combined-spend" style="color: #0288D1;">₹ --</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <h3>दैनंदिन प्रशासकीय खर्च वर्गवारी / Itemized Operational Expense Breakdown</h3>
+        <div class="grid" style="margin-top: 12px;" id="expense-category-grid">
+          <div class="card"><div>मजुरी (Labour)</div><div style="font-size: 20px; font-weight: 700;" id="exp-cat-labour">₹ --</div></div>
+          <div class="card"><div>पाणी पुरवठा (Water Supply)</div><div style="font-size: 20px; font-weight: 700;" id="exp-cat-water">₹ --</div></div>
+          <div class="card"><div>वीज बिल (Electricity)</div><div style="font-size: 20px; font-weight: 700;" id="exp-cat-electricity">₹ --</div></div>
+          <div class="card"><div>वाहतूक (Transportation)</div><div style="font-size: 20px; font-weight: 700;" id="exp-cat-transport">₹ --</div></div>
+          <div class="card"><div>इतर खर्च (Other)</div><div style="font-size: 20px; font-weight: 700;" id="exp-cat-other">₹ --</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SECTION 8: REPORTS & EXPORTS ==================== -->
+    <div class="analytics-section" id="section-reports">
+      <div class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+          <div>
+            <h3 style="margin: 0 0 4px 0;">शासकीय तपासणी व अहवाल / Government Audit & Compliance Reports</h3>
+            <p style="margin: 0; color: var(--text-muted); font-size: 13px;">Direct RFC 4180 CSV export with UTF-8 BOM encoding for Microsoft Excel:</p>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="csv-export-actions">
+            <!-- Dynamically populated or static anchors -->
+          </div>
+        </div>
+
+        <!-- Tabs Header -->
+        <div class="tabs-header">
+          <button class="tab-btn active" id="tab-admissions" data-tab="admissions">प्रवेश व सोडवणूक (Admissions)</button>
+          <button class="tab-btn" id="tab-fodder" data-tab="fodder">चारा साठा ताळमेळ (Fodder Balance)</button>
+          <button class="tab-btn" id="tab-expenses" data-tab="expenses">खर्च तपशील (Expenses)</button>
+          <button class="tab-btn" id="tab-inspections" data-tab="inspections">क्षेत्रीय तपासणी (Inspections)</button>
+        </div>
+
+        <!-- Report Table Preview Container -->
+        <div class="table-container" id="report-table-container">
+          <table>
+            <thead id="report-table-head">
+              <!-- Dynamic Headers -->
+            </thead>
+            <tbody id="report-table-body">
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted);">माहिती लोड होत आहे... (Loading audit records...)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

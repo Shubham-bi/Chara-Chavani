@@ -133,6 +133,24 @@ export class CharaChhavaniApiClient {
 
     getCampsSummary: () =>
       this.http.get<M.CampUtilizationSummaryDto[]>('/api/v1/admin/camps-summary'),
+
+    getGeographicDistribution: (params?: { district?: string; taluka?: string; metric?: string }) => {
+      const q = new URLSearchParams(params as any).toString();
+      const path = q ? `/api/v1/admin/geographic-distribution?${q}` : '/api/v1/admin/geographic-distribution';
+      return this.http.get<M.GeographicDistributionDto>(path);
+    },
+
+    getCampsMap: (params?: { district?: string; taluka?: string; status?: string }) => {
+      const q = new URLSearchParams(params as any).toString();
+      const path = q ? `/api/v1/admin/camps-map?${q}` : '/api/v1/admin/camps-map';
+      return this.http.get<M.CampMapFeatureDto[]>(path);
+    },
+
+    getSectionAnalytics: <T = any>(section: string, params?: { district?: string; taluka?: string }) => {
+      const q = new URLSearchParams(params as any).toString();
+      const path = q ? `/api/v1/admin/analytics/${section}?${q}` : `/api/v1/admin/analytics/${section}`;
+      return this.http.get<T>(path);
+    },
   };
 
   // 9. Officer Field Inspection & Audit

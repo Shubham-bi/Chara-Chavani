@@ -658,3 +658,146 @@ export interface InspectionAuditReportItemDto {
   longitude: number;
 }
 
+// 12. Geographic & Power BI Analytics Models (CR v2.0)
+export interface CoordinatePairDto {
+  latitude: number;
+  longitude: number;
+}
+
+export interface GeographicAreaItemDto {
+  id: string;
+  name: string;
+  parent: string;
+  campCount: number;
+  farmerCount?: number;
+  animalCount?: number;
+  admittedCattle: number;
+  totalCapacity: number;
+  utilizationPercentage: number;
+  colorGrade: string;
+  hasCamps: boolean;
+  latitude?: number;
+  longitude?: number;
+}
+
+export interface GeographicDistributionDto {
+  level: 'State' | 'District' | 'Taluka' | 'Village';
+  selectedArea: string;
+  metric: 'camps' | 'animals' | 'utilization';
+  items: GeographicAreaItemDto[];
+}
+
+export interface CampMapFeatureDto {
+  campId: number;
+  campCode: string;
+  name: string;
+  address: string;
+  village: string;
+  taluka: string;
+  district: string;
+  state: string;
+  latitude: number;
+  longitude: number;
+  totalCapacity: number;
+  admittedCattle: number;
+  availableCapacity: number;
+  utilizationPercentage: number;
+  status: string;
+  operatorName: string;
+  operatorMobile: string;
+  polygonCoordinates: CoordinatePairDto[];
+  storeStockKg: number;
+  inFarmStockKg: number;
+  totalExpensesInr: number;
+}
+
+export interface CampUtilizationRankingItemDto {
+  campId: number;
+  campName: string;
+  district: string;
+  taluka: string;
+  capacity: number;
+  admitted: number;
+  available: number;
+  utilizationPercentage: number;
+  isNearCapacity: boolean;
+}
+
+export interface DistrictCapacityItemDto {
+  district: string;
+  campCount: number;
+  totalCapacity: number;
+  admittedAnimals: number;
+  utilizationPercentage: number;
+}
+
+export interface CampAnalyticsDto {
+  totalCamps: number;
+  activeCamps: number;
+  inactiveCamps: number;
+  totalConfiguredCapacity: number;
+  occupiedCapacity: number;
+  availableCapacity: number;
+  overallUtilizationPercentage: number;
+  campRankings: CampUtilizationRankingItemDto[];
+  districtBreakdown: DistrictCapacityItemDto[];
+}
+
+export interface AnimalAnalyticsDto {
+  totalRegisteredAnimals: number;
+  pendingVerification: number;
+  verifiedAnimals: number;
+  rejectedAnimals: number;
+  admittedAnimals: number;
+  releasedAnimals: number;
+  animalTypeDistribution: Record<string, number>;
+  registrationVsAdmissionTrend: Array<{
+    period: string;
+    registrations: number;
+    admissions: number;
+    releases: number;
+  }>;
+}
+
+export interface VeterinaryAnalyticsDto {
+  totalVerificationRequests: number;
+  pendingVerifications: number;
+  approvedVerifications: number;
+  rejectedVerifications: number;
+  approvalRatePercentage: number;
+  pendingByDistrict: Array<{
+    district: string;
+    pendingCount: number;
+  }>;
+}
+
+export interface FodderAnalyticsDto {
+  totalStoreStockKg: number;
+  totalInFarmStockKg: number;
+  totalAvailableStockKg: number;
+  totalPurchasedKg: number;
+  totalFeedingIssuedKg: number;
+  stockByFodderType: Record<string, number>;
+  topCampsByStock: Array<{
+    campName: string;
+    district: string;
+    storeStockKg: number;
+    inFarmStockKg: number;
+    totalStockKg: number;
+  }>;
+}
+
+export interface FinancialAnalyticsDto {
+  totalFodderPurchaseAmountInr: number;
+  totalOperationalExpensesInr: number;
+  combinedGovernmentExpenditureInr: number;
+  expensesByCategory: Record<string, number>;
+  topCampsByExpenditure: Array<{
+    campName: string;
+    district: string;
+    fodderPurchasesInr: number;
+    operationalExpensesInr: number;
+    totalInr: number;
+  }>;
+}
+

@@ -41,6 +41,60 @@ public class AdminController : BaseApiController
     }
 
     /// <summary>
+    /// Get geographical distribution hierarchy with choropleth colour grading (State -> District -> Taluka -> Village).
+    /// </summary>
+    [HttpGet("geographic-distribution")]
+    public async Task<ActionResult<ApiResponse<GeographicDistributionDto>>> GetGeographicDistribution(
+        [FromQuery] string? district,
+        [FromQuery] string? taluka,
+        [FromQuery] string? metric = "camps")
+    {
+        var response = await _mediator.Send(new GetGeographicDistributionQuery
+        {
+            District = district,
+            Taluka = taluka,
+            Metric = metric
+        });
+        return Ok(response);
+    }
+
+    /// <summary>
+    /// Get all registered cattle camps as spatial map features with coordinates and exact polygon geofence boundaries.
+    /// </summary>
+    [HttpGet("camps-map")]
+    public async Task<ActionResult<ApiResponse<List<CampMapFeatureDto>>>> GetCampsMap(
+        [FromQuery] string? district,
+        [FromQuery] string? taluka,
+        [FromQuery] string? status)
+    {
+        var response = await _mediator.Send(new GetCampMapFeaturesQuery
+        {
+            District = district,
+            Taluka = taluka,
+            Status = status
+        });
+        return Ok(response);
+    }
+
+    /// <summary>
+    /// Get dedicated section analytics across camps, animals, veterinary, fodder, and financials.
+    /// </summary>
+    [HttpGet("analytics/{section}")]
+    public async Task<ActionResult<ApiResponse<object>>> GetSectionAnalytics(
+        string section,
+        [FromQuery] string? district,
+        [FromQuery] string? taluka)
+    {
+        var response = await _mediator.Send(new GetAdminSectionAnalyticsQuery
+        {
+            Section = section,
+            District = district,
+            Taluka = taluka
+        });
+        return Ok(response);
+    }
+
+    /// <summary>
     /// Get camp-wise animal admission and release audit report with active days calculation.
     /// </summary>
     [HttpGet("reports/admissions")]

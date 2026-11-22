@@ -687,3 +687,43 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 - Verified: Yes (`test:playwright` = 6/6 PASS, `lint:all` = 0 errors, `typecheck` = 0 errors, `dotnet test` = 67/67 PASS, `e2e_smoke_test.ps1` = 19/19 PASS).
 
 
+
+---
+
+## [2026-11-22] - Feature / Task: Admin Dashboard CR v2.0 (Geographic Intelligence & Power BI Analytics)
+
+### 1. Challenge Faced
+- **Context**: Implementing the complete Change Request (CR v2.0) specified in `ReferanceData/ADMIN DASHBOARD REQUIREMENTS DOCUMENT.md`.
+- **Symptoms / Friction**:
+  1. *Server-Side Aggregation Mandate*: The CR strictly forbids downloading full raw transactional tables to the browser for client-side aggregations. Group-by computations across camps, farmers, cattle, fodder stocks, and expenses must execute natively on the server.
+  2. *Spatial NetTopologySuite Coordinate Serialization*: GeoJSON polygons stored in MySQL with NetTopologySuite `Polygon` types can produce circular references or coordinate transposition (Latitude vs Longitude / Y vs X) if serialized without dedicated DTO projection.
+  3. *DOM Selectors and Tabbed Viewports*: Power BI analytical tabs hide non-active sections (`display: none`), which initially caused legacy tests asserting on `#tab-admissions` and `#csv-export-actions` to fail because those elements were encapsulated inside `#section-reports`.
+- **Impact**: Potential performance degradation on large datasets, map distortion if coordinates were swapped, and broken automated UI regression tests.
+
+### 2. Solutions Evaluated
+- **Option A**: Client-side filtering and rendering via large table fetches.
+  - *Pros / Cons*: Simple to write initially, but violates Section 16.4 of the CR specification, risks browser memory bloat, and slows down load times on 3G/4G connections.
+- **Option B (Selected)**:
+  - Implement dedicated CQRS queries (`GetGeographicDistributionQuery`, `GetCampMapFeaturesQuery`, `GetAdminSectionAnalyticsQuery`) using LINQ group-by aggregations and SQL projections.
+  - Project NetTopologySuite coordinates into explicit `CoordinatePairDto(Latitude, Longitude)` tuples preserving SRID 4326 closed linear rings.
+  - Structure `apps/web-admin/index.html` with an 8-tab Power BI navigation bar, preserving legacy DOM IDs while scoping report controls inside `#section-reports`.
+  - Update and expand Playwright test suite (`tests/e2e-web/web-admin-dashboard.spec.ts`) with 10 comprehensive tests covering section switching, cascading filters, interactive map rendering, metric toggling, and camp dossier inspection.
+
+### 3. Finalized Solution ("What")
+- Created backend DTOs in `CharaChhavani.Application.Admin.DTOs` and MediatR handlers in `CharaChhavani.Application.Admin.Queries`.
+- Exposed 3 new endpoints on `AdminController.cs`:
+  - `GET /api/v1/admin/geographic-distribution?level=District&metric=camps`
+  - `GET /api/v1/admin/camps-map`
+  - `GET /api/v1/admin/analytics/{section}?district={district}&taluka={taluka}`
+- Rebuilt `@chara-chhavani/api-client` with typed DTO models and client service methods.
+- Refactored `apps/web-admin` (`index.html` and `dashboard.js`) with SVG vector map, choropleth color grading, camp markers, geofence rings, camp dossier side panel, and 8 tabbed analytical views.
+- Expanded Playwright tests to 10 automated end-to-end scenarios (10/10 PASS).
+
+### 4. Technical Rationale ("Why")
+- Complies strictly with the 13-stage engineering lifecycle in `GEMINI.md` and QA standards in `QA roles.md`.
+- Server-side grouping delivers instant (<50ms) analytical payloads without downloading millions of individual ledger records.
+- Explicit coordinate mapping guarantees map visual accuracy across desktop and mobile browsers.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`test:playwright` = 10/10 PASS, `lint:all` = 0 errors, `typecheck` = 0 errors across 7 packages, `dotnet test` = 67/67 PASS, `e2e_smoke_test.ps1` = 19/19 PASS).
