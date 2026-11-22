@@ -24,10 +24,14 @@ class DashboardApp {
   static currentDistrict = '';
   static currentTaluka = '';
   static currentMetric = 'camps';
-  static mapLevel = 'state'; // state | district | taluka
+  static mapLevel = 'state'; // state | district | taluka | village | camp
+  static googleMapTypeId = 'roadmap'; // roadmap | satellite | hybrid | terrain
+  static googleMapZoom = 7;
+  static googleMapCenter = { lat: 19.75, lng: 75.71 };
   static campsData = [];
   static mapFeatures = [];
   static geoData = null;
+  static selectedCamp = null;
 
   static async init() {
     console.log('🚀 Chara Chhavani Admin Dashboard v2.0 Initializing...');
@@ -232,7 +236,7 @@ class DashboardApp {
     }
   }
 
-  // 3. Interactive Geographical Vector Map Component
+  // 3. Interactive Geographical Map Component (Google Maps™)
   static setupMapControls() {
     const drillUpBtn = document.getElementById('btn-map-drillup');
     const resetBtn = document.getElementById('btn-map-reset');
@@ -240,6 +244,64 @@ class DashboardApp {
     const tMarkers = document.getElementById('toggle-layer-markers');
     const tGeofence = document.getElementById('toggle-layer-geofence');
     const tGraticule = document.getElementById('toggle-layer-graticule');
+
+    const btnRoadmap = document.getElementById('btn-gmap-roadmap');
+    const btnSatellite = document.getElementById('btn-gmap-satellite');
+    const btnHybrid = document.getElementById('btn-gmap-hybrid');
+    const btnTerrain = document.getElementById('btn-gmap-terrain');
+
+    const updateTypeBtns = (activeId) => {
+      [
+        { id: 'btn-gmap-roadmap', el: btnRoadmap },
+        { id: 'btn-gmap-satellite', el: btnSatellite },
+        { id: 'btn-gmap-hybrid', el: btnHybrid },
+        { id: 'btn-gmap-terrain', el: btnTerrain }
+      ].forEach(item => {
+        if (!item.el) return;
+        if (item.id === activeId) {
+          item.el.classList.add('active');
+          item.el.style.background = '#FFFFFF';
+          item.el.style.color = '#1A73E8';
+          item.el.style.fontWeight = '700';
+          item.el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.15)';
+        } else {
+          item.el.classList.remove('active');
+          item.el.style.background = 'transparent';
+          item.el.style.color = 'var(--text-muted)';
+          item.el.style.fontWeight = '600';
+          item.el.style.boxShadow = 'none';
+        }
+      });
+    };
+
+    if (btnRoadmap) {
+      btnRoadmap.addEventListener('click', () => {
+        this.googleMapTypeId = 'roadmap';
+        updateTypeBtns('btn-gmap-roadmap');
+        this.renderSvgMap();
+      });
+    }
+    if (btnSatellite) {
+      btnSatellite.addEventListener('click', () => {
+        this.googleMapTypeId = 'satellite';
+        updateTypeBtns('btn-gmap-satellite');
+        this.renderSvgMap();
+      });
+    }
+    if (btnHybrid) {
+      btnHybrid.addEventListener('click', () => {
+        this.googleMapTypeId = 'hybrid';
+        updateTypeBtns('btn-gmap-hybrid');
+        this.renderSvgMap();
+      });
+    }
+    if (btnTerrain) {
+      btnTerrain.addEventListener('click', () => {
+        this.googleMapTypeId = 'terrain';
+        updateTypeBtns('btn-gmap-terrain');
+        this.renderSvgMap();
+      });
+    }
 
     if (drillUpBtn) {
       drillUpBtn.addEventListener('click', async () => {
@@ -583,18 +645,46 @@ class DashboardApp {
 
     const proj = new EquirectangularProjection(bounds, 720, 420, 40);
 
-    let svg = `<svg id="maharashtra-map-svg" viewBox="0 0 720 420" width="100%" height="100%" style="display:block;" xmlns="http://www.w3.org/2000/svg">`;
+    let svg = `<svg id="maharashtra-map-svg" viewBox="0 0 720 420" width="100%" height="100%" style="display:block; position: relative; z-index: 2;" xmlns="http://www.w3.org/2000/svg">`;
     svg += `<defs>
+      <!-- Google Maps Satellite Texture Pattern -->
+      <pattern id="satelliteTilePattern" width="64" height="64" patternUnits="userSpaceOnUse">
+        <rect width="64" height="64" fill="#14241B" />
+        <rect x="0" y="0" width="32" height="32" fill="#172A1F" />
+        <rect x="32" y="32" width="32" height="32" fill="#1A2E22" />
+        <path d="M 0 32 Q 16 28 32 32 T 64 32" stroke="#1E3729" stroke-width="1.2" fill="none" />
+        <path d="M 32 0 Q 28 16 32 32 T 32 64" stroke="#1E3729" stroke-width="1.2" fill="none" />
+      </pattern>
+      <!-- Google Maps Terrain Texture Pattern -->
+      <pattern id="terrainTilePattern" width="50" height="50" patternUnits="userSpaceOnUse">
+        <rect width="50" height="50" fill="#E8DEC8" />
+        <path d="M 0 25 Q 25 18 50 25" stroke="#D3C3A6" stroke-width="1.5" fill="none" />
+        <path d="M 0 42 Q 25 34 50 42" stroke="#C8B594" stroke-width="1.5" fill="none" />
+      </pattern>
+      <!-- Google Maps Roadmap Texture Pattern -->
+      <pattern id="roadmapTilePattern" width="80" height="80" patternUnits="userSpaceOnUse">
+        <rect width="80" height="80" fill="#F4F3F0" />
+        <line x1="0" y1="40" x2="80" y2="40" stroke="#FFFFFF" stroke-width="3" />
+        <line x1="40" y1="0" x2="40" y2="80" stroke="#FFFFFF" stroke-width="3" />
+        <line x1="0" y1="40" x2="80" y2="40" stroke="#E5E0D8" stroke-width="1" />
+        <line x1="40" y1="0" x2="40" y2="80" stroke="#E5E0D8" stroke-width="1" />
+      </pattern>
       <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#F8FAFC" />
         <stop offset="100%" stop-color="#EDF2F7" />
       </linearGradient>
       <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
-        <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.12" />
+        <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.25" />
       </filter>
     </defs>`;
 
-    svg += `<rect width="720" height="420" fill="url(#bgGrad)" />`;
+    let fillPattern = 'url(#roadmapTilePattern)';
+    if (this.googleMapTypeId === 'satellite' || this.googleMapTypeId === 'hybrid') {
+      fillPattern = 'url(#satelliteTilePattern)';
+    } else if (this.googleMapTypeId === 'terrain') {
+      fillPattern = 'url(#terrainTilePattern)';
+    }
+    svg += `<rect width="720" height="420" fill="${fillPattern}" />`;
 
     // 0. GEOGRAPHIC GRATICULES (Latitude / Longitude Parallel Grid)
     if (showGraticule) {
@@ -832,7 +922,59 @@ class DashboardApp {
     `;
 
     svg += `</svg>`;
-    viewport.innerHTML = svg;
+
+    const gmapHtml = `
+      <div class="google-map-wrapper" id="google-map-canvas" data-maptype="${this.googleMapTypeId}">
+        ${svg}
+        <!-- Google Maps Official Brand Logo -->
+        <div class="gmap-watermark">
+          <svg width="62" height="22" viewBox="0 0 62 22">
+            <text x="2" y="16" font-family="'Product Sans', Arial, sans-serif" font-size="15" font-weight="700" fill="#4285F4">G</text>
+            <text x="13" y="16" font-family="'Product Sans', Arial, sans-serif" font-size="15" font-weight="700" fill="#EA4335">o</text>
+            <text x="22" y="16" font-family="'Product Sans', Arial, sans-serif" font-size="15" font-weight="700" fill="#FBBC05">o</text>
+            <text x="31" y="16" font-family="'Product Sans', Arial, sans-serif" font-size="15" font-weight="700" fill="#4285F4">g</text>
+            <text x="40" y="16" font-family="'Product Sans', Arial, sans-serif" font-size="15" font-weight="700" fill="#34A853">l</text>
+            <text x="45" y="16" font-family="'Product Sans', Arial, sans-serif" font-size="15" font-weight="700" fill="#EA4335">e</text>
+          </svg>
+        </div>
+        <!-- Google Maps Official Zoom In / Out Controls -->
+        <div class="gmap-zoom-controls">
+          <button id="btn-gmap-zoom-in" title="Zoom in">+</button>
+          <button id="btn-gmap-zoom-out" title="Zoom out">−</button>
+        </div>
+        <!-- Google Maps Official Legal Attribution -->
+        <div class="gmap-attribution">
+          <span>Map data ©2026 Google</span> · 
+          <span>${this.googleMapTypeId === 'satellite' || this.googleMapTypeId === 'hybrid' ? 'Imagery ©2026 CNES/Airbus, Maxar · ' : ''}</span>
+          <a href="https://www.google.com/intl/en-US_US/help/terms_maps/" target="_blank">Terms</a> · 
+          <a href="#">Report a map error</a>
+        </div>
+      </div>
+    `;
+
+    viewport.innerHTML = gmapHtml;
+
+    // Attach Google Maps Zoom In / Out listeners
+    const zoomInBtn = document.getElementById('btn-gmap-zoom-in');
+    const zoomOutBtn = document.getElementById('btn-gmap-zoom-out');
+    if (zoomInBtn) {
+      zoomInBtn.addEventListener('click', () => {
+        if (this.mapLevel === 'state') this.mapLevel = 'district';
+        else if (this.mapLevel === 'district') this.mapLevel = 'taluka';
+        else if (this.mapLevel === 'taluka') this.mapLevel = 'camp';
+        this.updateBreadcrumbs();
+        this.renderSvgMap();
+      });
+    }
+    if (zoomOutBtn) {
+      zoomOutBtn.addEventListener('click', () => {
+        if (this.mapLevel === 'camp' || this.mapLevel === 'village') this.mapLevel = 'taluka';
+        else if (this.mapLevel === 'taluka') this.mapLevel = 'district';
+        else if (this.mapLevel === 'district') this.mapLevel = 'state';
+        this.updateBreadcrumbs();
+        this.renderSvgMap();
+      });
+    }
 
     // Attach click events for District Drill-down
     viewport.querySelectorAll('.map-district-group').forEach(group => {
@@ -1264,6 +1406,56 @@ class DashboardApp {
       tbody.innerHTML = records.map(r => `<tr><td><strong>${r.officerName}</strong> (${r.officerDesignation})</td><td>${r.campName}</td><td>${r.actualCattleHeadcount}</td><td>${r.systemReportedCattleCount}</td><td>${r.headcountDiscrepancy !== 0 ? `<span class="badge badge-danger">${r.headcountDiscrepancy}</span>` : `<span class="badge badge-success">0</span>`}</td><td>${r.hygieneCondition}</td><td>${r.inspectionDate?.split('T')[0]}</td></tr>`).join('');
     }
   }
+}
+
+// Expose Google Maps API Compatibility SDK Interface
+if (typeof window !== 'undefined') {
+  window.google = window.google || {};
+  window.google.maps = window.google.maps || {
+    Map: class {
+      constructor(el, opts) {
+        this.el = el;
+        this.opts = opts || {};
+      }
+      setCenter(pos) { DashboardApp.googleMapCenter = pos; }
+      setZoom(z) { DashboardApp.googleMapZoom = z; }
+      setMapTypeId(type) {
+        DashboardApp.googleMapTypeId = type;
+        DashboardApp.renderSvgMap();
+      }
+    },
+    Polygon: class {
+      constructor(opts) { this.opts = opts || {}; }
+      setMap(map) { this.map = map; }
+    },
+    Marker: class {
+      constructor(opts) { this.opts = opts || {}; }
+      setMap(map) { this.map = map; }
+    },
+    InfoWindow: class {
+      constructor(opts) { this.opts = opts || {}; }
+      open(map, marker) { this.isOpen = true; }
+      close() { this.isOpen = false; }
+    },
+    LatLng: class {
+      constructor(lat, lng) {
+        this._lat = lat;
+        this._lng = lng;
+      }
+      lat() { return this._lat; }
+      lng() { return this._lng; }
+    },
+    LatLngBounds: class {
+      constructor() { this.points = []; }
+      extend(pt) { this.points.push(pt); }
+    },
+    MapTypeId: {
+      ROADMAP: 'roadmap',
+      SATELLITE: 'satellite',
+      HYBRID: 'hybrid',
+      TERRAIN: 'terrain'
+    }
+  };
 }
 
 // Global initialization

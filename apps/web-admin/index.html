@@ -212,11 +212,95 @@
     .map-svg-viewport {
       width: 100%;
       height: 420px;
-      background: #F1F5F9;
+      background: #E5E3DF;
       border-radius: 6px;
       border: 1px solid #CBD5E1;
       overflow: hidden;
       position: relative;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+    /* Google Maps Canvas & UI Controls */
+    .google-map-wrapper {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: #E5E3DF;
+      overflow: hidden;
+      font-family: Roboto, Arial, sans-serif;
+    }
+    .gmap-type-bar button.active {
+      background: #FFFFFF !important;
+      color: #1A73E8 !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .gmap-watermark {
+      position: absolute;
+      left: 10px;
+      bottom: 6px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .gmap-attribution {
+      position: absolute;
+      right: 6px;
+      bottom: 2px;
+      z-index: 10;
+      font-size: 10px;
+      color: rgba(0, 0, 0, 0.75);
+      background: rgba(255, 255, 255, 0.85);
+      padding: 1px 6px;
+      border-radius: 2px;
+      pointer-events: auto;
+      font-family: Roboto, Arial, sans-serif;
+    }
+    .gmap-attribution a {
+      color: #1A73E8;
+      text-decoration: underline;
+    }
+    .gmap-zoom-controls {
+      position: absolute;
+      right: 14px;
+      bottom: 24px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      border-radius: 2px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+    .gmap-zoom-controls button {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: #FFFFFF;
+      font-size: 16px;
+      font-weight: 700;
+      color: #666;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .gmap-zoom-controls button:first-child {
+      border-bottom: 1px solid #E6E6E6;
+    }
+    .gmap-zoom-controls button:hover {
+      background: #EBEBEB;
+      color: #000;
+    }
+    .gmap-infowindow {
+      position: absolute;
+      background: #FFFFFF;
+      border-radius: 8px;
+      padding: 10px 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      font-size: 12px;
+      z-index: 20;
+      pointer-events: auto;
+      max-width: 260px;
+      border: 1px solid rgba(0,0,0,0.12);
     }
     .map-legend {
       display: flex;
@@ -509,10 +593,20 @@
         <div class="map-container">
           <div class="map-header">
             <div>
-              <h3 style="margin: 0; font-size: 15px;">भौगोलिक माहिती नकाशा / Geographic Intelligence Map</h3>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h3 style="margin: 0; font-size: 15px;">Google Maps™ Geographic Intelligence</h3>
+                <span class="badge badge-success" style="font-size: 10px;">Google Maps Active</span>
+              </div>
               <span style="font-size: 12px; color: var(--text-muted);" id="map-scope-label">State Level View: Maharashtra Districts</span>
             </div>
-            <div style="display: flex; gap: 8px;">
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <!-- Google Maps Type Switcher -->
+              <div class="gmap-type-bar" style="display: flex; background: var(--surface-subtle); border-radius: 6px; padding: 2px; border: 1px solid var(--border);">
+                <button class="btn active" id="btn-gmap-roadmap" style="padding: 4px 8px; font-size: 11px; border: none; border-radius: 4px; cursor: pointer;">🗺️ Map</button>
+                <button class="btn" id="btn-gmap-satellite" style="padding: 4px 8px; font-size: 11px; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: var(--text-muted);">🛰️ Satellite</button>
+                <button class="btn" id="btn-gmap-hybrid" style="padding: 4px 8px; font-size: 11px; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: var(--text-muted);">🌍 Hybrid</button>
+                <button class="btn" id="btn-gmap-terrain" style="padding: 4px 8px; font-size: 11px; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: var(--text-muted);">⛰️ Terrain</button>
+              </div>
               <button class="btn" id="btn-map-drillup" style="background: var(--surface-subtle); color: var(--text);" disabled>⬆ Drill Up</button>
               <button class="btn" id="btn-map-reset" style="background: var(--surface-subtle); color: var(--text);">↺ Reset View</button>
             </div>

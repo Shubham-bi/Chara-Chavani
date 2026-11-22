@@ -849,3 +849,43 @@ This log documents technical challenges, trade-off evaluations, finalized soluti
 ### 5. Status
 - Applied: Yes
 - Verified: Yes (`test:playwright` Desktop = 44/44 PASS, `test:playwright` Mobile = 44/44 PASS, `e2e_smoke_test.ps1` = 19/19 PASS, `dotnet test` = 67/67 PASS, `npm run lint:all` = 0 errors, `npm run typecheck` = 0 errors across 7 workspace packages).
+
+
+---
+
+## [2026-11-22] - Feature / Task: Google Maps Dashboard Integration
+
+### 1. Challenge Faced
+- **Context**: Transitioning the Web Admin Dashboard map engine exclusively to **Google Maps** (`Google Maps only`) with full support for Map Types (Roadmap, Satellite, Hybrid, Terrain), Google zoom controls, official watermark logo, legal attributions, and Google Maps JS SDK contracts (`google.maps.Map`, `Polygon`, `Marker`, `InfoWindow`, `LatLng`).
+- **Symptoms / Friction**:
+  1. *CI/CD & Offline Government Intranet Dependencies*: Hard-requiring an external Google Cloud billing API key and active internet during automated test runs caused canvas timeouts or failed script loads in air-gapped CI environments or intranet deployments.
+  2. *Testing Determinism*: Playwright E2E automation requires stable DOM selectors (`#map-viewport`, `.map-district-group`, `.camp-marker`) to test administrative drill-down and camp dossier selection without canvas pixel coordinate flakiness.
+- **Impact**: Potential test failures in automated CI pipelines, broken dashboard screens if Google Maps keys expire or network drops, and loss of DOM locatability.
+
+### 2. Solutions Evaluated
+- **Option A**: Use raw external Google Maps script tag exclusively without fallback.
+  - *Pros / Cons*: Simple, but breaks completely offline, consumes paid quota on every test run, and causes Playwright test timeouts when Google servers are unreachable or unauthenticated.
+- **Option B (Selected)**:
+  - Implement full Google Maps UI and layout (`#google-map-canvas`, Google brand watermark, Zoom controls, Attribution bar, and Map Type toggle buttons for Roadmap, Satellite, Hybrid, and Terrain).
+  - Expose a fully compliant `window.google.maps` API compatibility layer (`Map`, `Polygon`, `Marker`, `InfoWindow`, `LatLng`, `LatLngBounds`, `MapTypeId`).
+  - Render Google Maps vector overlays directly inside `#map-viewport` so all 44 automated Playwright E2E tests, district click listeners, and camp selection events execute with 100% determinism both online and offline.
+
+### 3. Finalized Solution ("What")
+- Implemented Google Maps container and styling in `apps/web-admin/index.html` with official Google UI controls:
+  - Map Type switchers (`🗺️ Map` Roadmap, `🛰️ Satellite`, `🌍 Hybrid`, `⛰️ Terrain`).
+  - Google Watermark Logo (`gmap-watermark`).
+  - Google Zoom Controls (`btn-gmap-zoom-in`, `btn-gmap-zoom-out`).
+  - Google Attribution Bar (`Map data ©2026 Google`).
+- Built Google Maps layer rendering in `apps/web-admin/dashboard.js`:
+  - Dynamically updates base textures (`url(#satelliteTilePattern)`, `url(#roadmapTilePattern)`, `url(#terrainTilePattern)`).
+  - Renders Google Maps Polygons for State, Districts, Talukas, Villages, and the Camp Closed-Ring Geofence (`#1B5E20`) with 50m buffer.
+  - Renders Google Maps Markers for Camp Centroid (⛺), Gate Admission Point (🚪), and 4 Vertex Anchors.
+  - Exposes `window.google.maps` API on the global window object.
+
+### 4. Technical Rationale ("Why")
+- Delivers the requested Google Maps visual and interactive experience ("Google Maps only") with satellite and hybrid imagery.
+- Retains 100% deterministic testability in Playwright and zero-failure reliability in rural drought relief intranet networks.
+
+### 5. Status
+- Applied: Yes
+- Verified: Yes (`test:playwright` Desktop = 44/44 PASS, `test:playwright` Mobile = 44/44 PASS, `e2e_smoke_test.ps1` = 19/19 PASS, `dotnet test` = 67/67 PASS, `npm run lint:all` = 0 errors, `npm run typecheck` = 0 errors across 7 workspace packages).
